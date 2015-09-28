@@ -87,6 +87,7 @@ public class AsteroidsFrame extends JFrame
 		
 		showMenu();
 		this.setVisible (true);
+		this.requestFocusInWindow();
 	}
 	
 	private void showMenu(){
@@ -136,7 +137,7 @@ public class AsteroidsFrame extends JFrame
 		};
 		
 		// Creates a new model
-		this.newGameAction = new AbstractAction ("New Game") 
+		this.newGameAction = new AbstractAction ("Restart Game") 
 		{
 			public static final long serialVersionUID = 3L;
 

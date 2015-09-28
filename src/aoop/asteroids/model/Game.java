@@ -1,12 +1,18 @@
 package aoop.asteroids.model;
 
 import aoop.asteroids.gui.Player;
+import aoop.asteroids.udp.packets.GameStatePacket;
+
 import java.awt.Point;
 import java.lang.Runnable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Observable;
 import java.util.Random;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  *	The game class is the backbone of all simulations of the asteroid game. It 
@@ -100,9 +106,16 @@ public class Game extends Observable implements Runnable
 	 *
 	 *	@return a clone the spaceship.
 	 */
-	public Spaceship getPlayer ()
+	public Spaceship getSpaceship ()
 	{
 		return this.ship.clone ();
+	}
+	
+	public Collection <Spaceship> getSpaceships(){
+		Collection <Spaceship> c = new ArrayList <> ();
+		c.add(this.getSpaceship());
+		
+		return c;
 	}
 
 	/** 
@@ -155,6 +168,17 @@ public class Game extends Observable implements Runnable
 		if (this.cycleCounter == 0 && this.asteroids.size () < this.asteroidsLimit) this.addRandomAsteroid ();
 		this.cycleCounter++;
 		this.cycleCounter %= 200;
+		
+		aoop.asteroids.udp.packets.GameStatePacket testpacket = new aoop.asteroids.udp.packets.GameStatePacket(
+				this.getSpaceships(),
+				this.getBullets(),
+				this.getAsteroids());
+		System.out.println(testpacket.toJsonString());
+		
+		ClientGame cg = new ClientGame();
+		JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
+		cg = GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
+		System.out.println(cg);
 
 		this.setChanged ();
 		this.notifyObservers ();

@@ -67,7 +67,7 @@ public class AsteroidsPanel extends JPanel
 		this.paintBullets (g2);
 
 		g2.setColor (Color.WHITE);
-		g2.drawString (String.valueOf (this.game.getPlayer ().getScore ()), 20, 20);
+		g2.drawString (String.valueOf (this.game.getSpaceship ().getScore ()), 20, 20);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class AsteroidsPanel extends JPanel
 	 */
 	private void paintSpaceship (Graphics2D g)
 	{
-		Spaceship s = this.game.getPlayer ();
+		Spaceship s = this.game.getSpaceship();
 
 		// Draw body of the spaceship
 		Polygon p = new Polygon ();

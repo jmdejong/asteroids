@@ -2,6 +2,8 @@ package aoop.asteroids.model;
 
 import java.awt.Point;
 
+import org.json.simple.JSONArray;
+
 /**
  *	This class represents the player in the Asteroids game. A spaceship is able 
  *	to shoot every 20 game ticks (twice per second). 
@@ -229,6 +231,25 @@ public class Spaceship extends GameObject
 	public int getScore ()
 	{
 		return this.score;
+	}
+	
+	public JSONArray toJSON(){
+		JSONArray result = super.toJSON();
+		result.add(this.direction);
+		result.add(this.isAccelerating() ? 1 : 0);
+		result.add(this.getScore());
+		return result;
+	}
+	
+	public static Spaceship fromJSON(JSONArray json){
+		int x = ((Long) json.get(0)).intValue();
+		int y = ((Long) json.get(1)).intValue();
+		double velocityX = (double) json.get(2);
+		double velocityY = (double) json.get(3);
+		double direction = (double) json.get(4);
+		boolean isAccelerating = ((long) json.get(5)) == 1;
+		int score = ((Long) json.get(6)).intValue();
+		return new Spaceship(new Point(x,y),velocityX, velocityY, 15, direction, isAccelerating, score);
 	}
 	
 }

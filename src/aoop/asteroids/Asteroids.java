@@ -22,14 +22,6 @@ import java.net.SocketException;
 public class Asteroids 
 {
 
-	/** Constructs a new instance of the program. */
-	public Asteroids ()
-	{
-		Player player = new Player ();
-		Game game = new Game ();
-		game.linkController (player);
-		AsteroidsFrame frame = new AsteroidsFrame (game, player);
-	}
 
 	/** 
 	 *	Main function.
@@ -39,21 +31,14 @@ public class Asteroids
 	public static void main (String [] args)
 	{
 		
-		  
-		  aoop.asteroids.udp.packets.PlayerJoinPacket testpacket = new aoop.asteroids.udp.packets.PlayerJoinPacket();
-		  System.out.println(testpacket.toJsonString());
-		  
-		  JSONObject obj2 = (JSONObject) JSONValue.parse("{\"pt\":\"test\"}");
-		  System.out.print(obj2);
-		
-		  try {
+		try {
 			new aoop.asteroids.udp.ServerThread().start();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		new Asteroids ();
+		AsteroidsFrame frame = new AsteroidsFrame ();
 	}
 	
 }

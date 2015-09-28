@@ -22,8 +22,18 @@ public class Server extends Base{
 	
 	Game game;
 	
+	DatagramSocket sendSocket;
+	
 	public Server(){
 		super();
+		
+		try {
+			this.sendSocket = new DatagramSocket(8098);
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		this.game = new Game(this);
 		Thread t = new Thread (game);
 		t.start();
@@ -47,23 +57,31 @@ public class Server extends Base{
 	}
 	
 	public void sendGameStatePacket(){
+		
 		GameStatePacket gameStatePacket = new GameStatePacket(
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids());
+		System.out.println("Sending Game State Packet " + gameStatePacket.toJsonString());
 		
+		try {
+			sendPacket(gameStatePacket.toJsonString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void sendPacket(String packet_string) throws IOException{
-		DatagramSocket socket = new DatagramSocket(8098);
+		
 		byte[] buf = packet_string.getBytes();
 		for(InetSocketAddress address : playerConnections){
 			DatagramPacket packet = new DatagramPacket(buf, buf.length, address.getAddress(), Client.UDPPort);
-			socket.send(packet);
+			sendSocket.send(packet);
 		}
 		for(InetSocketAddress address : spectatorConnections){
 			DatagramPacket packet = new DatagramPacket(buf, buf.length, address.getAddress(), Client.UDPPort);
-			socket.send(packet);
+			sendSocket.send(packet);
 		}
 	}
 }

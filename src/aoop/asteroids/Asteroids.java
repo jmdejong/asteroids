@@ -49,12 +49,7 @@ public class Asteroids
 		  JSONObject obj2 = (JSONObject) JSONValue.parse("{\"pt\":\"test\"}");
 		  System.out.print(obj2);
 		
-		  try {
-			new aoop.asteroids.udp.ServerThread().start();
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 aoop.asteroids.udp.Server server = new aoop.asteroids.udp.Server();
 		
 		new Asteroids ();
 	}

@@ -3,6 +3,8 @@ package aoop.asteroids.gui;
 import aoop.asteroids.Asteroids;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
+
+
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
@@ -12,6 +14,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+
+import aoop.asteroids.udp.Client;
+import aoop.asteroids.udp.Server;
 
 /**
  *	AsteroidsFrame is a class that extends JFrame and thus provides a game 
@@ -103,25 +108,22 @@ public class AsteroidsFrame extends JFrame
 	
 	public void startSinglePlayerGame(){
 		
-		cg = new ClientGame();
-		game = new Game(cg);
-		Player controller = new Player ();
+		Server server = new Server();
+		/*Player controller = new Player ();
 		addKeyListener(controller);
-		game.linkController(controller);
+		game.linkController(controller);*/
 		startGame ();
 	}
 	
 	public void startGame(){
 		
+		Client client = new Client("127.0.0.1", Server.UDPPort);
 		
-		ap.observeGame(this.cg);
+		ap.observeGame(client.game);
 		
 		cardLayout.show(cards, "Game card");
 		
-		Thread t = new Thread (game);
-		t.start();
-		Thread t2 = new Thread (cg);
-		t2.start();
+
 		this.requestFocusInWindow();
 	}
 	
@@ -188,7 +190,7 @@ public class AsteroidsFrame extends JFrame
 			public void actionPerformed(ActionEvent arg0) 
 			{
 				AsteroidsFrame.this.cg = new ClientGame();
-				AsteroidsFrame.this.game = new Game(AsteroidsFrame.this.cg);
+				//AsteroidsFrame.this.game = new Game(AsteroidsFrame.this.cg);
 				AsteroidsFrame.this.startGame ();
 			}
 		};

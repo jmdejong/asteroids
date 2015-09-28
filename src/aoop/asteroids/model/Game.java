@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import aoop.asteroids.gui.Player;
+import aoop.asteroids.udp.Server;
 import aoop.asteroids.udp.packets.GameStatePacket;
 
 import java.awt.Point;
@@ -65,8 +66,10 @@ public class Game extends Observable implements Runnable
 	/** Asteroid limit. */
 	private int asteroidsLimit;
 	
+	private Server server;
 	
-	private ClientGame cg;
+	
+	//private ClientGame cg;
 
 	/** 
 	 *	Indicates whether the a new game is about to be started. 
@@ -76,12 +79,13 @@ public class Game extends Observable implements Runnable
 	private boolean aborted;
 
 	/** Initializes a new game from scratch. */
-	public Game (ClientGame cg)
+	public Game (Server server)
 	{
 		Game.rng = new Random ();
 		this.ship = new Spaceship ();
 		this.initGameData ();
-		this.cg = cg;
+		//this.cg = cg;
+		this.server = server;
 	}
 
 	/** Sets all game data to hold the values of a new game. */
@@ -173,15 +177,12 @@ public class Game extends Observable implements Runnable
 		this.cycleCounter++;
 		this.cycleCounter %= 200;
 		
-		aoop.asteroids.udp.packets.GameStatePacket testpacket = new aoop.asteroids.udp.packets.GameStatePacket(
-				this.getSpaceships(),
-				this.getBullets(),
-				this.getAsteroids());
+		server.sendGameStatePacket();
 		//System.out.println(testpacket.toJsonString());
 		
 		//ClientGame cg = new ClientGame();
-		JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
-		GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
+		//JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
+		//GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
 		//System.out.println(cg);
 
 		this.setChanged ();

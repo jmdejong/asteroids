@@ -34,7 +34,7 @@ public class Asteroids
 	{
 		
 
-		Server server = new Server();
+		//Server server = new Server();
 		
 		AsteroidsFrame frame = new AsteroidsFrame ();
 	}

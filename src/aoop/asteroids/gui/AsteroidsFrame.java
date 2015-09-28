@@ -184,6 +184,7 @@ public class AsteroidsFrame extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
+				AsteroidsFrame.this.cg = new ClientGame();
 				AsteroidsFrame.this.game = new Game(AsteroidsFrame.this.cg);
 				AsteroidsFrame.this.showGame ();
 			}

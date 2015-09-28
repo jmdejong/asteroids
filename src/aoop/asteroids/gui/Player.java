@@ -37,6 +37,9 @@ public class Player implements KeyListener
 	@Override
 	public void keyPressed (KeyEvent e)
 	{
+		if(ship==null){
+			return;
+		}
 		switch (e.getKeyCode ()) 
 		{
 			case KeyEvent.VK_UP:
@@ -62,6 +65,9 @@ public class Player implements KeyListener
 	@Override
 	public void keyReleased (KeyEvent e)
 	{
+		if(ship==null){
+			return;
+		}
 		switch (e.getKeyCode ()) 
 		{
 			case KeyEvent.VK_UP:

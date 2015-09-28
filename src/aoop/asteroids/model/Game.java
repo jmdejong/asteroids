@@ -1,12 +1,18 @@
 package aoop.asteroids.model;
 
 import aoop.asteroids.gui.Player;
+import aoop.asteroids.udp.packets.GameStatePacket;
+
 import java.awt.Point;
 import java.lang.Runnable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Observable;
 import java.util.Random;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  *	The game class is the backbone of all simulations of the asteroid game. It 
@@ -168,6 +174,11 @@ public class Game extends Observable implements Runnable
 				this.getBullets(),
 				this.getAsteroids());
 		System.out.println(testpacket.toJsonString());
+		
+		ClientGame cg = new ClientGame();
+		JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
+		cg = GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
+		System.out.println(cg);
 
 		this.setChanged ();
 		this.notifyObservers ();

@@ -150,11 +150,15 @@ public abstract class GameObject
 
 	public JSONArray toJSON(){
 		JSONArray result = new JSONArray();
-		result.add(this.locationX);
-		result.add(this.locationY);
+		result.add((int)this.locationX);
+		result.add((int)this.locationY);
 		result.add(this.velocityX);
 		result.add(this.velocityY);
 		
 		return result;
+	}
+	
+	public String toString(){
+		return this.getClass().toString() + ";x="+this.locationX+";y="+this.locationY+";vX="+this.velocityX+";vY="+this.velocityY;
 	}
 }

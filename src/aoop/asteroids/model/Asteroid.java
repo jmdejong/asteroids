@@ -65,13 +65,15 @@ public class Asteroid extends GameObject
 	}
 	
 	public static Asteroid fromJSON(JSONArray json){
-		int x = (int) json.get(0);
-		int y = (int) json.get(1);
+		int x = ((Long) json.get(0)).intValue();
+		int y = ((Long) json.get(1)).intValue();
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
-		int radius = (int) json.get(4);
+		int radius = ((Long) json.get(4)).intValue();
 		return new Asteroid(new Point(x,y),velocityX, velocityY, radius);
 		//TODO: different types of Asteroid classes depending on radius?
 	}
+	
+	
 
 }

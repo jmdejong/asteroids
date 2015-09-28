@@ -63,4 +63,8 @@ public class ClientGame extends Observable implements Runnable{
 			}
 		}
 	}
+	
+	public String toString(){
+		return "Bullets:\n" + this.bullets.toString() + "\nShips:" + this.ships.toString()+"\nAsteroids:"+this.asteroids.toString();
+	}
 }

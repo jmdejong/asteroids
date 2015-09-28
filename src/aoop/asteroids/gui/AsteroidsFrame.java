@@ -90,7 +90,7 @@ public class AsteroidsFrame extends JFrame
 		
 		Thread t = new Thread (game);
 		t.start();
-		repaint();
+		this.requestFocusInWindow();
 	}
 	
 	/** Quits the old game and starts a new one. */

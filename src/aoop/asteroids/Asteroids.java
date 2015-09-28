@@ -26,8 +26,6 @@ public class Asteroids
 		Game game = new Game ();
 		game.linkController (player);
 		AsteroidsFrame frame = new AsteroidsFrame (game, player);
-		Thread t = new Thread (game);
-		t.start ();
 	}
 
 	/** 

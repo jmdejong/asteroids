@@ -9,6 +9,8 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import java.awt.CardLayout;
 
 /**
  *	AsteroidsFrame is a class that extends JFrame and thus provides a game 
@@ -30,10 +32,16 @@ public class AsteroidsFrame extends JFrame
 
 	/** The game model. */
 	private Game game;
+	
+	private CardLayout cardLayout;
+	
+	private JPanel cards;
 
 	/** The panel in which the game is painted. */
 	private AsteroidsPanel ap;
 
+	private MenuPanel mp;
+	
 	/** 
 	 *	Constructs a new Frame, requires a game model.
 	 *
@@ -43,28 +51,48 @@ public class AsteroidsFrame extends JFrame
 	public AsteroidsFrame (Game game, Player controller)
 	{
 		this.game = game;
-
+		
 		this.initActions ();
-
+		
 		this.setTitle ("Asteroids");
 		this.setSize (800, 800);
-		this.addKeyListener (controller);
-
+		
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-
-		JMenuBar mb = new JMenuBar ();
-		JMenu m = new JMenu ("Game");
-		mb.add (m);
-		m.add (this.quitAction);
-		m.add (this.newGameAction);
-		this.setJMenuBar (mb);
-
-		this.ap = new AsteroidsPanel (this.game);
-		this.add (this.ap);
+		
+		
+		mp = new MenuPanel(this);
+		
+		ap = new AsteroidsPanel (this.game);
+		
+		cardLayout = new CardLayout();
+		cards = new JPanel(cardLayout);
+		cards.add(mp, "Menu card");
+		cards.add(ap, "Game card");
+		
+		this.addKeyListener(controller);
+		
+		this.add(cards);
+		
+		
+		showMenu();
 		this.setVisible (true);
-
 	}
-
+	
+	private void showMenu(){
+		
+		cardLayout.show(cards, "Menu card");
+	}
+	
+	
+	public void showGame(){
+		
+		cardLayout.show(cards, "Game card");
+		
+		Thread t = new Thread (game);
+		t.start();
+		repaint();
+	}
+	
 	/** Quits the old game and starts a new one. */
 	private void newGame ()
 	{

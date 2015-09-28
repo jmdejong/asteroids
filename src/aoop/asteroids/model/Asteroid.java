@@ -49,8 +49,24 @@ public class Asteroid extends GameObject
 	 */
 	public Collection <Asteroid> getSuccessors ()
 	{
-		return new ArrayList <Asteroid> ();
+		ArrayList <Asteroid> list = new ArrayList <> ();
+		if (radius > 10){
+			list.add (new Asteroid (
+				this.getLocation (),
+				this.getVelocityX () * Math.cos (Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (Math.PI / 2) * 1.5,
+				this.getVelocityX () * Math.sin (Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (Math.PI / 2) * 1.5,
+				this.radius/2
+			));
+			list.add (new Asteroid (
+				this.getLocation (),
+				this.getVelocityX () * Math.cos (- Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (- Math.PI / 2) * 1.5,
+				this.getVelocityX () * Math.sin (- Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (- Math.PI / 2) * 1.5,
+				this.radius/2
+			));
+		}
+		return list;
 	}
+
 
 	/** Creates an exact copy of the asteroid. */
 	public Asteroid clone ()

@@ -19,7 +19,7 @@ public class Client extends Base{
 	public Client(String host, int port){
 		super();
 		
-		this.serverAddress = InetSocketAddress.createUnresolved(host, port);
+		this.serverAddress = new InetSocketAddress(host, port);
 		
 		this.game = new ClientGame();
 		sendPlayerJoinPacket();

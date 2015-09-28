@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -27,7 +28,7 @@ public class Asteroid extends GameObject
      *	@param velocityY the velocity in Y direction.
      *	@param radius radius of the asteroid.
      */
-	public Asteroid (Point location, double velocityX, double velocityY, int radius)
+	public Asteroid (Point2D location, double velocityX, double velocityY, int radius)
 	{
 		super (location, velocityX, velocityY, radius);
 	}
@@ -81,12 +82,12 @@ public class Asteroid extends GameObject
 	}
 	
 	public static Asteroid fromJSON(JSONArray json){
-		int x = ((Long) json.get(0)).intValue();
-		int y = ((Long) json.get(1)).intValue();
+		double x = (double) json.get(0);
+		double y = (double) json.get(1);
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
 		int radius = ((Long) json.get(4)).intValue();
-		return new Asteroid(new Point(x,y),velocityX, velocityY, radius);
+		return new Asteroid(new Point2D.Double(x,y),velocityX, velocityY, radius);
 		//TODO: different types of Asteroid classes depending on radius?
 	}
 	

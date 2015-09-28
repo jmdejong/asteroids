@@ -49,7 +49,7 @@ public class Game extends Observable implements Runnable
 {
 
 	/** The spaceship of the player. */
-	private Spaceship ship;
+	private Collection<Spaceship> ships;
 
 	/** List of bullets. */
 	private Collection <Bullet> bullets;
@@ -82,7 +82,7 @@ public class Game extends Observable implements Runnable
 	public Game (Server server)
 	{
 		Game.rng = new Random ();
-		this.ship = new Spaceship ();
+		//this.ship = new Spaceship ();
 		this.initGameData ();
 		//this.cg = cg;
 		this.server = server;
@@ -96,7 +96,8 @@ public class Game extends Observable implements Runnable
 		this.asteroidsLimit = 7;
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();
-		this.ship.reinit ();
+		this.ships = new ArrayList<> ();
+		//this.ship.reinit ();
 	}
 
 	/** 
@@ -106,7 +107,7 @@ public class Game extends Observable implements Runnable
 	 */
 	public void linkController (Player p)
 	{
-		p.addShip (this.ship);
+		//p.addShip (this.ship);
 	}
 
 	/** 
@@ -116,14 +117,21 @@ public class Game extends Observable implements Runnable
 	 */
 	public Spaceship getSpaceship ()
 	{
-		return this.ship.clone ();
+		return this.ships.toArray(new Spaceship[1])[0].clone ();
 	}
 	
 	public Collection <Spaceship> getSpaceships(){
-		Collection <Spaceship> c = new ArrayList <> ();
-		c.add(this.getSpaceship());
 		
+		Collection <Spaceship> c = new ArrayList <> ();
+		for (Spaceship s : this.ships) c.add (s.clone ());
 		return c;
+	}
+	
+	public void addSpaceship(){
+		Spaceship s = new Spaceship();
+		
+		this.ships.add(s);
+		s.reinit();
 	}
 
 	/** 
@@ -161,14 +169,17 @@ public class Game extends Observable implements Runnable
 	{
 		for (Asteroid a : this.asteroids) a.nextStep ();
 		for (Bullet b : this.bullets) b.nextStep ();
-		this.ship.nextStep ();
-
-		if (this.ship.isFiring ())
-		{
-			double direction = this.ship.getDirection ();
-			this.bullets.add (new Bullet(this.ship.getLocation (), this.ship.getVelocityX () + Math.sin (direction) * 15, this.ship.getVelocityY () - Math.cos (direction) * 15));
-			this.ship.setFired ();
+		for (Spaceship s : this.ships) {
+			s.nextStep ();
+			if (s.isFiring ())
+			{
+				double direction = s.getDirection ();
+				this.bullets.add (new Bullet(s.getLocation (), s.getVelocityX () + Math.sin (direction) * 15, s.getVelocityY () - Math.cos (direction) * 15));
+				s.setFired ();
+			}
 		}
+
+		
 
 		this.checkCollisions ();
 		this.removeDestroyedObjects ();
@@ -196,15 +207,17 @@ public class Game extends Observable implements Runnable
 	private void addRandomAsteroid ()
 	{
 		int prob = Game.rng.nextInt (3000);
-		Point loc, shipLoc = this.ship.getLocation ();
+		//Point loc, shipLoc = this.ship.getLocation ();
 		int x, y;
-		do
-		{
-			loc = new Point (Game.rng.nextInt (800), Game.rng.nextInt (800));
-			x = loc.x - shipLoc.x;
-			y = loc.y - shipLoc.y;
-		}
-		while (Math.sqrt (x * x + y * y) < 50);
+		//do
+		//{
+			Point loc = new Point (Game.rng.nextInt (800), Game.rng.nextInt (800));
+			//x = loc.x - shipLoc.x;
+			//y = loc.y - shipLoc.y;
+			
+			//TODO: re-insert collision-preventing for multiple players. And PROPERLY: think about borders.
+		//}
+		//while (Math.sqrt (x * x + y * y) < 50);
 
 		if (prob < 1000)		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 40));
 		else if (prob < 2000)	this.asteroids.add (new Asteroid (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 20));
@@ -229,21 +242,27 @@ public class Game extends Observable implements Runnable
 					a.destroy ();
 				}
 			}
-
-			if (b.collides (this.ship))
-			{ // Collision with playerß -> destroy both objects
-				b.destroy ();
-				this.ship.destroy ();
+			for(Spaceship s : this.ships){
+				if (b.collides (s))
+				{ // Collision with playerß -> destroy both objects
+					b.destroy ();
+					s.destroy ();
+				}
 			}
+
+			
 		}
 
 		for (Asteroid a : this.asteroids)
 		{ // For all asteroids, no cross check with bullets required.
-			if (a.collides (this.ship))
-			{ // Collision with player -> destroy both objects.
-				a.destroy ();
-				this.ship.destroy ();
+			for(Spaceship s : this.ships){
+				if (a.collides (s))
+				{ // Collision with player -> destroy both objects.
+					a.destroy ();
+					s.destroy ();
+				}
 			}
+			
 		}
 	}
 
@@ -253,8 +272,9 @@ public class Game extends Observable implements Runnable
 	 */
 	private void increaseScore ()
 	{
-		this.ship.increaseScore ();
-		if (this.ship.getScore () % 5 == 0) this.asteroidsLimit++;
+		//this.ship.increaseScore ();
+		//if (this.ship.getScore () % 5 == 0) this.asteroidsLimit++;
+		//TODO: re-enable for multiple players.
 	}
 
 	/**
@@ -291,7 +311,8 @@ public class Game extends Observable implements Runnable
 	 */ 
 	private boolean gameOver ()
 	{
-		return this.ship.isDestroyed ();
+		return false;//this.ship.isDestroyed ();
+		//TODO
 	}
 
 	/** 
@@ -347,6 +368,13 @@ public class Game extends Observable implements Runnable
 				e.printStackTrace ();
 			}
 		}
+	}
+
+	public Spaceship getSpaceshipRef(int index) {
+		if(this.ships.size() <= index){
+			return null;
+		}
+		return this.ships.toArray(new Spaceship[this.ships.size()])[index];
 	}
     
 }

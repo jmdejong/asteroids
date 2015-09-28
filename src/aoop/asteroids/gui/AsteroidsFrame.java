@@ -42,7 +42,6 @@ public class AsteroidsFrame extends JFrame
 
 	/** The game model. */
 	private Game game;
-	private ClientGame cg;
 	
 	
 	private CardLayout cardLayout;
@@ -112,12 +111,14 @@ public class AsteroidsFrame extends JFrame
 		/*Player controller = new Player ();
 		addKeyListener(controller);
 		game.linkController(controller);*/
+		
 		startGame ();
 	}
 	
 	public void startGame(){
 		
-		Client client = new Client("127.0.0.1", Server.UDPPort);
+		Client client = new Client("127.0.0.1", Server.UDPPort, false);
+		addKeyListener(client.game.spaceshipController);
 		
 		ap.observeGame(client.game);
 		
@@ -189,7 +190,8 @@ public class AsteroidsFrame extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				AsteroidsFrame.this.cg = new ClientGame();
+				//AsteroidsFrame.this.cg = new ClientGame();
+				//new Client("127.0.0.1", Server.UDPPort, true);
 				//AsteroidsFrame.this.game = new Game(AsteroidsFrame.this.cg);
 				AsteroidsFrame.this.startGame ();
 			}

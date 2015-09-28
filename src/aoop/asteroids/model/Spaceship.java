@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 import org.json.simple.JSONArray;
 
@@ -43,7 +44,7 @@ public class Spaceship extends GameObject
 	/** Constructs a new spaceship with default values. */
 	public Spaceship ()
 	{
-		this (new Point (400, 400), 0, 0, 15, 0, false, 0);
+		this (new Point2D.Double(400.0,400.0), 0, 0, 15, 0, false, 0);
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (Point location, double velocityX, double velocityY, int radius, double direction, boolean up, int score)
+	private Spaceship (Point2D location, double velocityX, double velocityY, int radius, double direction, boolean up, int score)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.direction 		= direction;
@@ -242,14 +243,14 @@ public class Spaceship extends GameObject
 	}
 	
 	public static Spaceship fromJSON(JSONArray json){
-		int x = ((Long) json.get(0)).intValue();
-		int y = ((Long) json.get(1)).intValue();
+		double x = (double) json.get(0);
+		double y = (double) json.get(1);
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
 		double direction = (double) json.get(4);
 		boolean isAccelerating = ((long) json.get(5)) == 1;
 		int score = ((Long) json.get(6)).intValue();
-		return new Spaceship(new Point(x,y),velocityX, velocityY, 15, direction, isAccelerating, score);
+		return new Spaceship(new Point2D.Double(x,y),velocityX, velocityY, 15, direction, isAccelerating, score);
 	}
 	
 }

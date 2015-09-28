@@ -9,8 +9,13 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import aoop.asteroids.model.Game;
+import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
+import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 
 
 public class Server extends Base{
@@ -54,6 +59,7 @@ public class Server extends Base{
 	public void addPlayerConnection(SocketAddress address){
 		playerConnections.add((InetSocketAddress)address);
 		System.out.println(playerConnections);
+		this.game.addSpaceship();
 	}
 	
 	public void sendGameStatePacket(){
@@ -83,5 +89,20 @@ public class Server extends Base{
 			DatagramPacket packet = new DatagramPacket(buf, buf.length, address.getAddress(), Client.UDPPort);
 			sendSocket.send(packet);
 		}
+	}
+
+	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
+		InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
+		int index = playerConnections.indexOf(inetSocketAddress);
+		System.out.println(index);
+		if(index == -1){
+			return;
+		}
+		Spaceship playerShip = this.game.getSpaceshipRef(index);
+		if(playerShip==null){
+			return;
+		}
+		System.out.println(playerShip);
+		PlayerUpdatePacket.decodePacket(packet_data, playerShip);
 	}
 }

@@ -46,6 +46,7 @@ public class ServerThread extends BaseServerThread{
 				break;
 			case PLAYER_UPDATE:
 				System.out.println("Player Update Packet Received");
+				server.updatePlayerShip((JSONArray)packet_data.get("d"), packet.getSocketAddress());
 				break;
 		}
 	}

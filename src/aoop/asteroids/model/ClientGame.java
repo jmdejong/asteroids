@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Observable;
 
+import aoop.asteroids.gui.SpaceshipController;
+import aoop.asteroids.udp.Client;
+
 public class ClientGame extends Observable implements Runnable{
 	
 	private Collection <Spaceship> ships = new ArrayList<Spaceship>();
@@ -12,9 +15,19 @@ public class ClientGame extends Observable implements Runnable{
 
 	/** List of asteroids. */
 	private Collection <Asteroid> asteroids = new ArrayList<Asteroid>();
+	
+	public SpaceshipController spaceshipController;
+	
+	
+	private Client client;
 
 	
-	public ClientGame(){
+	public ClientGame(Client client){
+		this.client = client;
+		
+		if(!this.client.isSpectator){
+			this.spaceshipController = new SpaceshipController();
+		}
 		
 	}
 	
@@ -24,6 +37,9 @@ public class ClientGame extends Observable implements Runnable{
 		for (Spaceship s : this.ships) s.nextStep();
 		
 		//TODO: send player packet depending on player input.
+		if(!this.client.isSpectator){
+			this.client.sendPlayerUpdatePacket(this.spaceshipController);
+		}
 		
 		this.setChanged ();
 		this.notifyObservers ();

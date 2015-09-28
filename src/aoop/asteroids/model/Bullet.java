@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 import org.json.simple.JSONArray;
 
@@ -29,7 +30,7 @@ public class Bullet extends GameObject
 	 *	@param velocityX velocity of the bullet as projected on the X-axis.
 	 *	@param velocityY velocity of the bullet as projected on the Y-axis.
 	 */
-	public Bullet (Point location, double velocityX, double velocityY)
+	public Bullet (Point2D location, double velocityX, double velocityY)
 	{
 		this (location, velocityX, velocityY, 45);
 	}
@@ -46,7 +47,7 @@ public class Bullet extends GameObject
      *
      *	@see #clone()
      */
-	private Bullet (Point location, double velocityX, double velocityY, int stepsLeft)
+	private Bullet (Point2D location, double velocityX, double velocityY, int stepsLeft)
 	{
 		super (location, velocityX, velocityY, 0);
 		this.stepsLeft = stepsLeft;
@@ -77,11 +78,11 @@ public class Bullet extends GameObject
 	}
 	
 	public static Bullet fromJSON(JSONArray json){
-		int x = ((Long) json.get(0)).intValue();
-		int y = ((Long) json.get(1)).intValue();
+		double x = (double) json.get(0);
+		double y = (double) json.get(1);
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
-		return new Bullet(new Point(x,y),velocityX, velocityY);
+		return new Bullet(new Point2D.Double(x,y),velocityX, velocityY);
 	}
 
 }

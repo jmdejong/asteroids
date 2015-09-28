@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 import org.json.simple.JSONArray;
 
@@ -47,10 +48,10 @@ public abstract class GameObject
 	 *	@param velocityY velocity in Y direction.
 	 *	@param radius radius of the object.
 	 */
-	protected GameObject (Point location, double velocityX, double velocityY, int radius)
+	protected GameObject (Point2D location, double velocityX, double velocityY, int radius)
 	{
-		this.locationX = location.x;
-		this.locationY = location.y;
+		this.locationX = location.getX();
+		this.locationY = location.getY();
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;
 		this.radius = radius;
@@ -150,8 +151,8 @@ public abstract class GameObject
 
 	public JSONArray toJSON(){
 		JSONArray result = new JSONArray();
-		result.add((int)this.locationX);
-		result.add((int)this.locationY);
+		result.add((double)this.locationX);
+		result.add((double)this.locationY);
 		result.add(this.velocityX);
 		result.add(this.velocityY);
 		

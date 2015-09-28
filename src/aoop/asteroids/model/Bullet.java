@@ -77,8 +77,8 @@ public class Bullet extends GameObject
 	}
 	
 	public static Bullet fromJSON(JSONArray json){
-		int x = (int) json.get(0);
-		int y = (int) json.get(1);
+		int x = ((Long) json.get(0)).intValue();
+		int y = ((Long) json.get(1)).intValue();
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
 		return new Bullet(new Point(x,y),velocityX, velocityY);

@@ -29,6 +29,8 @@ public class AsteroidsFrame extends JFrame
 
 	/** New game action. */
 	private AbstractAction newGameAction;
+	
+	private AbstractAction startSinglePlayerAction;
 
 	/** The game model. */
 	private Game game;
@@ -60,8 +62,17 @@ public class AsteroidsFrame extends JFrame
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
 		
-		mp = new MenuPanel(this);
 		
+		
+		JMenuBar mb = new JMenuBar ();
+		JMenu m = new JMenu ("Game");
+		mb.add (m);
+		m.add (this.quitAction);
+		m.add (this.newGameAction);
+		this.setJMenuBar(mb);
+		
+		mp = new MenuPanel();
+		mp.makeButton("Single player", this.startSinglePlayerAction);
 		ap = new AsteroidsPanel (this.game);
 		
 		cardLayout = new CardLayout();
@@ -133,6 +144,18 @@ public class AsteroidsFrame extends JFrame
 			public void actionPerformed(ActionEvent arg0) 
 			{
 				AsteroidsFrame.this.newGame ();
+			}
+		};
+		
+		
+		this.startSinglePlayerAction = new AbstractAction ("Start single player game") 
+		{
+			public static final long serialVersionUID = 3L;
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				AsteroidsFrame.this.showGame ();
 			}
 		};
 

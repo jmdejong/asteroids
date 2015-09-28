@@ -16,10 +16,19 @@ public class Client extends Base{
 	
 	public static int UDPPort = 8091;
 	
+	DatagramSocket sendSocket;
+	
 	public Client(String host, int port){
 		super();
 		
 		this.serverAddress = new InetSocketAddress(host, port);
+		
+		try {
+			this.sendSocket = new DatagramSocket(8099);
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		this.game = new ClientGame();
 		sendPlayerJoinPacket();
@@ -34,11 +43,11 @@ public class Client extends Base{
 		}
 	}
 	private void sendPacket(String packet_string) throws IOException{
-		DatagramSocket socket = new DatagramSocket(8099);
+		 
 		byte[] buf = packet_string.getBytes();
 		
 		DatagramPacket packet = new DatagramPacket(buf, buf.length, serverAddress.getAddress(), serverAddress.getPort());
-		socket.send(packet);
+		sendSocket.send(packet);
 		
 	}
 	

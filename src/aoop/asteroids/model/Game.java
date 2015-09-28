@@ -64,6 +64,9 @@ public class Game extends Observable implements Runnable
 
 	/** Asteroid limit. */
 	private int asteroidsLimit;
+	
+	
+	private ClientGame cg;
 
 	/** 
 	 *	Indicates whether the a new game is about to be started. 
@@ -73,11 +76,12 @@ public class Game extends Observable implements Runnable
 	private boolean aborted;
 
 	/** Initializes a new game from scratch. */
-	public Game ()
+	public Game (ClientGame cg)
 	{
 		Game.rng = new Random ();
 		this.ship = new Spaceship ();
 		this.initGameData ();
+		this.cg = cg;
 	}
 
 	/** Sets all game data to hold the values of a new game. */
@@ -173,12 +177,12 @@ public class Game extends Observable implements Runnable
 				this.getSpaceships(),
 				this.getBullets(),
 				this.getAsteroids());
-		System.out.println(testpacket.toJsonString());
+		//System.out.println(testpacket.toJsonString());
 		
-		ClientGame cg = new ClientGame();
+		//ClientGame cg = new ClientGame();
 		JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
-		cg = GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
-		System.out.println(cg);
+		GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
+		//System.out.println(cg);
 
 		this.setChanged ();
 		this.notifyObservers ();

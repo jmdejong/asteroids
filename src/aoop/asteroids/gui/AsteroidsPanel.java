@@ -2,6 +2,7 @@ package aoop.asteroids.gui;
 
 import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
+import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Spaceship;
 import java.awt.Color;
@@ -28,14 +29,14 @@ public class AsteroidsPanel extends JPanel
 	public static final long serialVersionUID = 4L;
 
 	/** Game model. */
-	private Game game;
+	private ClientGame game;
 
 	/** 
 	 *	Constructs a new game panel, based on the given model.
 	 *
 	 *	@param game game model.
 	 */
-	public AsteroidsPanel (Game game)
+	public AsteroidsPanel (ClientGame game)
 	{
 		this.game = game;
 		this.game.addObserver (new Observer ()
@@ -67,7 +68,11 @@ public class AsteroidsPanel extends JPanel
 		this.paintBullets (g2);
 
 		g2.setColor (Color.WHITE);
-		g2.drawString (String.valueOf (this.game.getSpaceship ().getScore ()), 20, 20);
+		Spaceship s = this.game.getSpaceship ();
+		if(s==null){
+			return;
+		}
+		g2.drawString (String.valueOf (s.getScore ()), 20, 20);
 	}
 
 	/**
@@ -110,6 +115,9 @@ public class AsteroidsPanel extends JPanel
 	private void paintSpaceship (Graphics2D g)
 	{
 		Spaceship s = this.game.getSpaceship();
+		if(s==null){
+			return;
+		}
 
 		// Draw body of the spaceship
 		Polygon p = new Polygon ();

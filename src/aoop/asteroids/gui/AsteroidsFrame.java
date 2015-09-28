@@ -1,6 +1,7 @@
 package aoop.asteroids.gui;
 
 import aoop.asteroids.Asteroids;
+import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -32,6 +33,7 @@ public class AsteroidsFrame extends JFrame
 
 	/** The game model. */
 	private Game game;
+	private ClientGame cg;
 	
 	private CardLayout cardLayout;
 	
@@ -48,9 +50,10 @@ public class AsteroidsFrame extends JFrame
 	 *	@param game game model.
 	 *	@param controller key listener that catches the users actions.
 	 */
-	public AsteroidsFrame (Game game, Player controller)
+	public AsteroidsFrame (Game game, ClientGame cg, Player controller)
 	{
 		this.game = game;
+		this.cg = cg;
 		
 		this.initActions ();
 		
@@ -62,7 +65,7 @@ public class AsteroidsFrame extends JFrame
 		
 		mp = new MenuPanel(this);
 		
-		ap = new AsteroidsPanel (this.game);
+		ap = new AsteroidsPanel (cg);
 		
 		cardLayout = new CardLayout();
 		cards = new JPanel(cardLayout);
@@ -90,6 +93,8 @@ public class AsteroidsFrame extends JFrame
 		
 		Thread t = new Thread (game);
 		t.start();
+		Thread t2 = new Thread (cg);
+		t2.start();
 		this.requestFocusInWindow();
 	}
 	

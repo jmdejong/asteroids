@@ -6,6 +6,7 @@ import org.json.simple.JSONValue;
 
 import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.gui.Player;
+import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
 import java.awt.Point;
 import java.net.SocketException;
@@ -26,9 +27,11 @@ public class Asteroids
 	public Asteroids ()
 	{
 		Player player = new Player ();
-		Game game = new Game ();
+		ClientGame cg = new ClientGame();
+		Game game = new Game (cg);
+		
 		game.linkController (player);
-		AsteroidsFrame frame = new AsteroidsFrame (game, player);
+		AsteroidsFrame frame = new AsteroidsFrame (game, cg, player);
 	}
 
 	/** 

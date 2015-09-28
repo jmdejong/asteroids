@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 public class Base {
 	public Base(){
 		
-
 		
 	}
 }

@@ -12,6 +12,10 @@ public class Packet {
 	public JSONArray data;
 	private long timestamp;
 	
+	public Packet(PacketType type){
+		this(type, new JSONArray());
+	}
+	
 	
 	public Packet(PacketType type, JSONArray data){
 		this.type = type;

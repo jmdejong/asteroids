@@ -42,7 +42,7 @@ public class Asteroids
 	{
 		
 		  
-		  aoop.asteroids.udp.packets.GameStatePacket testpacket = new aoop.asteroids.udp.packets.GameStatePacket();
+		  aoop.asteroids.udp.packets.PlayerJoinPacket testpacket = new aoop.asteroids.udp.packets.PlayerJoinPacket();
 		  System.out.println(testpacket.toJsonString());
 		  
 		  JSONObject obj2 = (JSONObject) JSONValue.parse("{\"pt\":\"test\"}");

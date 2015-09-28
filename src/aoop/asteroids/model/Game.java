@@ -100,9 +100,16 @@ public class Game extends Observable implements Runnable
 	 *
 	 *	@return a clone the spaceship.
 	 */
-	public Spaceship getPlayer ()
+	public Spaceship getSpaceship ()
 	{
 		return this.ship.clone ();
+	}
+	
+	public Collection <Spaceship> getSpaceships(){
+		Collection <Spaceship> c = new ArrayList <> ();
+		c.add(this.getSpaceship());
+		
+		return c;
 	}
 
 	/** 
@@ -155,6 +162,12 @@ public class Game extends Observable implements Runnable
 		if (this.cycleCounter == 0 && this.asteroids.size () < this.asteroidsLimit) this.addRandomAsteroid ();
 		this.cycleCounter++;
 		this.cycleCounter %= 200;
+		
+		aoop.asteroids.udp.packets.GameStatePacket testpacket = new aoop.asteroids.udp.packets.GameStatePacket(
+				this.getSpaceships(),
+				this.getBullets(),
+				this.getAsteroids());
+		System.out.println(testpacket.toJsonString());
 
 		this.setChanged ();
 		this.notifyObservers ();

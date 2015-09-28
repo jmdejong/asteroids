@@ -2,6 +2,8 @@ package aoop.asteroids.model;
 
 import java.awt.Point;
 
+import org.json.simple.JSONArray;
+
 /**
  *	GameObject is the abstract superclass for all game objects. I.e. bullets, 
  *	asteroids and spaceships. This class provides some of the basic mechanics, 
@@ -146,4 +148,13 @@ public abstract class GameObject
 		return this.stepsTilCollide;
 	}
 
+	public JSONArray toJSON(){
+		JSONArray result = new JSONArray();
+		result.add(this.locationX);
+		result.add(this.locationY);
+		result.add(this.velocityX);
+		result.add(this.velocityY);
+		
+		return result;
+	}
 }

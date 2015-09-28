@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.json.simple.JSONArray;
+
 /**
  *	An asteroid is a game object that needs to be destroyed in order to 
  *	increase the score of the player. Destroying an asteroid is done by making 
@@ -54,6 +56,12 @@ public class Asteroid extends GameObject
 	public Asteroid clone ()
 	{
 		return new Asteroid (this.getLocation (), this.velocityX, this.velocityY, this.radius);
+	}
+	
+	public JSONArray toJSON(){
+		JSONArray result = super.toJSON();
+		result.add(this.radius);
+		return result;
 	}
 
 }

@@ -2,6 +2,8 @@ package aoop.asteroids.model;
 
 import java.awt.Point;
 
+import org.json.simple.JSONArray;
+
 /**
  *	The bullet is the ultimate weapon of the player. It has the same mechanics 
  *	as an asteroid, in which it cannot divert from its trajectory. However, the 
@@ -72,6 +74,14 @@ public class Bullet extends GameObject
 	public Bullet clone ()
 	{
 		return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.stepsLeft);
+	}
+	
+	public static Bullet fromJSON(JSONArray json){
+		int x = (int) json.get(0);
+		int y = (int) json.get(1);
+		double velocityX = (double) json.get(2);
+		double velocityY = (double) json.get(3);
+		return new Bullet(new Point(x,y),velocityX, velocityY);
 	}
 
 }

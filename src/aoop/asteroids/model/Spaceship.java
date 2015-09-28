@@ -237,7 +237,19 @@ public class Spaceship extends GameObject
 		JSONArray result = super.toJSON();
 		result.add(this.direction);
 		result.add(this.isAccelerating() ? 1 : 0);
+		result.add(this.getScore());
 		return result;
+	}
+	
+	public static Spaceship fromJSON(JSONArray json){
+		int x = (int) json.get(0);
+		int y = (int) json.get(1);
+		double velocityX = (double) json.get(2);
+		double velocityY = (double) json.get(3);
+		double direction = (double) json.get(4);
+		boolean isAccelerating = ((int) json.get(5)) == 1;
+		int score = (int) json.get(6);
+		return new Spaceship(new Point(x,y),velocityX, velocityY, 15, direction, isAccelerating, score);
 	}
 	
 }

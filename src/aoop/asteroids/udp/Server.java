@@ -6,16 +6,23 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import aoop.asteroids.model.Game;
+
 
 public class Server extends Base{
+	
+	public static int UDPPort = 8090;
 	
 	ArrayList<InetSocketAddress> spectatorConnections 	= new ArrayList<InetSocketAddress>();
 	ArrayList<InetSocketAddress> playerConnections		= new ArrayList<InetSocketAddress>();
 	
+	Game game;
+	
 	public Server(){
 		super();
+		this.game = game;
 		
-		 try {
+		try {
 			new ServerThread(this).start();
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block

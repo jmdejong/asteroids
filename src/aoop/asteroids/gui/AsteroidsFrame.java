@@ -29,7 +29,7 @@ public class AsteroidsFrame extends JFrame
 	private AbstractAction quitAction;
 
 	/** New game action. */
-	private AbstractAction newGameAction;
+	private AbstractAction restartGameAction;
 	
 	private AbstractAction startSinglePlayerAction;
 	
@@ -39,7 +39,6 @@ public class AsteroidsFrame extends JFrame
 	private Game game;
 	private ClientGame cg;
 	
-	private Player controller;
 	
 	private CardLayout cardLayout;
 	
@@ -72,7 +71,7 @@ public class AsteroidsFrame extends JFrame
 		JMenu m = new JMenu ("Game");
 		mb.add (m);
 		m.add (this.quitAction);
-		m.add (this.newGameAction);
+		m.add (this.restartGameAction);
 		this.setJMenuBar(mb);
 		
 		mp = new MenuPanel();
@@ -87,9 +86,7 @@ public class AsteroidsFrame extends JFrame
 		cards.add(ap, "Game card");
 		
 		
-		controller = new Player ();
 		
-		this.addKeyListener(controller);
 		
 		this.add(cards);
 		
@@ -104,8 +101,17 @@ public class AsteroidsFrame extends JFrame
 		cardLayout.show(cards, "Menu card");
 	}
 	
+	public void startSinglePlayerGame(){
+		
+		cg = new ClientGame();
+		game = new Game(cg);
+		Player controller = new Player ();
+		addKeyListener(controller);
+		game.linkController(controller);
+		startGame ();
+	}
 	
-	public void showGame(){
+	public void startGame(){
 		
 		
 		ap.observeGame(this.cg);
@@ -120,7 +126,7 @@ public class AsteroidsFrame extends JFrame
 	}
 	
 	/** Quits the old game and starts a new one. */
-	private void newGame ()
+	private void restartGame ()
 	{
 		this.game.abort ();
 		try
@@ -151,14 +157,14 @@ public class AsteroidsFrame extends JFrame
 		};
 		
 		// Creates a new model
-		this.newGameAction = new AbstractAction ("Restart Game") 
+		this.restartGameAction = new AbstractAction ("Restart Game") 
 		{
 			public static final long serialVersionUID = 3L;
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				AsteroidsFrame.this.newGame ();
+				AsteroidsFrame.this.restartGame ();
 			}
 		};
 		
@@ -170,10 +176,7 @@ public class AsteroidsFrame extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				AsteroidsFrame.this.cg = new ClientGame();
-				AsteroidsFrame.this.game = new Game(cg);
-				AsteroidsFrame.this.game.linkController(controller);
-				AsteroidsFrame.this.showGame ();
+				AsteroidsFrame.this.startSinglePlayerGame();
 			}
 		};
 		
@@ -186,7 +189,7 @@ public class AsteroidsFrame extends JFrame
 			{
 				AsteroidsFrame.this.cg = new ClientGame();
 				AsteroidsFrame.this.game = new Game(AsteroidsFrame.this.cg);
-				AsteroidsFrame.this.showGame ();
+				AsteroidsFrame.this.startGame ();
 			}
 		};
 		

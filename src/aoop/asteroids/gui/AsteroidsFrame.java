@@ -32,10 +32,14 @@ public class AsteroidsFrame extends JFrame
 	private AbstractAction newGameAction;
 	
 	private AbstractAction startSinglePlayerAction;
+	
+	private AbstractAction startSpectatorAction;
 
 	/** The game model. */
 	private Game game;
 	private ClientGame cg;
+	
+	private Player controller;
 	
 	private CardLayout cardLayout;
 	
@@ -52,10 +56,9 @@ public class AsteroidsFrame extends JFrame
 	 *	@param game game model.
 	 *	@param controller key listener that catches the users actions.
 	 */
-	public AsteroidsFrame (Game game, ClientGame cg, Player controller)
-	{
-		this.game = game;
-		this.cg = cg;
+
+	public AsteroidsFrame (){
+
 		
 		this.initActions ();
 		
@@ -65,7 +68,6 @@ public class AsteroidsFrame extends JFrame
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
 
-		
 		JMenuBar mb = new JMenuBar ();
 		JMenu m = new JMenu ("Game");
 		mb.add (m);
@@ -75,12 +77,17 @@ public class AsteroidsFrame extends JFrame
 		
 		mp = new MenuPanel();
 		mp.makeButton("Single player", this.startSinglePlayerAction);
-		ap = new AsteroidsPanel (this.cg);
+
+		mp.makeButton("Spectate single player", this.startSpectatorAction);
+		ap = new AsteroidsPanel ();
 		
 		cardLayout = new CardLayout();
 		cards = new JPanel(cardLayout);
 		cards.add(mp, "Menu card");
 		cards.add(ap, "Game card");
+		
+		
+		controller = new Player ();
 		
 		this.addKeyListener(controller);
 		
@@ -99,6 +106,9 @@ public class AsteroidsFrame extends JFrame
 	
 	
 	public void showGame(){
+		
+		
+		ap.observeGame(this.cg);
 		
 		cardLayout.show(cards, "Game card");
 		
@@ -153,17 +163,32 @@ public class AsteroidsFrame extends JFrame
 		};
 		
 		
-		this.startSinglePlayerAction = new AbstractAction ("Start single player game") 
+		this.startSinglePlayerAction = new AbstractAction () 
 		{
 			public static final long serialVersionUID = 3L;
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
+				AsteroidsFrame.this.cg = new ClientGame();
+				AsteroidsFrame.this.game = new Game(cg);
+				AsteroidsFrame.this.game.linkController(controller);
 				AsteroidsFrame.this.showGame ();
 			}
 		};
+		
+		this.startSpectatorAction = new AbstractAction () 
+		{
+			public static final long serialVersionUID = 3L;
 
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				AsteroidsFrame.this.game = new Game(AsteroidsFrame.this.cg);
+				AsteroidsFrame.this.showGame ();
+			}
+		};
+		
 	}
 	
 }

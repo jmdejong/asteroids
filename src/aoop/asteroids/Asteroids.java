@@ -8,6 +8,8 @@ import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.gui.Player;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
+import aoop.asteroids.udp.Server;
+
 import java.awt.Point;
 import java.net.SocketException;
 
@@ -23,17 +25,6 @@ import java.net.SocketException;
 public class Asteroids 
 {
 
-	/** Constructs a new instance of the program. */
-	public Asteroids ()
-	{
-		Player player = new Player ();
-		ClientGame cg = new ClientGame();
-		Game game = new Game (cg);
-		
-		game.linkController (player);
-		AsteroidsFrame frame = new AsteroidsFrame (game, cg, player);
-	}
-
 	/** 
 	 *	Main function.
 	 *
@@ -42,16 +33,10 @@ public class Asteroids
 	public static void main (String [] args)
 	{
 		
-		  
-		  aoop.asteroids.udp.packets.PlayerJoinPacket testpacket = new aoop.asteroids.udp.packets.PlayerJoinPacket();
-		  System.out.println(testpacket.toJsonString());
-		  
-		  JSONObject obj2 = (JSONObject) JSONValue.parse("{\"pt\":\"test\"}");
-		  System.out.print(obj2);
+
+		Server server = new Server();
 		
-		 aoop.asteroids.udp.Server server = new aoop.asteroids.udp.Server();
-		
-		new Asteroids ();
+		AsteroidsFrame frame = new AsteroidsFrame ();
 	}
 	
 }

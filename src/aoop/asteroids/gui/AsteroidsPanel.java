@@ -36,7 +36,8 @@ public class AsteroidsPanel extends JPanel
 	 *
 	 *	@param game game model.
 	 */
-	public AsteroidsPanel (ClientGame game)
+
+	public void observeGame (ClientGame game)
 	{
 		this.game = game;
 		this.game.addObserver (new Observer ()

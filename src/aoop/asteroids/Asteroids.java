@@ -1,5 +1,7 @@
 package aoop.asteroids;
 
+
+import org.json.simple.JSONObject;
 import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.gui.Player;
 import aoop.asteroids.model.Game;
@@ -35,6 +37,17 @@ public class Asteroids
 	 */
 	public static void main (String [] args)
 	{
+		
+		  
+		  JSONObject obj=new JSONObject();
+		  obj.put("name","foo");
+		  obj.put("num",new Integer(100));
+		  obj.put("balance",new Double(1000.21));
+		  obj.put("is_vip",new Boolean(true));
+		  obj.put("nickname",null);
+		  System.out.print(obj);
+		
+		
 		new Asteroids ();
 	}
 	

@@ -42,13 +42,8 @@ public class Asteroids
 	{
 		
 		  
-		  JSONObject obj=new JSONObject();
-		  obj.put("name","foo");
-		  obj.put("num",new Integer(100));
-		  obj.put("balance",new Double(1000.21));
-		  obj.put("is_vip",new Boolean(true));
-		  obj.put("nickname",null);
-		  System.out.print(obj);
+		  aoop.asteroids.udp.packets.GameStatePacket testpacket = new aoop.asteroids.udp.packets.GameStatePacket();
+		  System.out.println(testpacket.toJsonString());
 		  
 		  JSONObject obj2 = (JSONObject) JSONValue.parse("{\"pt\":\"test\"}");
 		  System.out.print(obj2);

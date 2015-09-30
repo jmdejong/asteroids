@@ -129,6 +129,7 @@ public class Game extends Observable implements Runnable
 	
 	public void addSpaceship(){
 		Spaceship s = new Spaceship();
+		System.out.println("adding spaceship.");
 		
 		this.ships.add(s);
 		s.reinit();
@@ -211,7 +212,7 @@ public class Game extends Observable implements Runnable
 		int x, y;
 		//do
 		//{
-			Point loc = new Point (Game.rng.nextInt (800), Game.rng.nextInt (800));
+			WrappablePoint loc = new WrappablePoint (Game.rng.nextInt (800), Game.rng.nextInt (800));
 			//x = loc.x - shipLoc.x;
 			//y = loc.y - shipLoc.y;
 			
@@ -304,15 +305,60 @@ public class Game extends Observable implements Runnable
 	}
 
 	/**
-	 *	Returns whether the game is over. The game is over when the spaceship 
-	 *	is destroyed.
+	 *	Returns whether the game is over. The game is over when all spaceships are destroyed.
 	 *
 	 *	@return true if game is over, false otherwise.
 	 */ 
-	private boolean gameOver ()
+	private boolean areAllShipsDestroyed ()
 	{
-		return false;//this.ship.isDestroyed ();
-		//TODO
+		if(this.ships.isEmpty()){//This situation happens before a player has joined.
+			return false;
+		}
+		for(Spaceship s : this.ships){
+			if(!s.isDestroyed()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean areAllAsteroidsDestroyed(){
+		
+		/*for(Asteroid a : this.asteroids){
+			if (!a.isDestroyed()){
+				return false;
+			}
+		}
+		return true;*/
+		
+		return this.asteroids.isEmpty();
+	}
+	
+	private boolean isGameOver(){
+		return this.areAllShipsDestroyed() ;//|| this.areAllAsteroidsDestroyed();
+	}
+	
+	/**
+	 * Returns the list of one or multiple winners of the current game round.<br>
+	 * That is:<br>
+	 * -> If all ships have died, the ship(s) that died the last.<br>
+	 * -> If there are still some ships alive, then return those.<br>
+	 * @return
+	 */
+	private ArrayList<Spaceship> getWinners(){
+		double latestDestroyTime = 0;
+		ArrayList<Spaceship> result = new ArrayList<Spaceship>();
+		
+		for(Spaceship s : this.ships){
+			if(s.getDestroyTime() > latestDestroyTime){
+				result = new ArrayList<Spaceship>();
+				result.add(s);
+				latestDestroyTime = s.getDestroyTime();
+			}else if(s.getDestroyTime() == latestDestroyTime){
+				result.add(s);
+			}
+		}
+		return result;
 	}
 
 	/** 
@@ -346,16 +392,16 @@ public class Game extends Observable implements Runnable
 	public void run ()
 	{ // Update -> sleep -> update -> sleep -> etc...
 		long executionTime, sleepTime;
-		while (true)
+		do
 		{
-			if (!this.gameOver () && !this.aborted)
-			{
+			//if 
+			//{
 				executionTime = System.currentTimeMillis ();
 				this.update ();
 				executionTime -= System.currentTimeMillis ();
 				sleepTime = 40 - executionTime;
-			}
-			else sleepTime = 100;
+			//}
+			//else sleepTime = 100;
 
 			try
 			{
@@ -367,7 +413,7 @@ public class Game extends Observable implements Runnable
 				System.err.println ("The thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).");
 				e.printStackTrace ();
 			}
-		}
+		}while  (!this.isGameOver () && !this.aborted);
 	}
 
 	public Spaceship getSpaceshipRef(int index) {

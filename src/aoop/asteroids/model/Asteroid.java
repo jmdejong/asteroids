@@ -28,7 +28,7 @@ public class Asteroid extends GameObject
      *	@param velocityY the velocity in Y direction.
      *	@param radius radius of the asteroid.
      */
-	public Asteroid (Point2D location, double velocityX, double velocityY, int radius)
+	public Asteroid (WrappablePoint location, double velocityX, double velocityY, int radius)
 	{
 		super (location, velocityX, velocityY, radius);
 	}
@@ -87,7 +87,7 @@ public class Asteroid extends GameObject
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
 		int radius = ((Long) json.get(4)).intValue();
-		return new Asteroid(new Point2D.Double(x,y),velocityX, velocityY, radius);
+		return new Asteroid(new WrappablePoint(x,y),velocityX, velocityY, radius);
 		//TODO: different types of Asteroid classes depending on radius?
 	}
 	

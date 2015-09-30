@@ -67,6 +67,7 @@ public class AsteroidsFrame extends JFrame
 		
 		this.setTitle ("Asteroids");
 		this.setSize (800, 800);
+		this.setResizable(false);
 		
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		

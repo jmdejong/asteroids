@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
+import aoop.asteroids.udp.packets.PlayerLosePacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 
 
@@ -35,7 +36,6 @@ public class Server extends Base{
 		try {
 			this.sendSocket = new DatagramSocket(8098);
 		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -47,7 +47,6 @@ public class Server extends Base{
 		try {
 			new ServerThread(this).start();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -71,23 +70,33 @@ public class Server extends Base{
 		System.out.println("Sending Game State Packet " + gameStatePacket.toJsonString());
 		
 		try {
-			sendPacket(gameStatePacket.toJsonString());
+			sendPacketToAll(gameStatePacket.toJsonString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void sendPacket(String packet_string) throws IOException{
+	public void sendPlayerLosePacket(int ship_index){
+		if(ship_index < 0 || ship_index > playerConnections.size()){
+			return;
+		}
 		
-		byte[] buf = packet_string.getBytes();
+		InetSocketAddress connection = playerConnections.get(ship_index);
+		
+		PlayerLosePacket playerLosePacket = new PlayerLosePacket();
+		try {
+			super.sendPacket(playerLosePacket.toJsonString(), connection, sendSocket);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void sendPacketToAll(String packet_string) throws IOException{
 		for(InetSocketAddress address : playerConnections){
-			DatagramPacket packet = new DatagramPacket(buf, buf.length, address.getAddress(), Client.UDPPort);
-			sendSocket.send(packet);
+			super.sendPacket(packet_string, address, sendSocket);
 		}
 		for(InetSocketAddress address : spectatorConnections){
-			DatagramPacket packet = new DatagramPacket(buf, buf.length, address.getAddress(), Client.UDPPort);
-			sendSocket.send(packet);
+			super.sendPacket(packet_string, address, sendSocket);
 		}
 	}
 
@@ -104,5 +113,14 @@ public class Server extends Base{
 		}
 		System.out.println(playerShip);
 		PlayerUpdatePacket.decodePacket(packet_data, playerShip);
+	}
+	
+	public void sendPlayerPacket(){
+		
+	}
+	
+	public void restartGame(){
+		
+		this.game = new Game(this);
 	}
 }

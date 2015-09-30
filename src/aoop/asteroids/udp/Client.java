@@ -51,7 +51,7 @@ public class Client extends Base{
 		}
 	}
 	private void sendPacket(String packet_string) throws IOException{
-		 
+		super.sendPacket(packet_string,serverAddress, sendSocket); 
 		byte[] buf = packet_string.getBytes();
 		
 		DatagramPacket packet = new DatagramPacket(buf, buf.length, serverAddress.getAddress(), serverAddress.getPort());

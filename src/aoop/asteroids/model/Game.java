@@ -161,7 +161,7 @@ public class Game extends Observable implements Runnable
 		for (Bullet b : this.bullets) b.nextStep ();
 		for (Spaceship s : this.ships) {
 			s.nextStep ();
-			if (s.isFiring ())
+			if (s.isFiring () && !s.isDestroyed())
 			{
 				double direction = s.getDirection ();
 				this.bullets.add (new Bullet(s.getLocation (), s.getVelocityX () + Math.sin (direction) * 15, s.getVelocityY () - Math.cos (direction) * 15));

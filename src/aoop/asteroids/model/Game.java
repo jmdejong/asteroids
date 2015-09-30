@@ -1,6 +1,5 @@
 package aoop.asteroids.model;
 
-import aoop.asteroids.gui.Player;
 import aoop.asteroids.udp.Server;
 import aoop.asteroids.udp.packets.GameStatePacket;
 
@@ -98,16 +97,6 @@ public class Game extends Observable implements Runnable
 		this.asteroids = new ArrayList <> ();
 		this.ships = new ArrayList<> ();
 		//this.ship.reinit ();
-	}
-
-	/** 
-	 *	Links the given controller to the spaceship. 
-	 *
-	 *	@param p the controller that is supposed to control the spaceship.
-	 */
-	public void linkController (Player p)
-	{
-		//p.addShip (this.ship);
 	}
 
 	/** 

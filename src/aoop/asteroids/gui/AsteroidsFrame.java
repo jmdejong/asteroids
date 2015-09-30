@@ -108,9 +108,7 @@ public class AsteroidsFrame extends JFrame
 	public void startSinglePlayerGame(){
 		
 		Server server = new Server();
-		/*Player controller = new Player ();
-		addKeyListener(controller);
-		game.linkController(controller);*/
+		
 		
 		startGame ();
 	}

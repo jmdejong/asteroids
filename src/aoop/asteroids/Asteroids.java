@@ -5,7 +5,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import aoop.asteroids.gui.AsteroidsFrame;
-import aoop.asteroids.gui.Player;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.udp.Server;

@@ -17,6 +17,7 @@ import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
+import aoop.asteroids.udp.packets.RoundEndPacket;
 
 
 public class Server extends Base{
@@ -93,6 +94,14 @@ public class Server extends Base{
 		}
 	}
 	
+	public void sendRoundOverPacket(){
+		try {
+			sendPacketToAll(new RoundEndPacket().toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void sendPacketToAll(String packet_string) throws IOException{
 		for(InetSocketAddress address : playerConnections){
 			super.sendPacket(packet_string, address.getAddress(), Client.UDPPort, sendSocket);
@@ -122,7 +131,7 @@ public class Server extends Base{
 	}
 	
 	public void restartGame(){
-		
+		sendRoundOverPacket();
 		//this.game = new Game(this);
 	}
 }

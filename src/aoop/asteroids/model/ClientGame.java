@@ -25,6 +25,8 @@ public class ClientGame extends Observable implements Runnable{
 	public boolean hasLost = false;
 
 	
+	public boolean isFrozen = false;
+	
 	public ClientGame(Client client){
 		this.client = client;
 		
@@ -35,6 +37,9 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	private void update(){
+		if(isFrozen){
+			return;
+		}
 		for (Asteroid a : this.asteroids) a.nextStep ();
 		for (Bullet b : this.bullets) b.nextStep ();
 		for (Spaceship s : this.ships) s.nextStep();
@@ -103,5 +108,12 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public Collection<Asteroid> getAsteroids() {
 		return asteroids;
+	}
+	
+	public void freeze(){
+		this.isFrozen = true;
+	}
+	public void unFreeze(){
+		this.isFrozen = false;
 	}
 }

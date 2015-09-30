@@ -21,6 +21,8 @@ public class Client extends Base{
 	/** if set to true, Client is in Spectator mode, and will not send any input packets.*/
 	public boolean isSpectator = false;
 	
+
+	
 	
 	
 	DatagramSocket sendSocket;
@@ -73,4 +75,6 @@ public class Client extends Base{
 			e.printStackTrace();
 		}
 	}
+	
+
 }

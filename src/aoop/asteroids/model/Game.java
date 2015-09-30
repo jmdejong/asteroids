@@ -423,4 +423,5 @@ public class Game extends Observable implements Runnable
 		return this.ships.toArray(new Spaceship[this.ships.size()])[index];
 	}
     
+	
 }

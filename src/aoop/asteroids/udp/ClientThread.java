@@ -53,6 +53,7 @@ public class ClientThread extends BaseServerThread {
 				if(!this.client.isSpectator){
 					this.client.game.hasLost = false; //TODO: better separation of concerns?
 				}
+				this.client.game.freeze();
 				//TODO: More sophisticated round restart logic?
 				break;
 		}

@@ -48,7 +48,7 @@ public class Game extends Observable implements Runnable
 {
 
 	/** The spaceship of the player. */
-	private Collection<Spaceship> ships;
+	private ArrayList<Spaceship> ships;
 
 	/** List of bullets. */
 	private Collection <Bullet> bullets;
@@ -161,7 +161,7 @@ public class Game extends Observable implements Runnable
 		for (Bullet b : this.bullets) b.nextStep ();
 		for (Spaceship s : this.ships) {
 			s.nextStep ();
-			if (s.isFiring ())
+			if (s.isFiring () && !s.isDestroyed())
 			{
 				double direction = s.getDirection ();
 				this.bullets.add (new Bullet(s.getLocation (), s.getVelocityX () + Math.sin (direction) * 15, s.getVelocityY () - Math.cos (direction) * 15));
@@ -237,6 +237,7 @@ public class Game extends Observable implements Runnable
 				{ // Collision with playerß -> destroy both objects
 					b.destroy ();
 					s.destroy ();
+					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 
@@ -250,6 +251,7 @@ public class Game extends Observable implements Runnable
 				{ // Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();
+					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 			
@@ -383,14 +385,17 @@ public class Game extends Observable implements Runnable
 		long executionTime, sleepTime;
 		do
 		{
-			//if 
-			//{
+			if (!this.isGameOver ())
+			{
 				executionTime = System.currentTimeMillis ();
 				this.update ();
 				executionTime -= System.currentTimeMillis ();
 				sleepTime = 40 - executionTime;
-			//}
-			//else sleepTime = 100;
+			}
+			else {
+				sleepTime = 100;
+				this.server.restartGame();
+			}
 
 			try
 			{
@@ -402,7 +407,7 @@ public class Game extends Observable implements Runnable
 				System.err.println ("The thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).");
 				e.printStackTrace ();
 			}
-		}while  (!this.isGameOver () && !this.aborted);
+		}while  (!this.aborted);
 	}
 
 	public Spaceship getSpaceshipRef(int index) {

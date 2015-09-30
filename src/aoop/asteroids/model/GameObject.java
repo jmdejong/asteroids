@@ -14,6 +14,8 @@ import org.json.simple.JSONArray;
  */
 public abstract class GameObject 
 {
+	public static double worldWidth = 800;
+	public static double worldHeight = 800;
 
 	/** Location on the X axis. */
 	protected double locationX;
@@ -48,7 +50,7 @@ public abstract class GameObject
 	 *	@param velocityY velocity in Y direction.
 	 *	@param radius radius of the object.
 	 */
-	protected GameObject (Point2D location, double velocityX, double velocityY, int radius)
+	protected GameObject (WrappablePoint location, double velocityX, double velocityY, int radius)
 	{
 		this.locationX = location.getX();
 		this.locationY = location.getY();
@@ -83,9 +85,15 @@ public abstract class GameObject
 	 *
 	 *	@return the location of the object.
 	 */
-	public Point getLocation ()
+	public WrappablePoint getLocation ()
 	{
-		return new Point ((int)this.locationX, (int)this.locationY);
+		return new WrappablePoint (this.locationX, this.locationY, GameObject.worldWidth, GameObject.worldHeight);
+	}
+	
+	public void setLocation(WrappablePoint location){
+		location.setDomain(GameObject.worldWidth, GameObject.worldHeight);
+		this.locationX = location.getX();
+		this.locationY = location.getY();
 	}
 
 	/** 
@@ -161,5 +169,42 @@ public abstract class GameObject
 	
 	public String toString(){
 		return this.getClass().toString() + ";x="+this.locationX+";y="+this.locationY+";vX="+this.velocityX+";vY="+this.velocityY;
+	}
+	
+	public boolean isCloseToEdge(){
+		return isCloseToXEdge() && isCloseToYEdge();
+	}
+	
+	public boolean isCloseToXEdge(){
+		return this.locationX < (this.radius*2) || this.locationX > GameObject.worldWidth - (this.radius*2);
+	}
+	
+	public boolean isCloseToYEdge(){
+		return this.locationY < (this.radius*2) || this.locationY > GameObject.worldHeight - (this.radius*2);
+	}
+	
+	public Point2D getMirrorLocation(){
+		double x, y = 0;
+		Point2D mirrorLoc = (WrappablePoint) this.getLocation().clone();
+		x = this.getLocation().x;
+		y = this.getLocation().y;
+		
+		if(isCloseToXEdge()){
+			if (this.locationX < GameObject.worldWidth/2){
+				x = this.locationX + GameObject.worldWidth;
+			}else{
+				x = this.locationX - GameObject.worldWidth;
+			}
+		}
+		
+		if(isCloseToYEdge()){
+			if (this.locationY < GameObject.worldHeight/2){
+				y = this.locationY + GameObject.worldHeight;
+			}else{
+				y = this.locationY - GameObject.worldHeight;
+			}
+		}
+		
+		return new Point2D.Double(x,y);
 	}
 }

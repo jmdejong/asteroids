@@ -40,11 +40,16 @@ public class Spaceship extends GameObject
 
 	/** Indicates whether the turn left button is pressed. */
 	private boolean left;
+	
+	/** Set when a ship is destroyed. Used to determine the winner after all ships have been destroyed.
+	 *  Obviously, for alive ships this is +Infinity.
+	 * */
+	private double destroyTime = Double.POSITIVE_INFINITY;
 
 	/** Constructs a new spaceship with default values. */
 	public Spaceship ()
 	{
-		this (new Point2D.Double(400.0,400.0), 0, 0, 15, 0, false, 0);
+		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0);
 	}
 
 	/**
@@ -61,7 +66,7 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (Point2D location, double velocityX, double velocityY, int radius, double direction, boolean up, int score)
+	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.direction 		= direction;
@@ -154,10 +159,8 @@ public class Spaceship extends GameObject
 			this.velocityX = Math.max (-10, Math.min (10, this.velocityX + Math.sin (direction) * 0.4));
 			this.velocityY = Math.max (-10, Math.min (10, this.velocityY - Math.cos (direction) * 0.4));
 		}
-
-		// Update location.
-		this.locationX = (800 + this.locationX + this.velocityX) % 800;
-		this.locationY = (800 + this.locationY + this.velocityY) % 800;
+		
+		this.setLocation(new WrappablePoint(this.locationX+this.velocityX,this.locationY+this.velocityY));
 
 		// Decrease speed due to traction.
 		this.velocityX *= 0.99;
@@ -250,7 +253,17 @@ public class Spaceship extends GameObject
 		double direction = (double) json.get(4);
 		boolean isAccelerating = ((long) json.get(5)) == 1;
 		int score = ((Long) json.get(6)).intValue();
-		return new Spaceship(new Point2D.Double(x,y),velocityX, velocityY, 15, direction, isAccelerating, score);
+		return new Spaceship(new WrappablePoint(x,y),velocityX, velocityY, 15, direction, isAccelerating, score);
+	}
+
+	public double getDestroyTime() {
+		return destroyTime;
+	}
+
+	@Override
+	public void destroy(){
+		super.destroy();
+		this.destroyTime = (double) System.currentTimeMillis();
 	}
 	
 }

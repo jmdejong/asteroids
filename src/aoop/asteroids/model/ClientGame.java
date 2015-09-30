@@ -20,6 +20,9 @@ public class ClientGame extends Observable implements Runnable{
 	
 	
 	private Client client;
+	
+	/** if set to true, this Game will not try to send any more input packets until the current round is over.*/
+	public boolean hasLost = false;
 
 	
 	public ClientGame(Client client){
@@ -37,7 +40,7 @@ public class ClientGame extends Observable implements Runnable{
 		for (Spaceship s : this.ships) s.nextStep();
 		
 		//TODO: send player packet depending on player input.
-		if(!this.client.isSpectator){
+		if(!this.client.isSpectator && !this.hasLost){
 			this.client.sendPlayerUpdatePacket(this.spaceshipController);
 		}
 		

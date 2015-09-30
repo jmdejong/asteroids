@@ -15,7 +15,7 @@ public abstract class BaseServerThread extends Thread {
 	}
 	
 	public void run(){
-		System.out.println("Starting server.");
+// 		System.out.println("Starting server.");
 		
 		while(stopServer == false){
 			try {

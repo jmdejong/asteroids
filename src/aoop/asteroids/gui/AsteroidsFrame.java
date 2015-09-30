@@ -61,23 +61,25 @@ public class AsteroidsFrame extends JFrame
 		this.initActions ();
 		
 		this.setTitle ("Asteroids");
-		this.setSize (800, 800);
 		this.setResizable(false);
 		
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
 
-		JMenuBar mb = new JMenuBar ();
-		JMenu m = new JMenu ("Game");
-		mb.add (m);
-		m.add (this.quitAction);
-		m.add (this.restartGameAction);
-		this.setJMenuBar(mb);
+// 		JMenuBar mb = new JMenuBar ();
+// 		JMenu m = new JMenu ("Game");
+// 		mb.add (m);
+// 		m.add (this.quitAction);
+// 		m.add (this.restartGameAction);
+// 		this.setJMenuBar(mb);
 		
 		
 // 		cardLayout = new CardLayout();
 		cards = new CardContainer();
 		
+		
+		
+		this.setSize(cards.getSize());
 		
 		
 		MenuPanel mp = new MenuPanel();

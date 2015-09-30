@@ -26,7 +26,7 @@ public class ServerThread extends BaseServerThread{
 		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
 		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
 		if(PacketType.values().length < raw_packet_type){
-			System.out.println("Unsupported Packet Type Received.");
+// 			System.out.println("Unsupported Packet Type Received.");
 			return;
 		}
 		PacketType packet_type = PacketType.values()[raw_packet_type];
@@ -34,18 +34,18 @@ public class ServerThread extends BaseServerThread{
 		switch(packet_type){
 			case GAMESTATE:
 				//Do nothing. Server should send this; not receive it!
-				System.out.println("Gamestate Packet Received");
+// 				System.out.println("Gamestate Packet Received");
 				break;
 			case SPECTATE_JOIN:
-				System.out.println("Specate Join Packet Received");
+// 				System.out.println("Specate Join Packet Received");
 				server.addSpectatorConnection(packet.getSocketAddress());
 				break;
 			case PLAYER_JOIN:
-				System.out.println("Player Join Packet Received");
+// 				System.out.println("Player Join Packet Received");
 				server.addPlayerConnection(packet.getSocketAddress());
 				break;
 			case PLAYER_UPDATE:
-				System.out.println("Player Update Packet Received");
+// 				System.out.println("Player Update Packet Received");
 				server.updatePlayerShip((JSONArray)packet_data.get("d"), packet.getSocketAddress());
 				break;
 		}

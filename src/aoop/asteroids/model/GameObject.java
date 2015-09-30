@@ -15,7 +15,7 @@ import org.json.simple.JSONArray;
 public abstract class GameObject 
 {
 	public static double worldWidth = 800;
-	public static double worldHeight = 800;
+	public static double worldHeight = 700;
 
 	/** Location on the X axis. */
 	protected double locationX;

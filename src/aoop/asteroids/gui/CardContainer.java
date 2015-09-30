@@ -9,6 +9,8 @@ public class CardContainer extends JPanel{
 	
 	public CardContainer(){
 		
+		
+		this.setSize (800, 700);
 		layout = new CardLayout();
 		this.setLayout(layout);
 		

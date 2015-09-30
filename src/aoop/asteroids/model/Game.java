@@ -118,7 +118,7 @@ public class Game extends Observable implements Runnable
 	
 	public void addSpaceship(){
 		Spaceship s = new Spaceship();
-		System.out.println("adding spaceship.");
+// 		System.out.println("adding spaceship.");
 		
 		this.ships.add(s);
 		s.reinit();

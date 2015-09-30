@@ -53,11 +53,11 @@ public class Server extends Base{
 	
 	public void addSpectatorConnection(SocketAddress address){
 		spectatorConnections.add((InetSocketAddress)address);
-		System.out.println(spectatorConnections);
+// 		System.out.println(spectatorConnections);
 	}
 	public void addPlayerConnection(SocketAddress address){
 		playerConnections.add((InetSocketAddress)address);
-		System.out.println(playerConnections);
+// 		System.out.println(playerConnections);
 		this.game.addSpaceship();
 	}
 	
@@ -67,7 +67,7 @@ public class Server extends Base{
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids());
-		System.out.println("Sending Game State Packet " + gameStatePacket.toJsonString());
+// 		System.out.println("Sending Game State Packet " + gameStatePacket.toJsonString());
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString());
@@ -103,7 +103,7 @@ public class Server extends Base{
 	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
 		InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
 		int index = playerConnections.indexOf(inetSocketAddress);
-		System.out.println(index);
+// 		System.out.println(index);
 		if(index == -1){
 			return;
 		}
@@ -111,7 +111,7 @@ public class Server extends Base{
 		if(playerShip==null){
 			return;
 		}
-		System.out.println(playerShip);
+// 		System.out.println(playerShip);
 		PlayerUpdatePacket.decodePacket(packet_data, playerShip);
 	}
 	

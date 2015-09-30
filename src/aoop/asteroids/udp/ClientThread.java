@@ -23,7 +23,7 @@ public class ClientThread extends BaseServerThread {
 		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
 		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
 		if(PacketType.values().length < raw_packet_type){
-			System.out.println("Unsupported Packet Type Received.");
+// 			System.out.println("Unsupported Packet Type Received.");
 			return;
 		}
 		PacketType packet_type = PacketType.values()[raw_packet_type];

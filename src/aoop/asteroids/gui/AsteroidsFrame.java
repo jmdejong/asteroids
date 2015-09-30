@@ -48,6 +48,7 @@ public class AsteroidsFrame extends JFrame
 	/** The panel in which the game is painted. */
 	private AsteroidsPanel ap;
 	
+// 	private AddressInputPanel aip;
 	/** 
 	 *	Constructs a new Frame, requires a game model.
 	 *
@@ -78,26 +79,30 @@ public class AsteroidsFrame extends JFrame
 		cards = new CardContainer();
 		
 		
-		
 		this.setSize(cards.getSize());
 		
 		
-
 		ap = new AsteroidsPanel ();
 		cards.add(ap, "Game card");
 		
-		AddressInputPanel aip = new AddressInputPanel();
+		final AddressInputPanel aip = new AddressInputPanel();
+		
 		cards.add(aip, "Address input card");
 		
 		MenuPanel mp = new MenuPanel();
 		mp.makeButton("Single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
-			AsteroidsFrame.this.startSinglePlayerGame();
+			Server server = new Server();
+			startGame();
 		}});
 		mp.makeButton("Spectate single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0) {
-				AsteroidsFrame.this.startGame ();
+			startGame();
 		}});
-		mp.makeButton("Multi player", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-				AsteroidsFrame.this.cards.showCard("Address input card");
+		mp.makeButton("Spectate", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+			cards.showCard("Address input card");
+			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+				System.out.println(aip.getAddress());
+				startGame(aip.getAddress());
+			}});
 		}});
 		
 		cards.add(mp, "Menu card");
@@ -124,8 +129,12 @@ public class AsteroidsFrame extends JFrame
 	}
 	
 	public void startGame(){
+		startGame("127.0.0.1");
+	}
+	
+	public void startGame(String address){
 		
-		Client client = new Client("127.0.0.1", Server.UDPPort, false);
+		Client client = new Client(address, Server.UDPPort, false);
 		addKeyListener(client.game.spaceshipController);
 		
 		ap.observeGame(client.game);

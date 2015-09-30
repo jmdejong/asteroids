@@ -49,7 +49,7 @@ public class Spaceship extends GameObject
 	/** Constructs a new spaceship with default values. */
 	public Spaceship ()
 	{
-		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0);
+		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score)
+	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.direction 		= direction;
@@ -76,7 +76,11 @@ public class Spaceship extends GameObject
 		this.right 			= false;
 		this.stepsTilFire 	= 0;
 		this.score			= score;
+		this.destroyed 		= destroyed;
+		this.destroyTime 	= destroyTime;
 	}
+
+
 
 	/** 
 	 *	Resets all parameters to default values, so a new game can be started. 
@@ -95,6 +99,7 @@ public class Spaceship extends GameObject
 		this.destroyed		= false;
 		this.stepsTilFire 	= 0;
 		this.score 			= 0;
+		this.destroyTime 	= Double.POSITIVE_INFINITY;
 	}
 
 	/**
@@ -179,7 +184,7 @@ public class Spaceship extends GameObject
 	 */
 	public Spaceship clone ()
 	{
-		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score);
+		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.isDestroyed(), this.destroyTime);
 	}
 
 	/**
@@ -242,6 +247,7 @@ public class Spaceship extends GameObject
 		result.add(this.direction);
 		result.add(this.isAccelerating() ? 1 : 0);
 		result.add(this.getScore());
+		result.add(this.isDestroyed() ? 1 : 0);
 		return result;
 	}
 	
@@ -253,7 +259,8 @@ public class Spaceship extends GameObject
 		double direction = (double) json.get(4);
 		boolean isAccelerating = ((long) json.get(5)) == 1;
 		int score = ((Long) json.get(6)).intValue();
-		return new Spaceship(new WrappablePoint(x,y),velocityX, velocityY, 15, direction, isAccelerating, score);
+		boolean destroyed = ((long) json.get(7)) == 1;
+		return new Spaceship(new WrappablePoint(x,y),velocityX, velocityY, 15, direction, isAccelerating, score, destroyed, Double.POSITIVE_INFINITY);
 	}
 
 	public double getDestroyTime() {
@@ -262,6 +269,7 @@ public class Spaceship extends GameObject
 
 	@Override
 	public void destroy(){
+		
 		super.destroy();
 		this.destroyTime = (double) System.currentTimeMillis();
 	}

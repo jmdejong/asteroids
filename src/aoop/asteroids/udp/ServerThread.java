@@ -23,6 +23,7 @@ public class ServerThread extends BaseServerThread{
 
 	@Override
 	protected void parsePacket(String packet_string, DatagramPacket packet){
+		System.out.println("parsing packet.");
 		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
 		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
 		if(PacketType.values().length < raw_packet_type){
@@ -43,6 +44,9 @@ public class ServerThread extends BaseServerThread{
 			case PLAYER_JOIN:
 				System.out.println("S: Player Join Packet Received");
 				server.addPlayerConnection(packet.getSocketAddress());
+				break;
+			case SPECTATOR_PING:
+				System.out.println("S: Spectator Ping Packet Received");
 				break;
 			case PLAYER_UPDATE:
 				System.out.println("S: Player Update Packet Received");

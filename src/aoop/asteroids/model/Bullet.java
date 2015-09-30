@@ -32,7 +32,7 @@ public class Bullet extends GameObject
 	 */
 	public Bullet (WrappablePoint location, double velocityX, double velocityY)
 	{
-		this (location, velocityX, velocityY, 45);
+		this (location, velocityX, velocityY, 40);
 	}
 
 	/**
@@ -63,8 +63,7 @@ public class Bullet extends GameObject
 	public void nextStep () 
 	{
 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
-		this.locationX = (800 + this.locationX + this.velocityX) % 800;
-		this.locationY = (800 + this.locationY + this.velocityY) % 800;
+		this.setLocation(new WrappablePoint (this.locationX+this.velocityX,this.locationY+this.velocityY));
 		this.stepsLeft--;
 
 		if (this.stepsLeft < 0)

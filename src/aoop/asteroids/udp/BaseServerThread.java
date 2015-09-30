@@ -12,6 +12,8 @@ public abstract class BaseServerThread extends Thread {
 	public BaseServerThread(String name,int port) throws SocketException{
 		super(name);
 		socket = new DatagramSocket(port);
+		
+		System.out.println(name+" thread started.");
 	}
 	
 	public void run(){

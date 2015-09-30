@@ -10,6 +10,7 @@ import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.model.*;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
+import aoop.asteroids.udp.packets.SpectatorPingPacket;
 
 public class Client extends Base{
 	
@@ -21,6 +22,8 @@ public class Client extends Base{
 	/** if set to true, Client is in Spectator mode, and will not send any input packets.*/
 	public boolean isSpectator = false;
 	
+
+	
 	
 	
 	DatagramSocket sendSocket;
@@ -28,12 +31,13 @@ public class Client extends Base{
 	public Client(String host, int port, boolean isSpectator){
 		super();
 		
+		System.out.println("New Client made.");
+		
 		this.serverAddress = new InetSocketAddress(host, port);
 		
 		try {
 			this.sendSocket = new DatagramSocket(8099);
 		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -46,25 +50,19 @@ public class Client extends Base{
 		try {
 			new ClientThread(this).start();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	private void sendPacket(String packet_string) throws IOException{
-		super.sendPacket(packet_string,serverAddress.getAddress(), serverAddress.getPort(), sendSocket); 
-		byte[] buf = packet_string.getBytes();
-		
-		DatagramPacket packet = new DatagramPacket(buf, buf.length, serverAddress.getAddress(), serverAddress.getPort());
-		sendSocket.send(packet);
-		
+		super.sendPacket(packet_string,serverAddress.getAddress(), serverAddress.getPort(), sendSocket); 	
 	}
 	
 	private void sendPlayerJoinPacket(){
+		System.out.println("sending join packet...");
 		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket();
 		try {
 			this.sendPacket(playerJoinPacket.toJsonString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -75,8 +73,17 @@ public class Client extends Base{
 		try {
 			this.sendPacket(playerUpdatePacket.toJsonString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	public void sendSpectatorPingPacket(){
+		try {
+			this.sendPacket(new SpectatorPingPacket().toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
 }

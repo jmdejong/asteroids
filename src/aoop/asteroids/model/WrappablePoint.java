@@ -26,7 +26,7 @@ public class WrappablePoint extends Point2D.Double {
 	/**
 	 * Sets the location of the WrappablePoint to the new x and y.<br>
 	 * Note that these values are automatically wrapped to fit the range [0..domainWidth)<br>
-	 * As in Java, the `%` operator works towards negative infinity (-3 % 26 == -3 and not 23), we have to add the domain ourselves when working with negative coordinates.<br>
+	 * As in Java, the `%` operator rounds towards 0 (-3 % 26 == -3 and not 23), we have to add the domain ourselves when working with negative coordinates.<br>
 	 * In Java 8, the Math.floorMod function could be used instead of %, but we assume usage of Java 7.
 	 */
 	@Override

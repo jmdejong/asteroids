@@ -40,6 +40,9 @@ public class ClientThread extends BaseServerThread {
 				//Do nothing. Client should send this; not receive it!
 				System.out.println("C: Player Join Packet Received");
 				break;
+			case SPECTATOR_PING:
+				System.out.println("C: Spectator Ping Packet Received");
+				break;
 			case PLAYER_UPDATE:
 				//Do nothing. Client should send this; not receive it!
 				System.out.println("C: Player Update Packet Received");
@@ -53,9 +56,11 @@ public class ClientThread extends BaseServerThread {
 				if(!this.client.isSpectator){
 					this.client.game.hasLost = false; //TODO: better separation of concerns?
 				}
+				this.client.game.freeze();
 				//TODO: More sophisticated round restart logic?
 				break;
 		}
+		
 	}
 
 }

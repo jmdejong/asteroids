@@ -43,15 +43,10 @@ public class AsteroidsFrame extends JFrame
 	/** The game model. */
 	private Game game;
 	
-	
-	private CardLayout cardLayout;
-	
-	private JPanel cards;
+	private CardContainer cards;
 
 	/** The panel in which the game is painted. */
 	private AsteroidsPanel ap;
-
-	private MenuPanel mp;
 	
 	/** 
 	 *	Constructs a new Frame, requires a game model.
@@ -78,15 +73,18 @@ public class AsteroidsFrame extends JFrame
 		m.add (this.restartGameAction);
 		this.setJMenuBar(mb);
 		
-		mp = new MenuPanel();
-		mp.makeButton("Single player", this.startSinglePlayerAction);
-
-		mp.makeButton("Spectate single player", this.startSpectatorAction);
-		ap = new AsteroidsPanel ();
 		
-		cardLayout = new CardLayout();
-		cards = new JPanel(cardLayout);
+// 		cardLayout = new CardLayout();
+		cards = new CardContainer();
+		
+		
+		
+		MenuPanel mp = new MenuPanel();
+		mp.makeButton("Single player", this.startSinglePlayerAction);
+		mp.makeButton("Spectate single player", this.startSpectatorAction);
 		cards.add(mp, "Menu card");
+
+		ap = new AsteroidsPanel ();
 		cards.add(ap, "Game card");
 		
 		
@@ -102,7 +100,7 @@ public class AsteroidsFrame extends JFrame
 	
 	private void showMenu(){
 		
-		cardLayout.show(cards, "Menu card");
+		cards.showCard("Menu card");
 	}
 	
 	public void startSinglePlayerGame(){
@@ -120,7 +118,7 @@ public class AsteroidsFrame extends JFrame
 		
 		ap.observeGame(client.game);
 		
-		cardLayout.show(cards, "Game card");
+		cards.showCard( "Game card");
 		
 
 		this.requestFocusInWindow();

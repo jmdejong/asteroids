@@ -108,7 +108,11 @@ public class Game extends Observable implements Runnable
 	{
 		return this.ships.toArray(new Spaceship[1])[0].clone ();
 	}
-	
+	/** 
+	 *	Returns a clone of the ships set, preserving encapsulation.
+	 *
+	 *	@return a clone of the asteroid set.
+	 */
 	public Collection <Spaceship> getSpaceships(){
 		
 		Collection <Spaceship> c = new ArrayList <> ();
@@ -256,6 +260,8 @@ public class Game extends Observable implements Runnable
 			}
 			
 		}
+		
+		System.out.println("Game Ships:"+this.ships.toString());
 	}
 
 	/**

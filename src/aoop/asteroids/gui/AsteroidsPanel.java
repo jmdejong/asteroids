@@ -133,7 +133,7 @@ public class AsteroidsPanel extends JPanel
 			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX()	,(int) s.getMirrorLocation().getY()	,s.getDirection(),s.isAccelerating());				
 			
 		}
-		System.out.println(this.game.getSpaceships());
+		
 	}
 	
 	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating){

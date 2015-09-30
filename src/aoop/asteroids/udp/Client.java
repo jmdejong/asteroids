@@ -10,6 +10,7 @@ import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.model.*;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
+import aoop.asteroids.udp.packets.SpectatorPingPacket;
 
 public class Client extends Base{
 	
@@ -71,6 +72,14 @@ public class Client extends Base{
 // 		System.out.println("Sending Player Update Packet "+ playerUpdatePacket.toJsonString());
 		try {
 			this.sendPacket(playerUpdatePacket.toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendSpectatorPingPacket(){
+		try {
+			this.sendPacket(new SpectatorPingPacket().toJsonString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

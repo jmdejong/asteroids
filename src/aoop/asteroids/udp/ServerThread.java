@@ -45,6 +45,9 @@ public class ServerThread extends BaseServerThread{
 				System.out.println("S: Player Join Packet Received");
 				server.addPlayerConnection(packet.getSocketAddress());
 				break;
+			case SPECTATOR_PING:
+				System.out.println("S: Spectator Ping Packet Received");
+				break;
 			case PLAYER_UPDATE:
 				System.out.println("S: Player Update Packet Received");
 				server.updatePlayerShip((JSONArray)packet_data.get("d"), packet.getSocketAddress());

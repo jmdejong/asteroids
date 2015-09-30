@@ -24,8 +24,8 @@ public class Server extends Base{
 	
 	public static int UDPPort = 8090;
 	
-	ArrayList<InetSocketAddress> spectatorConnections 	= new ArrayList<InetSocketAddress>();
-	ArrayList<InetSocketAddress> playerConnections		= new ArrayList<InetSocketAddress>();
+	ArrayList<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
+	ArrayList<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
 	
 	Game game;
 	
@@ -55,11 +55,11 @@ public class Server extends Base{
 	}
 	
 	public void addSpectatorConnection(SocketAddress address){
-		spectatorConnections.add((InetSocketAddress)address);
+		spectatorConnections.add(new ClientConnection((InetSocketAddress)address));
 // 		System.out.println(spectatorConnections);
 	}
 	public void addPlayerConnection(SocketAddress address){
-		playerConnections.add((InetSocketAddress)address);
+		playerConnections.add(new ClientConnection((InetSocketAddress)address));
 // 		System.out.println(playerConnections);
 		this.game.addSpaceship();
 	}
@@ -84,7 +84,7 @@ public class Server extends Base{
 			return;
 		}
 		
-		InetSocketAddress connection = playerConnections.get(ship_index);
+		InetSocketAddress connection = playerConnections.get(ship_index).getSocketAddress();
 		
 		PlayerLosePacket playerLosePacket = new PlayerLosePacket();
 		try {
@@ -103,10 +103,10 @@ public class Server extends Base{
 	}
 	
 	private void sendPacketToAll(String packet_string) throws IOException{
-		for(InetSocketAddress address : playerConnections){
+		for(ClientConnection address : playerConnections){
 			super.sendPacket(packet_string, address.getAddress(), Client.UDPPort, sendSocket);
 		}
-		for(InetSocketAddress address : spectatorConnections){
+		for(ClientConnection address : spectatorConnections){
 			super.sendPacket(packet_string, address.getAddress(), Client.UDPPort, sendSocket);
 		}
 	}

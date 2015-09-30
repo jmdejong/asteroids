@@ -47,6 +47,8 @@ public class ClientGame extends Observable implements Runnable{
 		//TODO: send player packet depending on player input.
 		if(!this.client.isSpectator && !this.hasLost){
 			this.client.sendPlayerUpdatePacket(this.spaceshipController);
+		}else{
+			this.client.sendSpectatorPingPacket();
 		}
 		
 		this.setChanged ();

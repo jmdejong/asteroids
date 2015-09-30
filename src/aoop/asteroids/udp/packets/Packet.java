@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 
 public class Packet {
 	public enum PacketType {
-		GAMESTATE, SPECTATE_JOIN, PLAYER_JOIN, PLAYER_UPDATE
+		GAMESTATE, SPECTATE_JOIN, PLAYER_JOIN, PLAYER_UPDATE, PLAYER_LOSE, ROUND_END
 	}
 	
 	private PacketType type;

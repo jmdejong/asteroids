@@ -33,6 +33,8 @@ public class Server extends Base{
 	public Server(){
 		super();
 		
+		
+		
 		try {
 			this.sendSocket = new DatagramSocket(8098);
 		} catch (SocketException e1) {
@@ -121,6 +123,6 @@ public class Server extends Base{
 	
 	public void restartGame(){
 		
-		this.game = new Game(this);
+		//this.game = new Game(this);
 	}
 }

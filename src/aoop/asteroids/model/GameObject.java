@@ -168,7 +168,7 @@ public abstract class GameObject
 	}
 	
 	public String toString(){
-		return this.getClass().toString() + ";x="+this.locationX+";y="+this.locationY+";vX="+this.velocityX+";vY="+this.velocityY;
+		return this.getClass().toString() + "destroyed?"+this.isDestroyed()+";x="+this.locationX+";y="+this.locationY+";vX="+this.velocityX+";vY="+this.velocityY;
 	}
 	
 	public boolean isCloseToEdge(){

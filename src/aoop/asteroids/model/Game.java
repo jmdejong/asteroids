@@ -233,7 +233,7 @@ public class Game extends Observable implements Runnable
 				}
 			}
 			for(Spaceship s : this.ships){
-				if (b.collides (s))
+				if (!s.isDestroyed() && b.collides (s))
 				{ // Collision with playerß -> destroy both objects
 					b.destroy ();
 					s.destroy ();
@@ -247,7 +247,7 @@ public class Game extends Observable implements Runnable
 		for (Asteroid a : this.asteroids)
 		{ // For all asteroids, no cross check with bullets required.
 			for(Spaceship s : this.ships){
-				if (a.collides (s))
+				if (!s.isDestroyed() && a.collides (s))
 				{ // Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();

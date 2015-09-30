@@ -23,6 +23,7 @@ public class ServerThread extends BaseServerThread{
 
 	@Override
 	protected void parsePacket(String packet_string, DatagramPacket packet){
+		System.out.println("parsing packet.");
 		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
 		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
 		if(PacketType.values().length < raw_packet_type){

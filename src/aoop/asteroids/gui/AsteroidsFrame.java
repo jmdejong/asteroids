@@ -58,7 +58,7 @@ public class AsteroidsFrame extends JFrame
 	public AsteroidsFrame (){
 
 		
-		this.initActions ();
+// 		this.initActions ();
 		
 		this.setTitle ("Asteroids");
 		this.setResizable(false);
@@ -82,16 +82,25 @@ public class AsteroidsFrame extends JFrame
 		this.setSize(cards.getSize());
 		
 		
-		MenuPanel mp = new MenuPanel();
-		mp.makeButton("Single player", this.startSinglePlayerAction);
-		mp.makeButton("Spectate single player", this.startSpectatorAction);
-		cards.add(mp, "Menu card");
 
 		ap = new AsteroidsPanel ();
 		cards.add(ap, "Game card");
 		
+		AddressInputPanel aip = new AddressInputPanel();
+		cards.add(aip, "Address input card");
 		
+		MenuPanel mp = new MenuPanel();
+		mp.makeButton("Single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+			AsteroidsFrame.this.startSinglePlayerGame();
+		}});
+		mp.makeButton("Spectate single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0) {
+				AsteroidsFrame.this.startGame ();
+		}});
+		mp.makeButton("Multi player", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+				AsteroidsFrame.this.cards.showCard("Address input card");
+		}});
 		
+		cards.add(mp, "Menu card");
 		
 		this.add(cards);
 		

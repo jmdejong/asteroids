@@ -85,7 +85,7 @@ public class Server extends Base{
 		
 		PlayerLosePacket playerLosePacket = new PlayerLosePacket();
 		try {
-			super.sendPacket(playerLosePacket.toJsonString(), connection, sendSocket);
+			super.sendPacket(playerLosePacket.toJsonString(), connection.getAddress(), Client.UDPPort, sendSocket);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -93,10 +93,10 @@ public class Server extends Base{
 	
 	private void sendPacketToAll(String packet_string) throws IOException{
 		for(InetSocketAddress address : playerConnections){
-			super.sendPacket(packet_string, address, sendSocket);
+			super.sendPacket(packet_string, address.getAddress(), Client.UDPPort, sendSocket);
 		}
 		for(InetSocketAddress address : spectatorConnections){
-			super.sendPacket(packet_string, address, sendSocket);
+			super.sendPacket(packet_string, address.getAddress(), Client.UDPPort, sendSocket);
 		}
 	}
 

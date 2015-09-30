@@ -14,10 +14,10 @@ public class Base {
 		
 	}
 	
-	protected void sendPacket(String packet_string, InetSocketAddress serverAddress, DatagramSocket socket) throws IOException{
+	protected void sendPacket(String packet_string, InetAddress address, int port, DatagramSocket socket) throws IOException{
 		byte[] buf = packet_string.getBytes();
 		
-		DatagramPacket packet = new DatagramPacket(buf, buf.length, serverAddress.getAddress(), serverAddress.getPort());
+		DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
 		socket.send(packet);
 	}
 }

@@ -5,6 +5,7 @@ import aoop.asteroids.udp.packets.GameStatePacket;
 
 import java.awt.Point;
 import java.lang.Runnable;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Observable;
@@ -48,7 +49,7 @@ public class Game extends Observable implements Runnable
 {
 
 	/** The spaceship of the player. */
-	private ArrayList<Spaceship> ships;
+	private List<Spaceship> ships;
 
 	/** List of bullets. */
 	private Collection <Bullet> bullets;
@@ -342,9 +343,9 @@ public class Game extends Observable implements Runnable
 	 * -> If there are still some ships alive, then return those.<br>
 	 * @return
 	 */
-	private ArrayList<Spaceship> getWinners(){
+	private List<Spaceship> getWinners(){
 		double latestDestroyTime = 0;
-		ArrayList<Spaceship> result = new ArrayList<Spaceship>();
+		List<Spaceship> result = new ArrayList<Spaceship>();
 		
 		for(Spaceship s : this.ships){
 			if(s.getDestroyTime() > latestDestroyTime){

@@ -50,7 +50,7 @@ public class Asteroid extends GameObject
 	 */
 	public Collection <Asteroid> getSuccessors ()
 	{
-		ArrayList <Asteroid> list = new ArrayList <> ();
+		Collection <Asteroid> list = new ArrayList <> ();
 		if (radius > 10){
 			list.add (new Asteroid (
 				this.getLocation (),

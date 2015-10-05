@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.List;
 import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
@@ -24,8 +25,8 @@ public class Server extends Base{
 	
 	public static int UDPPort = 8090;
 	
-	ArrayList<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
-	ArrayList<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
+	List<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
+	List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
 	
 	Game game;
 	

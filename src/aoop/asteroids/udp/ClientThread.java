@@ -14,7 +14,7 @@ public class ClientThread extends BaseServerThread {
 	Client client;
 	
 	public ClientThread(Client client) throws SocketException{
-		super("asteroids.udp.ClientThread",Client.UDPPort);
+		super("asteroids.udp.ClientThread",Client.UDPPort, client.sendSocket);
 		this.client = client;
 	}
 

@@ -1,6 +1,7 @@
 package aoop.asteroids.udp;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
@@ -35,11 +36,11 @@ public class Client extends Base{
 		
 		this.serverAddress = new InetSocketAddress(host, port);
 		
-		try {
-			this.sendSocket = new DatagramSocket(8099);
-		} catch (SocketException e1) {
-			e1.printStackTrace();
-		}
+		//try {
+			this.sendSocket = createSocketOnFirstUnusedPort();//new DatagramSocket(Client.UDPPort);
+		//} catch (SocketException e1) {
+		//	e1.printStackTrace();
+		//}
 		
 		this.game = new ClientGame(this);
 		
@@ -53,6 +54,20 @@ public class Client extends Base{
 			e.printStackTrace();
 		}
 	}
+	
+	private DatagramSocket createSocketOnFirstUnusedPort(){
+		int port = Client.UDPPort;
+		while(port-Client.UDPPort < 100){
+			try{
+				return new DatagramSocket(port);
+			}catch(SocketException b){
+				
+			}
+		}
+		return null;
+		
+	}
+	
 	private void sendPacket(String packet_string) throws IOException{
 		super.sendPacket(packet_string,serverAddress.getAddress(), serverAddress.getPort(), sendSocket); 	
 	}
@@ -69,7 +84,7 @@ public class Client extends Base{
 	
 	public void sendPlayerUpdatePacket(SpaceshipController sc){
 		PlayerUpdatePacket playerUpdatePacket = new PlayerUpdatePacket(sc.isUp(), sc.isLeft(), sc.isRight(), sc.isFire());
-// 		System.out.println("Sending Player Update Packet "+ playerUpdatePacket.toJsonString());
+ 		System.out.println("Sending Player Update Packet "+ playerUpdatePacket.toJsonString());
 		try {
 			this.sendPacket(playerUpdatePacket.toJsonString());
 		} catch (IOException e) {

@@ -17,7 +17,7 @@ public class ServerThread extends BaseServerThread{
 	Server server;
 	
 	public ServerThread(Server server) throws SocketException{
-		super("asteroids.udp.ServerThread",Server.UDPPort);
+		super("asteroids.udp.ServerThread",Server.UDPPort, server.sendSocket);
 		this.server = server;
 	}
 

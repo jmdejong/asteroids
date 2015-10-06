@@ -43,4 +43,23 @@ public class ClientConnection {
 	public void setSocketAddress(InetSocketAddress socketAddress) {
 		this.socketAddress = socketAddress;
 	}
+	
+	public String toString(){
+		return this.socketAddress.toString();
+	}
+	
+	
+	public boolean equals(Object b){
+		if(! (b instanceof ClientConnection)){
+			return false;
+		}else{
+			return toString().equals(b.toString());
+		}
+	}
+	
+	@Override
+	public int hashCode(){
+		return this.toString().hashCode();
+		
+	}
 }

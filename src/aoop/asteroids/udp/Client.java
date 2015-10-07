@@ -25,12 +25,13 @@ public class Client extends Base{
 	/** if set to true, Client is in Spectator mode, and will not send any input packets.*/
 	public boolean isSpectator = false;
 	
+	private String name;
 	
 	
 	
 	DatagramSocket sendSocket;
 	
-	public Client(String host, int port, boolean isSpectator){
+	public Client(String host, int port, boolean isSpectator, String name){
 		super();
 		
 		Logging.LOGGER.fine("New Client made.");
@@ -38,6 +39,8 @@ public class Client extends Base{
 		this.serverAddress = new InetSocketAddress(host, port);
 		
 		this.isSpectator = isSpectator;
+		
+		this.name = name;
 		
 		//try {
 			this.sendSocket = createSocketOnFirstUnusedPort();//new DatagramSocket(Client.UDPPort);
@@ -77,7 +80,7 @@ public class Client extends Base{
 	
 	private void sendPlayerJoinPacket(){
 		Logging.LOGGER.fine("sending join packet...");
-		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket();
+		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket(this.name);
 		try {
 			this.sendPacket(playerJoinPacket.toJsonString());
 		} catch (IOException e) {

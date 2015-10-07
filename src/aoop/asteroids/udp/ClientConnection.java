@@ -8,6 +8,7 @@ public class ClientConnection {
 	private long lastPingTime = 0;
 	private long lastPacketId = 0;
 	private boolean disconnected = false;
+	private String name = "";
 
 	public ClientConnection(InetSocketAddress socketAddress) {
 		this.socketAddress = socketAddress;
@@ -55,6 +56,14 @@ public class ClientConnection {
 			this.disconnected = true;
 			System.err.println("Connection is not responding:"+this);
 		}
+	}
+	
+	public void setName(String name){
+		this.name = name;
+	}
+	
+	public String getName(){
+		return this.name;
 	}
 	
 	

@@ -200,7 +200,7 @@ public class AsteroidsPanel extends JPanel
 			Color c0 = new Color((int) s.getColour());
 			Color c = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), 191);
 			g.setColor(c);
-			String score = Integer.toString(s.getScore());
+			String score = s.getName() + ": " + Integer.toString(s.getScore());
 			yPos += fm.getHeight();
 			g.drawString(score, this.getWidth()-fm.stringWidth(score)-5, yPos);
 		}

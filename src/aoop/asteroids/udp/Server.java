@@ -20,6 +20,7 @@ import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessagePacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
+import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 import aoop.asteroids.udp.packets.RoundEndPacket;
 
@@ -78,11 +79,12 @@ public class Server extends Base{
 			return;
 		}
 		
-		//System.out.println("Adding player connection.");
 		addConnection(playerConnections, packetData, packet);
-
- 		//System.out.println(playerConnections);
-		this.game.addSpaceship(!isSinglePlayerMode());
+		
+		String name = PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d"));
+		
+		this.game.addSpaceship(name, !isSinglePlayerMode());
+		
 		if(this.playerConnections.size() == 1){
 			if(isSinglePlayerMode()){
 				sendMessagePacket("Singleplayer Game Started");
@@ -91,7 +93,7 @@ public class Server extends Base{
 				sendMessagePacket("Waiting for another Player");
 			}
 		}else{
-			sendMessagePacket("New Player Connected: "+playerConnections.get(playerConnections.size()-1).toString());
+			sendMessagePacket("New Player Connected: "+name);
 		}
 		
 
@@ -101,6 +103,7 @@ public class Server extends Base{
 		long packetId = ((Long) packetData.get("r"));
 		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
+		c.setName(PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d")));
 		c.setLastPingTime(System.currentTimeMillis());
 		c.updateLastPacketId(packetId);
 		
@@ -216,7 +219,7 @@ public class Server extends Base{
 			c.tagAsDisconnectedIfNotResponding();
 			Logging.LOGGER.fine(c.toDebugString());
 			if(c.isDisconnected()){
-				this.sendMessagePacket("Connection Lost with: "+c.toString());
+				this.sendMessagePacket("Connection Lost with: "+c.getName());
 			}
 		}
 	}

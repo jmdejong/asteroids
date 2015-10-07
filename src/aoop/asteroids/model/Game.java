@@ -107,15 +107,15 @@ public class Game extends Observable implements Runnable
 		}
 	}
 
-	/** 
-	 *	Returns a clone of the spaceship, preserving encapsulation. 
-	 *
-	 *	@return a clone the spaceship.
-	 */
-	public Spaceship getSpaceship ()
-	{
-		return this.ships.toArray(new Spaceship[1])[0].clone ();
-	}
+// 	/** 
+// 	 *	Returns a clone of the spaceship, preserving encapsulation. 
+// 	 *
+// 	 *	@return a clone the spaceship.
+// 	 */
+// 	public Spaceship getSpaceship ()
+// 	{
+// 		return this.ships.toArray(new Spaceship[1])[0].clone ();
+// 	}
 	/** 
 	 *	Returns a clone of the ships set, preserving encapsulation.
 	 *
@@ -128,8 +128,8 @@ public class Game extends Observable implements Runnable
 		return c;
 	}
 	
-	public void addSpaceship(boolean startDestroyed){
-		Spaceship s = new Spaceship();
+	public void addSpaceship(String name, boolean startDestroyed){
+		Spaceship s = new Spaceship(name);
 		
 		this.ships.add(s);
 		s.reinit();

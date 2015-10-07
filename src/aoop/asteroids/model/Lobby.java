@@ -22,8 +22,10 @@ public class Lobby extends Game {
 			if(this.startCountdownTime==0){
 				startCountdownTime = System.currentTimeMillis();
 				List<Spaceship> winners = getWinners();
+				Logging.LOGGER.severe("winners:"+winners);
 				for(Spaceship w : winners){
 					w.increaseScore();
+					Logging.LOGGER.severe("Score: "+w.getScore());
 				}
 				if(this.areAllAsteroidsDestroyed()){
 					server.sendMessagePacket("Congradulations! Level Cleared.");

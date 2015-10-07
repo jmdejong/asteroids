@@ -173,7 +173,7 @@ public class AsteroidsPanel extends JPanel
 		for(int i=0;i<messages.size();i++){
 			GameMessage m = messages.get(i);
 			String str = m.toString();
-			Logging.LOGGER.warning("opacity:"+m.getOpacity());
+			Logging.LOGGER.fine("opacity:"+m.getOpacity());
 			g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 20));
 			g.setColor(new Color(1,1,1,m.getOpacity()));
 			FontMetrics fm = g.getFontMetrics();

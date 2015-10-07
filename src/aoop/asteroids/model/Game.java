@@ -393,7 +393,7 @@ public class Game extends Observable implements Runnable
 				++amount;
 			}
 		}
-		Logging.LOGGER.warning("ships left:"+amount);
+		Logging.LOGGER.fine("ships left:"+amount);
 		return amount == 1;
 	}
 	
@@ -412,7 +412,7 @@ public class Game extends Observable implements Runnable
 		double latestDestroyTime = 0;
 		List<Spaceship> result = new ArrayList<Spaceship>();
 		
-		for(Spaceship s : this.getSpaceships()){
+		for(Spaceship s : this.ships){
 			if(s.getDestroyTime() > latestDestroyTime){
 				result = new ArrayList<Spaceship>();
 				result.add(s);

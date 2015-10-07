@@ -69,7 +69,17 @@ public class AsteroidsFrame extends JFrame
 		cards.add(aip, "Address input card");
 		
 		MenuPanel mp = new MenuPanel();
-		mp.makeButton("Single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+		
+		mp.makeButton("Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+			try {
+				Server server = new Server(true);
+			} catch (SocketException e) {
+				e.printStackTrace();
+			}
+			startGame("localhost", false);
+		}});
+		
+		mp.makeButton("Multiplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
 				Server server = new Server();
 				startGame("localhost", false);

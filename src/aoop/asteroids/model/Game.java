@@ -209,21 +209,30 @@ public class Game extends Observable implements Runnable
 	private void addRandomAsteroid ()
 	{
 		int prob = Game.rng.nextInt (3000);
-		//Point loc, shipLoc = this.ship.getLocation ();
+		WrappablePoint loc;
 		int x, y;
-		//do
-		//{
-			WrappablePoint loc = new WrappablePoint (Game.rng.nextInt (800), Game.rng.nextInt (800));
-			//x = loc.x - shipLoc.x;
-			//y = loc.y - shipLoc.y;
-			
-			//TODO: re-insert collision-preventing for multiple players. And PROPERLY: think about borders.
-		//}
-		//while (Math.sqrt (x * x + y * y) < 50);
+		do
+		{
+			loc = new WrappablePoint (Game.rng.nextInt ((int)GameObject.worldWidth), Game.rng.nextInt ((int)GameObject.worldHeight));
+		}
+		while (!pointDoesNotOverlapAnySpaceships(loc,50));
 
 		if (prob < 1000)		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 40));
 		else if (prob < 2000)	this.asteroids.add (new Asteroid (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 20));
 		else					this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 10));
+	}
+	
+	private boolean pointDoesNotOverlapAnySpaceships(WrappablePoint p, int radius){
+		for(Spaceship s : this.getSpaceships()){
+			double x,y;
+			x = p.getX() - s.locationX;
+			y = p.getY() - s.locationY;
+			
+			if((x*x+y*y) < radius*radius){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/** 

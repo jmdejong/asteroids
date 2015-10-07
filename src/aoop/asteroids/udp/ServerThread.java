@@ -36,7 +36,7 @@ public class ServerThread extends BaseServerThread{
 		
 		//Reject all packets from connectiosn that have been considered disconnected.
 		if(c != null && c.isDisconnected()){
-			return;
+			//return;
 		}
 		
 		//Reject all non-join packets from unknown connections.
@@ -80,8 +80,11 @@ public class ServerThread extends BaseServerThread{
 				//Do nothing. Server should send this; not receive it!
 				System.out.println("S: Round End Packet Received");
 				break;
+			default:
+				System.out.println("S: Unknown packet type!");
+				break;
 		}
-		
+		System.out.println(server.getPlayerConnections());
 		server.tagNonrespondingClients();
 	}
 	

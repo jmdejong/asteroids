@@ -61,8 +61,8 @@ public class Server extends Base{
 		}
 	}
 	
-	public Server(boolean isSinglePlayer){
-		super();
+	public Server(boolean isSinglePlayer) throws SocketException{
+		this();
 		this.isSinglePlayerMode = isSinglePlayer;
 		
 	}
@@ -74,13 +74,14 @@ public class Server extends Base{
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
 		//In single-player mode, reject more than one connection, and also all connections that are not from the current computer.
-		if(this.isSinglePlayerMode && (playerConnections.size() > 0 || packet.getAddress().getHostAddress() != "127.0.0.1")){
+		if(this.isSinglePlayerMode && (playerConnections.size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
 			return;
 		}
 		
+		//System.out.println("Adding player connection.");
 		addConnection(playerConnections, packetData, packet);
  		//System.out.println(playerConnections);
-		this.game.addSpaceship(true);
+		this.game.addSpaceship(!isSinglePlayerMode);
 	}
 	
 	public void addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){

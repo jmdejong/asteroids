@@ -14,11 +14,15 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
-import java.lang.Object;
 import java.util.List;
+import java.awt.FontMetrics;
+import javax.swing.JPanel;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.JPanel;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *	AsteroidsPanel extends JPanel and thus provides the actual graphical 
@@ -73,6 +77,7 @@ public class AsteroidsPanel extends JPanel
 		this.paintBullets (g2);
 		
 		this.paintGameMessages(g2, game.getMessages());
+		this.paintScores(g2);
 
 		g2.setColor (Color.WHITE);
 		Spaceship s = this.game.getSpaceship ();
@@ -133,7 +138,7 @@ public class AsteroidsPanel extends JPanel
 			if(s==null || s.isDestroyed()){
 				continue;
 			}
-			Color c = new Color((int) s.getColour());
+			Color c = new Color(s.getColour());
 
 			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating(), c);
 			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating(), c);
@@ -177,6 +182,25 @@ public class AsteroidsPanel extends JPanel
 			int stringWidth = fm.stringWidth(str);
 			int stringHeight = fm.getHeight();
 			g.drawString(str, ((int)GameObject.worldWidth/2)-(stringWidth/2), ((int)GameObject.worldHeight/2)+(stringHeight*i));
+		}
+	}
+			private void paintScores(Graphics2D g) {
+		FontMetrics fm = g.getFontMetrics();
+		int yPos = 5;
+		List<Spaceship> spaceships = new ArrayList(this.game.getSpaceships());
+		Collections.sort(spaceships, new Comparator<Spaceship>(){public int compare(Spaceship s0, Spaceship s1){
+			return s0.getScore() - s1.getScore();
+		}});
+		Collections.reverse(spaceships);
+		for(Spaceship s : spaceships){
+			if(s==null){
+				continue;
+			}
+			Color c = new Color((int) (s.getColour()<<8)|191, true);
+			g.setColor(c);
+			String score = Integer.toString(s.getScore());
+			yPos += fm.getHeight();
+			g.drawString(score, this.getWidth()-fm.stringWidth(score)-5, yPos);
 		}
 	}
 }

@@ -72,13 +72,7 @@ public class AsteroidsPanel extends JPanel
 		this.paintAsteroids (g2);
 		this.paintBullets (g2);
 		this.paintScores(g2);
-
-		g2.setColor (Color.WHITE);
-		Spaceship s = this.game.getSpaceship ();
-		if(s==null){
-			return;
-		}
-		g2.drawString (String.valueOf (s.getScore ()), 20, 20);
+		
 	}
 
 	/**
@@ -164,7 +158,7 @@ public class AsteroidsPanel extends JPanel
 		p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
 		p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
 		g.setColor(Color.yellow);
-				g.fill(p);
+		g.fill(p);
 	}
 
 	private void paintScores(Graphics2D g) {
@@ -179,7 +173,8 @@ public class AsteroidsPanel extends JPanel
 			if(s==null){
 				continue;
 			}
-			Color c = new Color((int) (s.getColour()<<8)|191, true);
+			Color c0 = new Color((int) s.getColour());
+			Color c = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), 191);
 			g.setColor(c);
 			String score = Integer.toString(s.getScore());
 			yPos += fm.getHeight();

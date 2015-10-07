@@ -173,7 +173,7 @@ public class Game extends Observable implements Runnable
 			if (s.isFiring () && !s.isDestroyed())
 			{
 				double direction = s.getDirection ();
-				this.bullets.add (new Bullet(s.getLocation (), s.getVelocityX () + Math.sin (direction) * 15, s.getVelocityY () - Math.cos (direction) * 15));
+				this.bullets.add (new Bullet(s.getLocation (), s.getVelocityX () + Math.sin (direction) * 15, s.getVelocityY () - Math.cos (direction) * 15, s));
 				s.setFired ();
 			}
 		}
@@ -255,6 +255,12 @@ public class Game extends Observable implements Runnable
 				{ // Collision with playerß -> destroy both objects
 					b.destroy ();
 					s.destroy ();
+					
+					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
+					if(b.getShooter() != null && b.getShooter() != s){
+						b.getShooter().increaseScore();
+					}
+					
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
@@ -334,6 +340,13 @@ public class Game extends Observable implements Runnable
 	
 	private boolean areAllAsteroidsDestroyed(){
 		
+		if(!this.areAllShipsDestroyed()){
+			for(Spaceship s: ships){
+				s.increaseScore();
+				s.destroy();
+			}
+		}
+		
 		/*for(Asteroid a : this.asteroids){
 			if (!a.isDestroyed()){
 				return false;
@@ -345,7 +358,7 @@ public class Game extends Observable implements Runnable
 	}
 	
 	protected boolean isGameOver(){
-		return this.areAllShipsDestroyed() ;//|| this.areAllAsteroidsDestroyed();
+		return this.areAllShipsDestroyed() || this.areAllAsteroidsDestroyed();
 	}
 	
 	/**

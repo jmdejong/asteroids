@@ -85,7 +85,7 @@ public class ServerThread extends BaseServerThread{
 				System.out.println("S: Unknown packet type!");
 				break;
 		}
-		System.out.println(server.getPlayerConnections());
+		//System.out.println(server.getPlayerConnections());
 		server.tagNonrespondingClients();
 	}
 	

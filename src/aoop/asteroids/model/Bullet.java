@@ -21,6 +21,7 @@ public class Bullet extends GameObject
 	 *	value drops below 0, the bullet is removed from the game model.
 	 */
 	private int stepsLeft;
+	private Spaceship shooter;
 	
 	/**
 	 *	Constructs a new bullet using the given location and velocity parame-
@@ -30,9 +31,9 @@ public class Bullet extends GameObject
 	 *	@param velocityX velocity of the bullet as projected on the X-axis.
 	 *	@param velocityY velocity of the bullet as projected on the Y-axis.
 	 */
-	public Bullet (WrappablePoint location, double velocityX, double velocityY)
+	public Bullet (WrappablePoint location, double velocityX, double velocityY, Spaceship shooter)
 	{
-		this (location, velocityX, velocityY, 40);
+		this (location, velocityX, velocityY, 40, shooter);
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class Bullet extends GameObject
      *
      *	@see #clone()
      */
-	private Bullet (WrappablePoint location, double velocityX, double velocityY, int stepsLeft)
+	private Bullet (WrappablePoint location, double velocityX, double velocityY, int stepsLeft, Spaceship shooter)
 	{
 		super (location, velocityX, velocityY, 0);
 		this.stepsLeft = stepsLeft;
@@ -73,7 +74,7 @@ public class Bullet extends GameObject
 	/** Clones the bullet into an exact copy. */
 	public Bullet clone ()
 	{
-		return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.stepsLeft);
+		return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.stepsLeft, this.shooter);
 	}
 	
 	public static Bullet fromJSON(JSONArray json){
@@ -81,7 +82,10 @@ public class Bullet extends GameObject
 		double y = (double) json.get(1);
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
-		return new Bullet(new WrappablePoint(x,y),velocityX, velocityY);
+		return new Bullet(new WrappablePoint(x,y),velocityX, velocityY, null); //Client is not interested in the shooter.
 	}
-
+	
+	public Spaceship getShooter(){
+		return this.shooter;
+	}
 }

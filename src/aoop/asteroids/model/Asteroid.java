@@ -38,8 +38,9 @@ public class Asteroid extends GameObject
 	public void nextStep () 
 	{
 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
-		this.locationX = (800 + this.locationX + this.velocityX) % 800;
-		this.locationY = (800 + this.locationY + this.velocityY) % 800;
+		//this.locationX = (800 + this.locationX + this.velocityX) % 800;
+		//this.locationY = (800 + this.locationY + this.velocityY) % 800;
+		this.setLocation(new WrappablePoint(this.locationX+this.velocityX,this.locationY+this.velocityY));
 	}
 
 	/**

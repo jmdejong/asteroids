@@ -39,7 +39,7 @@ public class GameStatePacket extends Packet {
 	}
 	
 	public static ClientGame decodePacket(JSONArray data, ClientGame currentGameState){
-		Logging.LOGGER.severe(data.toString());
+		
 		JSONArray jsonSpaceships = (JSONArray) data.get(0);
 		JSONArray jsonBullets = (JSONArray) data.get(1);
 		JSONArray jsonAsteroids = (JSONArray) data.get(2);

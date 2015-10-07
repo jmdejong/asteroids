@@ -24,7 +24,10 @@ public class Lobby extends Game {
 				if(this.asteroidsLimit != 0){
 					List<Spaceship> winners = getWinners();
 					for(Spaceship w : winners){
-						w.increaseScore();
+						if(!server.isSinglePlayerMode() || !w.isDestroyed()){
+							w.increaseScore();
+						}
+						
 					}
 				}
 				

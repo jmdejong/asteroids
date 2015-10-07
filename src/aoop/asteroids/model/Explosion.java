@@ -4,21 +4,24 @@ import org.json.simple.JSONArray;
 
 public class Explosion extends GameObject {
 	
-	public static int radius = 20;
+	//public static int radius = 20;
 	public static int particleAmount = 50;
 	public static int maxTimeUntilFadeout = 2000;
 	
 	
 	private int seed = 0;
+	private int color;
 	private long creationTime;
 	
-	public Explosion(WrappablePoint location, int seed){
-		this(location, seed, System.currentTimeMillis());
+	
+	public Explosion(WrappablePoint location, int seed, int radius, int color){
+		this(location, seed, radius, color, System.currentTimeMillis());
 	}
 	
-	public Explosion(WrappablePoint location, int seed, long creationTime){
-		super(location, 0,0,Explosion.radius);
+	public Explosion(WrappablePoint location, int seed, int radius, int color, long creationTime){
+		super(location, 0,0,radius);
 		this.setSeed(seed);
+		this.setColor(color);
 		this.creationTime = creationTime;
 	}
 
@@ -39,7 +42,10 @@ public class Explosion extends GameObject {
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
 		result.add(this.getSeed());
+		result.add(this.radius);
+		result.add(this.getColor());
 		result.add(this.creationTime);
+		
 		return result;
 	}
 	
@@ -49,11 +55,22 @@ public class Explosion extends GameObject {
 		//double velocityX = (double) json.get(2);
 		//double velocityY = (double) json.get(3);
 		int seed = ((Long) json.get(4)).intValue();
-		long creationTime = ((Long) json.get(5));
-		return new Explosion(new WrappablePoint(x,y), seed, creationTime); //Client is not interested in the shooter.
+		int radius = ((Long) json.get(5)).intValue();
+		int color = ((Long) json.get(6)).intValue();
+		long creationTime = ((Long) json.get(7));
+		
+		return new Explosion(new WrappablePoint(x,y), seed, radius, color, creationTime); //Client is not interested in the shooter.
 	}
 	
 	public boolean isDestroyed(){
 		return this.getTime() > Explosion.maxTimeUntilFadeout;
+	}
+
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
 	}
 }

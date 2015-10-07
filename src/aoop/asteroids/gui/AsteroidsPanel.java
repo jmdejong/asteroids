@@ -10,6 +10,7 @@ import aoop.asteroids.model.GameMessage;
 import aoop.asteroids.model.GameObject;
 import aoop.asteroids.model.Spaceship;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -260,15 +261,18 @@ public class AsteroidsPanel extends JPanel
 	        if(alpha > 255){
 	        	alpha = 0;
 	        }
-	        
-	        Color c = new Color(255,255,255,alpha);
+	        Color oc = new Color(e.getColor());
+	        Logging.LOGGER.severe(oc.toString());
+	        Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
+	        Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
 
 	        finalx = (int) e.getLocation().x + x;
 	        finaly = (int)e.getLocation().y + y;
 	        
 	        
-	        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, new Color(0,0,0,0)}, CycleMethod.NO_CYCLE);
+	        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, endc}, CycleMethod.NO_CYCLE);
 			g.setPaint(roundGradientPaint);
+			
 			
 			ell.setFrame (finalx - radius, finaly - radius, 2 * radius, 2 * radius);
 			g.fill(ell);

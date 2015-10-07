@@ -5,6 +5,7 @@ import aoop.asteroids.udp.ClientConnection;
 import aoop.asteroids.udp.Server;
 import aoop.asteroids.udp.packets.GameStatePacket;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.lang.Runnable;
 import java.util.List;
@@ -264,7 +265,7 @@ public class Game extends Observable implements Runnable
 				{ // Collision -> destroy both objects.
 					b.destroy ();
 					a.destroy ();
-					this.explosions.add(new Explosion(new WrappablePoint(a.locationX, a.locationY), a.hashCode()+b.hashCode()));
+					this.explosions.add(new Explosion(new WrappablePoint(a.locationX, a.locationY), 3*a.hashCode()+5*b.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
 				}
 			}
 			for(Spaceship s : this.ships){
@@ -279,7 +280,7 @@ public class Game extends Observable implements Runnable
 					
 					b.destroy ();
 					s.destroy ();
-					
+					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*b.hashCode(), s.getRadius(), s.getColour()));
 
 					
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
@@ -296,6 +297,10 @@ public class Game extends Observable implements Runnable
 				{ // Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();
+					this.explosions.add(new Explosion(new WrappablePoint(a.locationX, a.locationY), 3*a.hashCode()+5*s.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
+					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*a.hashCode(), s.getRadius(), s.getColour()));
+
+					
 					server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}

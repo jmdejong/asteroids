@@ -42,7 +42,7 @@ public class Spaceship extends GameObject
 	/** Indicates whether the turn left button is pressed. */
 	private boolean left;
 	
-	private long colour;
+	private int colour;
 	
 	/** Set when a ship is destroyed. Used to determine the winner after all ships have been destroyed.
 	 *  Obviously, for alive ships this is +Infinity.
@@ -69,7 +69,7 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, long colour)
+	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, int colour)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.direction 		= direction;
@@ -265,7 +265,7 @@ public class Spaceship extends GameObject
 		boolean isAccelerating = ((long) json.get(5)) == 1;
 		int score = ((Long) json.get(6)).intValue();
 		boolean destroyed = ((long) json.get(7)) == 1;
-		long colour = (long) json.get(8);
+		int colour = ((Long) json.get(8)).intValue();
 		return new Spaceship(new WrappablePoint(x,y),velocityX, velocityY, 15, direction, isAccelerating, score, destroyed, Double.POSITIVE_INFINITY, colour);
 	}
 
@@ -280,11 +280,11 @@ public class Spaceship extends GameObject
 		this.destroyTime = (double) System.currentTimeMillis();
 	}
 
-	public long getColour() {
+	public int getColour() {
 		return colour;
 	}
 
-	public void setColour(long colour) {
+	public void setColour(int colour) {
 		this.colour = colour;
 	}
 	

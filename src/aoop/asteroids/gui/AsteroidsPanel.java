@@ -11,7 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
-import java.lang.Object;
+import java.awt.FontMetrics;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JPanel;
@@ -67,6 +67,7 @@ public class AsteroidsPanel extends JPanel
 		this.paintSpaceships (g2);
 		this.paintAsteroids (g2);
 		this.paintBullets (g2);
+		this.paintScores(g2);
 
 		g2.setColor (Color.WHITE);
 		Spaceship s = this.game.getSpaceship ();
@@ -126,7 +127,7 @@ public class AsteroidsPanel extends JPanel
 			if(s==null || s.isDestroyed()){
 				continue;
 			}
-			Color c = new Color((int) s.getColour());
+			Color c = new Color(s.getColour());
 
 			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating(), c);
 			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating(), c);
@@ -161,4 +162,19 @@ public class AsteroidsPanel extends JPanel
 				g.fill(p);
 	}
 
+	private void paintScores(Graphics2D g) {
+		FontMetrics fm = g.getFontMetrics();
+		int yPos = 5;
+		List spaceships = this.game.getSpaceships();
+		for(Spaceship s : spaceships){
+			if(s==null){
+				continue;
+			}
+			Color c = new Color((int) s.getColour());
+			g.setColor(c);
+			String score = Integer.toString(s.getScore());
+			yPos += fm.getHeight();
+			g.drawString(score, this.getWidth()-fm.stringWidth(score)-5, yPos);
+		}
+	}
 }

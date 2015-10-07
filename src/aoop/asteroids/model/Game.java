@@ -1,5 +1,6 @@
 package aoop.asteroids.model;
 
+import aoop.asteroids.Logging;
 import aoop.asteroids.udp.ClientConnection;
 import aoop.asteroids.udp.Server;
 import aoop.asteroids.udp.packets.GameStatePacket;
@@ -62,7 +63,7 @@ public class Game extends Observable implements Runnable
 	private static Random rng;
 
 	/** Game tick counter for spawning random asteroids. */
-	private int cycleCounter;
+	private int numberOfSpawnedAsteroids;
 
 	/** Asteroid limit. */
 	private int asteroidsLimit;
@@ -80,25 +81,30 @@ public class Game extends Observable implements Runnable
 	private boolean aborted;
 
 	/** Initializes a new game from scratch. */
-	public Game (Server server)
+	public Game (Server server, int roundNumber)
 	{
 		Game.rng = new Random ();
 		//this.ship = new Spaceship ();
-		this.initGameData ();
+		this.initGameData (roundNumber);
 		//this.cg = cg;
 		this.server = server;
 	}
 
 	/** Sets all game data to hold the values of a new game. */
-	public void initGameData ()
+	public void initGameData (int roundNumber)
 	{
 		this.aborted = false;
-		this.cycleCounter = 0;
-		this.asteroidsLimit = 7;
+		this.numberOfSpawnedAsteroids = 0;
+		this.asteroidsLimit = roundNumber;
+		Logging.LOGGER.warning("round number:"+roundNumber);
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();
 		this.ships = new ArrayList<> ();
 		//this.ship.reinit ();
+		
+		while(asteroids.size() < asteroidsLimit){
+			this.addRandomAsteroid ();
+		}
 	}
 
 	/** 
@@ -185,14 +191,15 @@ public class Game extends Observable implements Runnable
 		
 		this.destroyAllShipsOfDisconnectedPlayers();
 
-		if (	   this.cycleCounter == 0 
-				&& this.asteroids.size () < this.asteroidsLimit 
+		/*if (	   this.numberOfSpawnedAsteroids == 0 
+				&& this.numberOfSpawnedAsteroids < this.asteroidsLimit 
 				&& !this.ships.isEmpty() 
 				&& !this.areAllShipsDestroyed() ) {
 			this.addRandomAsteroid ();
-		}
-		this.cycleCounter++;
-		this.cycleCounter %= 200;
+			this.numberOfSpawnedAsteroids++;
+		}*/
+		
+		//this.cycleCounter %= 200;
 		
 		server.sendGameStatePacket();
 		

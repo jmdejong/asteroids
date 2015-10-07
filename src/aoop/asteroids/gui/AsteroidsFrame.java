@@ -147,7 +147,7 @@ public class AsteroidsFrame extends JFrame
 			System.err.println ("Could not sleep before initialing a new game.");
 			e.printStackTrace ();
 		}
-		this.game.initGameData ();
+		this.game.initGameData (0);
 	}
 	
 }

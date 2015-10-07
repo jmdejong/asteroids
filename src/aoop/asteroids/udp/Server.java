@@ -37,36 +37,34 @@ public class Server extends Base{
 	private List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
 	
 	private boolean isSinglePlayerMode = false;
+	private int roundNumber = 0;
 	
 	Game game;
 	
 	DatagramSocket sendSocket;
 	
-	public Server() throws SocketException{
+	
+	public Server(boolean isSinglePlayer) throws SocketException{
 		super();
 		
-		
-		
-		
 		this.sendSocket = new DatagramSocket(Server.UDPPort);
-		
-		
-		this.game = new Lobby(this);
-		Thread t = new Thread (game);
-		t.start();
-		
-		
+
 		try {
 			new ServerThread(this).start();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
+		this.isSinglePlayerMode = isSinglePlayer;
+		if(this.isSinglePlayerMode){
+			++roundNumber;
+		}
+		startNextGame();
 	}
 	
-	public Server(boolean isSinglePlayer) throws SocketException{
-		this();
-		this.isSinglePlayerMode = isSinglePlayer;
-		
+	public void startNextGame(){
+		this.game = new Lobby(this,roundNumber);
+		Thread t = new Thread (game);
+		t.start();
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
@@ -187,9 +185,10 @@ public class Server extends Base{
 	}
 	
 	public void restartGame(){
+		++roundNumber;
 		sendRoundOverPacket();
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
-		this.game = new Lobby(this); //TODO: Rename. Also, handle single-player mode?
+		this.game = new Lobby(this, roundNumber); //TODO: Rename Lobby
 		for(int i=this.playerConnections.size()-1;i>=0;i--){
 			ClientConnection c = playerConnections.get(i);
 			if(c.isDisconnected()){

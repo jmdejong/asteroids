@@ -37,7 +37,7 @@ public class Asteroids {
 		} else {
 			if (args[0] == "server"){
 				try {
-					new Server();
+					new Server(false);
 				} catch (SocketException e){
 					e.printStackTrace();
 				}

@@ -1,5 +1,6 @@
 package aoop.asteroids.udp;
 
+import aoop.asteroids.Logging;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -62,13 +63,11 @@ public class Server extends Base{
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		addConnection(spectatorConnections, packetData, packet);
-// 		System.out.println(spectatorConnections);
 	}
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 
 		
 		addConnection(playerConnections, packetData, packet);
- 		//System.out.println(playerConnections);
 		this.game.addSpaceship();
 	}
 	
@@ -88,7 +87,6 @@ public class Server extends Base{
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids());
-// 		System.out.println("Sending Game State Packet " + gameStatePacket.toJsonString());
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString());
@@ -130,7 +128,7 @@ public class Server extends Base{
 	}
 
 	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
-		System.out.println(socketAddress);
+		Logging.LOGGER.fine(socketAddress.toString());
 		int index = getPlayerConnections().indexOf(new ClientConnection((InetSocketAddress)socketAddress));
 		if(index == -1){
 			return;
@@ -139,7 +137,7 @@ public class Server extends Base{
 		if(playerShip==null){
 			return;
 		}
- 		System.out.println(playerShip);
+ 		Logging.LOGGER.fine(playerShip.toString());
 		PlayerUpdatePacket.decodePacket(packet_data, playerShip);
 	}
 	
@@ -169,7 +167,7 @@ public class Server extends Base{
 		
 		for(ClientConnection c : getPlayerConnections()){
 			c.tagAsDisconnectedIfNotResponding();
-			System.err.println(c.toDebugString());
+			Logging.LOGGER.fine(c.toDebugString());
 		}
 	}
 	

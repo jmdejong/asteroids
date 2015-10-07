@@ -1,5 +1,7 @@
 package aoop.asteroids.gui;
 
+
+import aoop.asteroids.Logging;
 import aoop.asteroids.Asteroids;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
@@ -80,15 +82,15 @@ public class AsteroidsFrame extends JFrame
 		mp.makeButton("Join", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
 			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
-				System.out.println(aip.getAddress());
+				Logging.LOGGER.fine(aip.getAddress());
 				startGame(aip.getAddress(), false);
 			}});
 		}});
 		mp.makeButton("Spectate", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
 			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
-				System.out.println(aip.getAddress());
-				startGame(aip.getAddress(), false);
+				Logging.LOGGER.fine(aip.getAddress());
+				startGame(aip.getAddress(), true);
 			}});
 		}});
 		

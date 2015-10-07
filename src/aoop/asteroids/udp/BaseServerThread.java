@@ -1,5 +1,6 @@
 package aoop.asteroids.udp;
 
+import aoop.asteroids.Logging;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -13,11 +14,10 @@ public abstract class BaseServerThread extends Thread {
 		super(name);
 		this.socket = socket;//new DatagramSocket(port);
 		
-		System.out.println(name+" thread started.");
+		Logging.LOGGER.fine(name+" thread started.");
 	}
 	
 	public void run(){
-// 		System.out.println("Starting server.");
 		
 		while(stopServer == false){
 			try {
@@ -26,9 +26,7 @@ public abstract class BaseServerThread extends Thread {
 				socket.receive(packet);
 				
 				//Code below is run as soon as a packet is received.
-				//System.out.println(new String(buf));
 				String packet_string = new String(buf).split("\0")[0];
-				//System.out.print(str);
 
 				
 				parsePacket(packet_string, packet);

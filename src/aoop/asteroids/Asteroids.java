@@ -1,6 +1,7 @@
 package aoop.asteroids;
 
 
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -22,19 +23,24 @@ import java.net.SocketException;
  *	@author Yannick Stoffers
  */
 public class Asteroids {
-
+	
 	/** 
 	 *	Main function.
 	 *
 	 *	@param args input arguments.
 	 */
+	
 	public static void main (String [] args)	{
 		
 		if (args.length == 0){
 			AsteroidsFrame frame = new AsteroidsFrame ();
 		} else {
 			if (args[0] == "server"){
-				new Server();
+				try {
+					new Server();
+				} catch (SocketException e){
+					e.printStackTrace();
+				}
 			} else if (args[0] == "client"){
 				if (args.length == 1){
 					(new AsteroidsFrame()).startGame("localhost", false);

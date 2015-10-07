@@ -1,5 +1,6 @@
 package aoop.asteroids.udp.packets;
 
+import aoop.asteroids.Logging;
 import org.json.simple.JSONArray;
 
 import aoop.asteroids.model.ClientGame;
@@ -24,7 +25,6 @@ public class PlayerUpdatePacket extends Packet {
 		influencedShip.setRight(right);
 		influencedShip.setIsFiring(fire);
 		
-		//System.out.println("up:"+up+" left:"+left+" right:"+right+" fire:"+fire);
 		
 		return influencedShip;
 	}

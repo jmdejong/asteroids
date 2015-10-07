@@ -17,7 +17,6 @@ public class Base {
 	protected void sendPacket(String packet_string, InetAddress address, int port, DatagramSocket socket) throws IOException{
 		byte[] buf = packet_string.getBytes();
 		
-		//System.out.println("Sending packet to"+address.toString()+":"+port);
 		
 		DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
 		socket.send(packet);

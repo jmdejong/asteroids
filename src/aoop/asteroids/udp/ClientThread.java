@@ -1,5 +1,6 @@
 package aoop.asteroids.udp;
 
+import aoop.asteroids.Logging;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 
@@ -23,36 +24,35 @@ public class ClientThread extends BaseServerThread {
 		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
 		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
 		if(PacketType.values().length < raw_packet_type){
-// 			System.out.println("Unsupported Packet Type Received.");
 			return;
 		}
 		PacketType packet_type = PacketType.values()[raw_packet_type];
 		switch(packet_type){
 			case GAMESTATE:
-				System.out.println("C: Gamestate Packet Received");
+				Logging.LOGGER.fine("C: Gamestate Packet Received");
 				GameStatePacket.decodePacket((JSONArray) packet_data.get("d"), client.game);
 				break;
 			case SPECTATE_JOIN:
 				//Do nothing. Client should send this; not receive it!
-				System.out.println("C: Specate Join Packet Received");
+				Logging.LOGGER.fine("C: Specate Join Packet Received");
 				break;
 			case PLAYER_JOIN:
 				//Do nothing. Client should send this; not receive it!
-				System.out.println("C: Player Join Packet Received");
+				Logging.LOGGER.fine("C: Player Join Packet Received");
 				break;
 			case SPECTATOR_PING:
-				System.out.println("C: Spectator Ping Packet Received");
+				Logging.LOGGER.fine("C: Spectator Ping Packet Received");
 				break;
 			case PLAYER_UPDATE:
 				//Do nothing. Client should send this; not receive it!
-				System.out.println("C: Player Update Packet Received");
+				Logging.LOGGER.fine("C: Player Update Packet Received");
 				break;
 			case PLAYER_LOSE:
-				System.out.println("C: Player Lose Packet Received");
+				Logging.LOGGER.fine("C: Player Lose Packet Received");
 				this.client.game.hasLost = true; //TODO: better separation of concerns?
 				break;
 			case ROUND_END:
-				System.out.println("C: Round End Packet Received");
+				Logging.LOGGER.fine("C: Round End Packet Received");
 				if(!this.client.isSpectator){
 					this.client.game.hasLost = false; //TODO: better separation of concerns?
 				}

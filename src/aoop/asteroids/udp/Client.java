@@ -1,11 +1,13 @@
 package aoop.asteroids.udp;
 
+import aoop.asteroids.Logging;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.logging.Logger;
 
 import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.model.*;
@@ -23,7 +25,6 @@ public class Client extends Base{
 	/** if set to true, Client is in Spectator mode, and will not send any input packets.*/
 	public boolean isSpectator = false;
 	
-
 	
 	
 	
@@ -32,7 +33,7 @@ public class Client extends Base{
 	public Client(String host, int port, boolean isSpectator){
 		super();
 		
-		System.out.println("New Client made.");
+		Logging.LOGGER.fine("New Client made.");
 		
 		this.serverAddress = new InetSocketAddress(host, port);
 		
@@ -75,7 +76,7 @@ public class Client extends Base{
 	}
 	
 	private void sendPlayerJoinPacket(){
-		System.out.println("sending join packet...");
+		Logging.LOGGER.fine("sending join packet...");
 		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket();
 		try {
 			this.sendPacket(playerJoinPacket.toJsonString());
@@ -86,7 +87,6 @@ public class Client extends Base{
 	
 	public void sendPlayerUpdatePacket(SpaceshipController sc){
 		PlayerUpdatePacket playerUpdatePacket = new PlayerUpdatePacket(sc.isUp(), sc.isLeft(), sc.isRight(), sc.isFire());
- 		//System.out.println("Sending Player Update Packet "+ playerUpdatePacket.toJsonString());
 		try {
 			this.sendPacket(playerUpdatePacket.toJsonString());
 		} catch (IOException e) {

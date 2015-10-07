@@ -1,6 +1,7 @@
 package aoop.asteroids;
 
 
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -22,12 +23,13 @@ import java.net.SocketException;
  *	@author Yannick Stoffers
  */
 public class Asteroids {
-
+	
 	/** 
 	 *	Main function.
 	 *
 	 *	@param args input arguments.
 	 */
+	
 	public static void main (String [] args)	{
 		
 		if (args.length == 0){
@@ -36,7 +38,7 @@ public class Asteroids {
 			if (args[0] == "server"){
 				try {
 					new Server();
-				} catch (SocketException e) {
+				} catch (SocketException e){
 					e.printStackTrace();
 				}
 			} else if (args[0] == "client"){

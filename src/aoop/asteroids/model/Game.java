@@ -124,7 +124,6 @@ public class Game extends Observable implements Runnable
 	
 	public void addSpaceship(boolean startDestroyed){
 		Spaceship s = new Spaceship();
-// 		System.out.println("adding spaceship.");
 		
 		this.ships.add(s);
 		s.reinit();
@@ -191,12 +190,10 @@ public class Game extends Observable implements Runnable
 		this.cycleCounter %= 200;
 		
 		server.sendGameStatePacket();
-		//System.out.println(testpacket.toJsonString());
 		
 		//ClientGame cg = new ClientGame();
 		//JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
 		//GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
-		//System.out.println(cg);
 
 		this.setChanged ();
 		this.notifyObservers ();
@@ -278,7 +275,6 @@ public class Game extends Observable implements Runnable
 			
 		}
 		
-		//System.out.println("Game Ships:"+this.ships.toString());
 	}
 
 	/**

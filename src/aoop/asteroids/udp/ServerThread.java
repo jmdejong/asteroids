@@ -1,5 +1,6 @@
 package aoop.asteroids.udp;
 
+import aoop.asteroids.Logging;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -23,11 +24,11 @@ public class ServerThread extends BaseServerThread{
 
 	@Override
 	protected void parsePacket(String packet_string, DatagramPacket packet){
-		System.out.println("parsing packet.");
+		Logging.LOGGER.fine("parsing packet.");
 		JSONObject packetData = (JSONObject) JSONValue.parse(packet_string);
 		int rawPacketType = ((Long) packetData.get("t")).intValue();
 		if(PacketType.values().length < rawPacketType){
-			System.out.println("Unsupported Packet Type Received.");
+			Logging.LOGGER.fine("Unsupported Packet Type Received.");
 			return;
 		}
 		PacketType packet_type = PacketType.values()[rawPacketType];
@@ -47,25 +48,25 @@ public class ServerThread extends BaseServerThread{
 		switch(packet_type){
 			case GAMESTATE:
 				//Do nothing. Server should send this; not receive it!
-				System.out.println("S: Gamestate Packet Received");
+				Logging.LOGGER.fine("S: Gamestate Packet Received");
 				break;
 			case SPECTATE_JOIN:
-				System.out.println("S: Specate Join Packet Received");
+				Logging.LOGGER.fine("S: Specate Join Packet Received");
 				server.addSpectatorConnection(packetData, packet);
 				break;
 			case PLAYER_JOIN:
-				System.out.println("S: Player Join Packet Received");
+				Logging.LOGGER.fine("S: Player Join Packet Received");
 				server.addPlayerConnection(packetData, packet);
 				break;
 			case SPECTATOR_PING:
-				System.out.println("S: Spectator Ping Packet Received");
+				Logging.LOGGER.fine("S: Spectator Ping Packet Received");
 				if(!server.checkIfLatestPacket(packetData, packet)){
 					return;
 				}
 				server.updateConnectionData(packetData, packet);
 				break;
 			case PLAYER_UPDATE:
-				System.out.println("S: Player Update Packet Received");
+				Logging.LOGGER.fine("S: Player Update Packet Received");
 				if(!server.checkIfLatestPacket(packetData, packet)){
 					return;
 				}
@@ -74,11 +75,11 @@ public class ServerThread extends BaseServerThread{
 				break;
 			case PLAYER_LOSE:
 				//Do nothing. Server should send this; not receive it!
-				System.out.println("S: Player Lose Packet Received");
+				Logging.LOGGER.fine("S: Player Lose Packet Received");
 				break;
 			case ROUND_END:
 				//Do nothing. Server should send this; not receive it!
-				System.out.println("S: Round End Packet Received");
+				Logging.LOGGER.fine("S: Round End Packet Received");
 				break;
 			default:
 				System.out.println("S: Unknown packet type!");

@@ -85,8 +85,17 @@ public class Server extends Base{
 
  		//System.out.println(playerConnections);
 		this.game.addSpaceship(!isSinglePlayerMode);
+		if(this.playerConnections.size() == 1){
+			if(isSinglePlayerMode){
+				sendMessagePacket("Singleplayer Game Started");
+			}else{
+				sendMessagePacket("Multiplayer Game Started");
+				sendMessagePacket("Waiting for another Player");
+			}
+		}else{
+			sendMessagePacket("New Player Connected: "+playerConnections.get(playerConnections.size()-1).toString());
+		}
 		
-		sendMessagePacket("New Player Connected: "+playerConnections.get(playerConnections.size()-1).toString());
 
 	}
 	

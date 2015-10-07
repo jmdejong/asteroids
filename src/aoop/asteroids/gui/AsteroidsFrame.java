@@ -76,6 +76,7 @@ public class AsteroidsFrame extends JFrame
 			try {
 				new Server(true);
 				startGame("localhost", false);
+				
 			} catch (SocketException e) {
 				e.printStackTrace();
 			}

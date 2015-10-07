@@ -38,7 +38,7 @@ public class Server extends Base{
 		
 		
 		try {
-			this.sendSocket = new DatagramSocket(8098);
+			this.sendSocket = new DatagramSocket(Server.UDPPort);
 		} catch (SocketException e1) {
 			e1.printStackTrace();
 		}
@@ -61,7 +61,7 @@ public class Server extends Base{
 	}
 	public void addPlayerConnection(SocketAddress address){
 		playerConnections.add(new ClientConnection((InetSocketAddress)address));
-// 		System.out.println(playerConnections);
+ 		System.out.println(playerConnections);
 		this.game.addSpaceship();
 	}
 	
@@ -89,7 +89,7 @@ public class Server extends Base{
 		
 		PlayerLosePacket playerLosePacket = new PlayerLosePacket();
 		try {
-			super.sendPacket(playerLosePacket.toJsonString(), connection.getAddress(), Client.UDPPort, sendSocket);
+			super.sendPacket(playerLosePacket.toJsonString(), connection.getAddress(), connection.getPort(), sendSocket);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,18 +104,19 @@ public class Server extends Base{
 	}
 	
 	private void sendPacketToAll(String packet_string) throws IOException{
-		for(ClientConnection address : playerConnections){
-			super.sendPacket(packet_string, address.getAddress(), Client.UDPPort, sendSocket);
+		for(ClientConnection connection : playerConnections){
+			super.sendPacket(packet_string, connection.getAddress(), connection.getPort(), sendSocket);
 		}
-		for(ClientConnection address : spectatorConnections){
-			super.sendPacket(packet_string, address.getAddress(), Client.UDPPort, sendSocket);
+		for(ClientConnection connection : spectatorConnections){
+			super.sendPacket(packet_string, connection.getAddress(), connection.getPort(), sendSocket);
 		}
 	}
 
 	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
-		InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
-		int index = playerConnections.indexOf(inetSocketAddress);
-// 		System.out.println(index);
+		System.out.println(socketAddress);
+		int index = playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
+		System.out.println(playerConnections);
+ 		System.out.println(index);
 		if(index == -1){
 			return;
 		}
@@ -123,7 +124,7 @@ public class Server extends Base{
 		if(playerShip==null){
 			return;
 		}
-// 		System.out.println(playerShip);
+ 		System.out.println(playerShip);
 		PlayerUpdatePacket.decodePacket(packet_data, playerShip);
 	}
 	

@@ -9,9 +9,9 @@ public abstract class BaseServerThread extends Thread {
 	boolean stopServer = false;
 	protected DatagramSocket socket = null;
 	
-	public BaseServerThread(String name,int port) throws SocketException{
+	public BaseServerThread(String name,int port, DatagramSocket socket) throws SocketException{
 		super(name);
-		socket = new DatagramSocket(port);
+		this.socket = socket;//new DatagramSocket(port);
 		
 		System.out.println(name+" thread started.");
 	}

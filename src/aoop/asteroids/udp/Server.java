@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import aoop.asteroids.model.Game;
+import aoop.asteroids.model.Lobby;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
@@ -34,7 +35,7 @@ public class Server extends Base{
 	List<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
 	private List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
 	
-	
+	private boolean isSinglePlayerMode = false;
 	
 	Game game;
 	
@@ -49,7 +50,7 @@ public class Server extends Base{
 		this.sendSocket = new DatagramSocket(Server.UDPPort);
 		
 		
-		this.game = new Game(this);
+		this.game = new Lobby(this);
 		Thread t = new Thread (game);
 		t.start();
 		
@@ -61,14 +62,24 @@ public class Server extends Base{
 		}
 	}
 	
+	public Server(boolean isSinglePlayer){
+		super();
+		this.isSinglePlayerMode = isSinglePlayer;
+		
+	}
+	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		addConnection(spectatorConnections, packetData, packet);
 	}
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
-
+		
+		//In single-player mode, reject more than one connection, and also all connections that are not from the current computer.
+		if(this.isSinglePlayerMode && (playerConnections.size() > 0 || packet.getAddress().getHostAddress() != "127.0.0.1")){
+			return;
+		}
 		
 		addConnection(playerConnections, packetData, packet);
-		this.game.addSpaceship();
+		this.game.addSpaceship(true);
 	}
 	
 	public void addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
@@ -155,7 +166,19 @@ public class Server extends Base{
 	
 	public void restartGame(){
 		sendRoundOverPacket();
-		//this.game = new Game(this);
+		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
+		this.game = new Lobby(this); //TODO: Rename. Also, handle single-player mode?
+		for(int i=this.playerConnections.size()-1;i>=0;i--){
+			ClientConnection c = playerConnections.get(i);
+			if(c.isDisconnected()){
+				playerConnections.remove(i);
+				spaceships.remove(i);
+			}
+		}
+		this.game.addSpaceships(spaceships);
+		
+		Thread t = new Thread (game);
+		t.start();
 	}
 	
 	

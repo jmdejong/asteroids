@@ -158,6 +158,7 @@ public class Spaceship extends GameObject
 	@Override 
 	public void nextStep () 
 	{
+		super.nextStep();
 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		// Update direction if turning.
@@ -168,8 +169,6 @@ public class Spaceship extends GameObject
 			this.velocityX = Math.max (-10, Math.min (10, this.velocityX + Math.sin (direction) * 0.4));
 			this.velocityY = Math.max (-10, Math.min (10, this.velocityY - Math.cos (direction) * 0.4));
 		}
-		
-		this.setLocation(new WrappablePoint(this.locationX+this.velocityX,this.locationY+this.velocityY));
 
 		// Decrease speed due to traction.
 		this.velocityX *= 0.99;

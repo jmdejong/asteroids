@@ -81,8 +81,12 @@ public class ServerThread extends BaseServerThread{
 				//Do nothing. Server should send this; not receive it!
 				Logging.LOGGER.fine("S: Round End Packet Received");
 				break;
+			case MESSAGE:
+				//Do nothing. Server should send this; not receive it!
+				Logging.LOGGER.fine("S: Message Packet Received");
+				break;				
 			default:
-				System.out.println("S: Unknown packet type!");
+				Logging.LOGGER.fine("S: Unknown packet type!");
 				break;
 		}
 		//System.out.println(server.getPlayerConnections());

@@ -18,6 +18,7 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Lobby;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
+import aoop.asteroids.udp.packets.MessagePacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 import aoop.asteroids.udp.packets.RoundEndPacket;
@@ -70,6 +71,7 @@ public class Server extends Base{
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		addConnection(spectatorConnections, packetData, packet);
+		sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
 	}
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
@@ -83,6 +85,8 @@ public class Server extends Base{
 
  		//System.out.println(playerConnections);
 		this.game.addSpaceship(!isSinglePlayerMode);
+		
+		sendMessagePacket("New Player Connected: "+playerConnections.get(playerConnections.size()-1).toString());
 
 	}
 	
@@ -94,6 +98,7 @@ public class Server extends Base{
 		c.updateLastPacketId(packetId);
 		
 		list.add(c);
+		
 	}
 	
 	public void sendGameStatePacket(){
@@ -164,8 +169,12 @@ public class Server extends Base{
 		return getPlayerConnections().get(index);
 	}
 	
-	public void sendPlayerPacket(){
-		
+	public void sendMessagePacket(String message){
+		try {
+			this.sendPacketToAll(new MessagePacket(message).toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void restartGame(){
@@ -193,8 +202,14 @@ public class Server extends Base{
 	public void tagNonrespondingClients(){
 		
 		for(ClientConnection c : getPlayerConnections()){
+			if(c.isDisconnected()){
+				continue;
+			}
 			c.tagAsDisconnectedIfNotResponding();
 			Logging.LOGGER.fine(c.toDebugString());
+			if(c.isDisconnected()){
+				this.sendMessagePacket("Connection Lost with: "+c.toString());
+			}
 		}
 	}
 	

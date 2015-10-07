@@ -67,7 +67,7 @@ public class Game extends Observable implements Runnable
 	/** Asteroid limit. */
 	private int asteroidsLimit;
 	
-	private Server server;
+	protected Server server;
 	
 	
 	//private ClientGame cg;
@@ -185,7 +185,12 @@ public class Game extends Observable implements Runnable
 		
 		this.destroyAllShipsOfDisconnectedPlayers();
 
-		if (this.cycleCounter == 0 && this.asteroids.size () < this.asteroidsLimit) this.addRandomAsteroid ();
+		if (	   this.cycleCounter == 0 
+				&& this.asteroids.size () < this.asteroidsLimit 
+				&& !this.ships.isEmpty() 
+				&& !this.areAllShipsDestroyed() ) {
+			this.addRandomAsteroid ();
+		}
 		this.cycleCounter++;
 		this.cycleCounter %= 200;
 		
@@ -253,13 +258,17 @@ public class Game extends Observable implements Runnable
 			for(Spaceship s : this.ships){
 				if (!s.isDestroyed() && b.collides (s))
 				{ // Collision with playerß -> destroy both objects
+					
+					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
+					if(/*b.getShooter() != null && */b.getShooter() != s){
+						b.getShooter().increaseScore();
+						server.sendMessagePacket("Player destroyed by Player");
+					}
+					
 					b.destroy ();
 					s.destroy ();
 					
-					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
-					if(b.getShooter() != null && b.getShooter() != s){
-						b.getShooter().increaseScore();
-					}
+
 					
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
@@ -340,12 +349,21 @@ public class Game extends Observable implements Runnable
 	
 	private boolean areAllAsteroidsDestroyed(){
 		
-		if(!this.areAllShipsDestroyed()){
-			for(Spaceship s: ships){
-				s.increaseScore();
-				s.destroy();
+		if(this.asteroids.isEmpty()){
+			if(!this.areAllShipsDestroyed()){
+				for(Spaceship s: ships){
+					if(!s.isDestroyed()){
+						s.increaseScore();
+						s.destroy();
+					}
+				}
+				server.sendMessagePacket("Congradulations! Level Cleared.");
 			}
+			return true;
+		}else{
+			return false;
 		}
+		
 		
 		/*for(Asteroid a : this.asteroids){
 			if (!a.isDestroyed()){
@@ -354,7 +372,6 @@ public class Game extends Observable implements Runnable
 		}
 		return true;*/
 		
-		return this.asteroids.isEmpty();
 	}
 	
 	protected boolean isGameOver(){

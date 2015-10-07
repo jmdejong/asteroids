@@ -21,13 +21,14 @@ public class Lobby extends Game {
 			
 			if(this.startCountdownTime==0){
 				startCountdownTime = System.currentTimeMillis();
-				List<Spaceship> winners = getWinners();
-				Logging.LOGGER.severe("winners:"+winners);
-				for(Spaceship w : winners){
-					w.increaseScore();
-					Logging.LOGGER.severe("Score: "+w.getScore());
+				if(this.asteroidsLimit != 0){
+					List<Spaceship> winners = getWinners();
+					for(Spaceship w : winners){
+						w.increaseScore();
+					}
 				}
-				if(this.areAllAsteroidsDestroyed()){
+				
+				if(this.areAllAsteroidsDestroyed() && this.asteroidsLimit != 0){
 					server.sendMessagePacket("Congradulations! Level Cleared.");
 				}
 				server.sendMessagePacket("Starting Next Round in "+(waitingTime/1000)+" seconds");

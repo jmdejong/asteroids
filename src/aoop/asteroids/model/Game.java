@@ -66,7 +66,7 @@ public class Game extends Observable implements Runnable
 	private int numberOfSpawnedAsteroids;
 
 	/** Asteroid limit. */
-	private int asteroidsLimit;
+	protected int asteroidsLimit;
 	
 	protected Server server;
 	

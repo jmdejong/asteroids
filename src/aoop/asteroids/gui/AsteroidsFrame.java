@@ -16,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.net.SocketException;
 
 import aoop.asteroids.udp.Client;
@@ -32,6 +33,12 @@ public class AsteroidsFrame extends JFrame
 
 	/** serialVersionUID */
 	public static final long serialVersionUID = 1L;
+	
+	public static Color ButtonBorderColor = Color.GREEN;
+	public static Color TextColor = Color.GREEN;
+	public static Color ButtonBackColor = Color.BLACK;
+	public static int ButtonBorderWidth = 1;
+	
 
 	/** The game model. */
 	private Game game;
@@ -73,7 +80,7 @@ public class AsteroidsFrame extends JFrame
 		cards.add(aip, "Address input card");
 		mp = new MenuPanel();
 		
-		mp.makeButton("Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+		mp.makeButton("Play Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
 				new Server(true);
 				startGame("localhost", false);
@@ -84,7 +91,7 @@ public class AsteroidsFrame extends JFrame
 			
 		}});
 		
-		mp.makeButton("Multiplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+		mp.makeButton("Host Multiplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
 				new Server(false);
 				startGame("localhost", false);
@@ -92,7 +99,7 @@ public class AsteroidsFrame extends JFrame
 				e.printStackTrace();
 			}
 		}});
-		mp.makeButton("Join", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+		mp.makeButton("Join Multiplayer", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
 			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 				Logging.LOGGER.fine(aip.getAddress());

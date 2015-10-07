@@ -13,9 +13,12 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.Polygon;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.util.List;
 import java.awt.FontMetrics;
 import javax.swing.JPanel;
@@ -73,6 +76,8 @@ public class AsteroidsPanel extends JPanel
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.setBackground (Color.black);
+		
+		this.paintSun(g2);
 
 		this.paintSpaceships (g2);
 		this.paintAsteroids (g2);
@@ -118,6 +123,19 @@ public class AsteroidsPanel extends JPanel
 	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius){
 		Ellipse2D.Double e = new Ellipse2D.Double ();
 		e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
+		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0,1}, new Color[]{Color.LIGHT_GRAY, Color.DARK_GRAY}, CycleMethod.NO_CYCLE);
+		g.setPaint(roundGradientPaint);
+		g.fill (e);
+	}
+	
+	private void paintSun(Graphics2D g){
+		Ellipse2D.Double e = new Ellipse2D.Double ();
+		int radius = 100;
+		int x = (int) (GameObject.worldWidth / 2);
+		int y = (int) (GameObject.worldHeight / 2);
+		e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
+		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0, 0.05f, 0.2f, 1}, new Color[]{Color.WHITE, new Color(0,40,41), new Color(0,10,10), Color.BLACK}, CycleMethod.NO_CYCLE);
+		g.setPaint(roundGradientPaint);
 		g.fill (e);
 	}
 
@@ -146,27 +164,35 @@ public class AsteroidsPanel extends JPanel
 	}
 	
 	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating, Color c){
+		
+		// Spaceship accelerating -> continue, otherwise abort.
+		Polygon p;
+		if (isAccelerating){
+			// Draw flame at the exhaust
+			p = new Polygon ();
+			p.addPoint ((int)(x - Math.sin (direction			     ) * 25), (int)(y + Math.cos (direction			       ) * 25));
+			p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
+			p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
+			g.setColor(new Color(255-c.getRed(),255-c.getGreen(),255-c.getBlue()));
+			//g.setColor(Color.YELLOW);
+			g.fill(p);
+		}
+		
 		// Draw body of the spaceship
-		Polygon p = new Polygon ();
+		p = new Polygon ();
 		p.addPoint ((int)(x + Math.sin (direction				 ) * 20), (int)(y - Math.cos (direction				   ) * 20));
 		p.addPoint ((int)(x + Math.sin (direction + 0.8 * Math.PI) * 20), (int)(y - Math.cos (direction + 0.8 * Math.PI) * 20));
 		p.addPoint ((int)(x + Math.sin (direction + 1.2 * Math.PI) * 20), (int)(y - Math.cos (direction + 1.2 * Math.PI) * 20));
 
 		g.setColor (c);
 		g.fill (p);
-		g.setColor (Color.WHITE);
+		//g.setColor (Color.GREEN);
+		//g.setColor(new Color(255-c.getRed(),255-c.getGreen(),255-c.getBlue()));
 		g.draw (p);
 
-		// Spaceship accelerating -> continue, otherwise abort.
-		if (!isAccelerating) return;
+		
 
-		// Draw flame at the exhaust
-		p = new Polygon ();
-		p.addPoint ((int)(x - Math.sin (direction			     ) * 25), (int)(y + Math.cos (direction			       ) * 25));
-		p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
-		p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
-		g.setColor(Color.yellow);
-		g.fill(p);
+
 	}
 
 	private void paintGameMessages(Graphics2D g, List<GameMessage> messages){

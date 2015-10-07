@@ -1,5 +1,6 @@
 package aoop.asteroids.model;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Random;
@@ -54,7 +55,9 @@ public class Spaceship extends GameObject
 	/** Constructs a new spaceship with default values. */
 	public Spaceship (String name)
 	{
-		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, (new Random()).nextInt(16777216));
+		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, 0);
+		
+		this.colour = Color.getHSBColor(new Random().nextFloat(), 1, .9f).getRGB();
 	}
 
 	/**

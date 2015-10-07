@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.Component;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,9 +33,9 @@ public class AddressInputPanel extends JPanel {
 		addressField = new JTextField();
 		addressField.setAlignmentY( Component.CENTER_ALIGNMENT );
 		addressField.setMaximumSize( new Dimension(200,50) );
-		addressField.setBackground(Color.GRAY);
-		addressField.setForeground(Color.WHITE);
-		addressField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 3), new EmptyBorder(5, 5, 5, 5)));
+		addressField.setBackground(AsteroidsFrame.ButtonBackColor);
+		addressField.setForeground(AsteroidsFrame.TextColor);
+		addressField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(AsteroidsFrame.ButtonBorderColor, AsteroidsFrame.ButtonBorderWidth), new EmptyBorder(5, 5, 5, 5)));
 		addressField.setText("127.0.0.1");
 		
 		this.add(addressField);
@@ -44,9 +45,10 @@ public class AddressInputPanel extends JPanel {
 		connectButton = new JButton("Connect");
 		connectButton.setAlignmentX( Component.CENTER_ALIGNMENT );
 		connectButton.setMaximumSize( new Dimension(80,50) );
-		connectButton.setBackground(Color.GRAY);
-		connectButton.setForeground(Color.WHITE);
-		connectButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+		connectButton.setBackground(AsteroidsFrame.ButtonBackColor);
+		connectButton.setForeground(AsteroidsFrame.TextColor);
+		connectButton.setBorder(BorderFactory.createLineBorder(AsteroidsFrame.ButtonBorderColor, AsteroidsFrame.ButtonBorderWidth));
+		connectButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		this.add(connectButton);
 		
 	}
@@ -54,6 +56,7 @@ public class AddressInputPanel extends JPanel {
 	public void addClickListener(ActionListener connectAction){
 		connectButton.addActionListener(connectAction);
 	}
+
 	
 	public String getAddress(){
 		return addressField.getText();

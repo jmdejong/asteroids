@@ -8,7 +8,9 @@ import javax.swing.JButton;
 import javax.swing.BorderFactory;
 import java.awt.Component;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JTextField;
@@ -18,6 +20,11 @@ import java.util.Random;
 
 
 public class MenuPanel extends JPanel {
+	
+	private static Color ButtonBorderColor = Color.GREEN;
+	private static Color TextColor = Color.GREEN;
+	private static Color ButtonBackColor = Color.BLACK;
+	private static int ButtonBorderWidth = 1;
 	
 	private JTextField nameField;
 	
@@ -33,27 +40,32 @@ public class MenuPanel extends JPanel {
 		nameField = new JTextField();
 		nameField.setAlignmentY( Component.LEFT_ALIGNMENT );
 		nameField.setMaximumSize( new Dimension(200,50) );
-		nameField.setBackground(Color.WHITE);
-		nameField.setForeground(Color.BLACK);
-		nameField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3), new EmptyBorder(5, 5, 5, 5)));
+		nameField.setBackground(AsteroidsFrame.ButtonBackColor);
+		nameField.setForeground(AsteroidsFrame.TextColor);
+		nameField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(AsteroidsFrame.ButtonBorderColor, MenuPanel.ButtonBorderWidth), new EmptyBorder(5, 5, 5, 5)));
 		nameField.setText( generateName());
+		nameField.setCaretColor(AsteroidsFrame.TextColor);
+		nameField.getCaret().setVisible(true);
 		
-		this.add(nameField);
+		add(nameField);
+		add(Box.createRigidArea(new Dimension(0, 50)));
 		
 	}
 	
 	public void makeButton(String text, ActionListener action){
 		
 		JButton button = new JButton(text);
+		button.setFont(Font.getFont("Monospace"));
 		button.setAlignmentX( Component.CENTER_ALIGNMENT );
 		button.setMaximumSize( new Dimension(300,100) );
-		button.setBackground(Color.GRAY);
-		button.setForeground(Color.WHITE);
-		button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-		this.add(button);
-		
+		button.setBackground(AsteroidsFrame.ButtonBackColor);
+		button.setForeground(AsteroidsFrame.TextColor);
+		button.setBorder(BorderFactory.createLineBorder(AsteroidsFrame.ButtonBorderColor, AsteroidsFrame.ButtonBorderWidth));
+		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		button.addActionListener(action);
-		
+		this.add(button);
+		this.add(Box.createRigidArea(new Dimension(0, 20)));
+
 	}
 	
 	public String getPlayerName(){

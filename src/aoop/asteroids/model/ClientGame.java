@@ -2,6 +2,7 @@ package aoop.asteroids.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Observable;
 
 import aoop.asteroids.gui.SpaceshipController;
@@ -15,6 +16,10 @@ public class ClientGame extends Observable implements Runnable{
 
 	/** List of asteroids. */
 	private Collection <Asteroid> asteroids = new ArrayList<Asteroid>();
+	
+	/** List of game messages. */
+	private List <GameMessage> messages = new ArrayList<GameMessage>();
+	
 	
 	public SpaceshipController spaceshipController;
 	
@@ -43,6 +48,13 @@ public class ClientGame extends Observable implements Runnable{
 		for (Asteroid a : this.asteroids) a.nextStep ();
 		for (Bullet b : this.bullets) b.nextStep ();
 		for (Spaceship s : this.ships) s.nextStep();
+		
+		
+		for(int i = messages.size()-1; i>=0; i--){
+			if(messages.get(i).isDestroyed()){
+				messages.remove(i);
+			}
+		}
 		
 		//TODO: send player packet depending on player input.
 		if(!this.client.isSpectator && !this.hasLost){
@@ -104,6 +116,14 @@ public class ClientGame extends Observable implements Runnable{
 	public Collection<Spaceship> getSpaceships() {
 		return ships;
 	}
+	public List<GameMessage> getMessages() {
+		return messages;
+	}
+	
+	public void addMessage(String message){
+		this.messages.add(new GameMessage(message));
+	}
+	
 	public Spaceship getSpaceship(){
 		return ships.toArray(new Spaceship[1])[0];
 	}

@@ -3,6 +3,7 @@ package aoop.asteroids.udp;
 import aoop.asteroids.Logging;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.Collections;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -65,13 +66,13 @@ public class ClientThread extends BaseServerThread {
 			case MESSAGE:
 				Logging.LOGGER.fine("C: Message Packet Received");
 				Logging.LOGGER.info(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
+				client.game.addMessage(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
 				break;	
 			default:
 				Logging.LOGGER.fine("C: Unknown packet type!");
 				break;
 				
 		}
-		
 	}
 
 }

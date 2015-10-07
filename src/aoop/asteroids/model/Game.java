@@ -269,7 +269,7 @@ public class Game extends Observable implements Runnable
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
 					if(/*b.getShooter() != null && */b.getShooter() != s){
 						//b.getShooter().increaseScore();
-						server.sendMessagePacket("Player was shot by Player");
+						server.sendMessagePacket(s.getName() + " was shot by " + b.getShooter().getName());
 					}
 					
 					b.destroy ();
@@ -291,7 +291,7 @@ public class Game extends Observable implements Runnable
 				{ // Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();
-					server.sendMessagePacket("Player was smashed by an Asteroid");
+					server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}

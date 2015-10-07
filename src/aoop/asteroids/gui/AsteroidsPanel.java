@@ -12,9 +12,13 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.FontMetrics;
+import javax.swing.JPanel;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.JPanel;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *	AsteroidsPanel extends JPanel and thus provides the actual graphical 
@@ -166,12 +170,16 @@ public class AsteroidsPanel extends JPanel
 	private void paintScores(Graphics2D g) {
 		FontMetrics fm = g.getFontMetrics();
 		int yPos = 5;
-		List spaceships = this.game.getSpaceships();
+		List<Spaceship> spaceships = new ArrayList(this.game.getSpaceships());
+		Collections.sort(spaceships, new Comparator<Spaceship>(){public int compare(Spaceship s0, Spaceship s1){
+			return s0.getScore() - s1.getScore();
+		}});
+		Collections.reverse(spaceships);
 		for(Spaceship s : spaceships){
 			if(s==null){
 				continue;
 			}
-			Color c = new Color((int) s.getColour());
+			Color c = new Color((int) (s.getColour()<<8)|191, true);
 			g.setColor(c);
 			String score = Integer.toString(s.getScore());
 			yPos += fm.getHeight();

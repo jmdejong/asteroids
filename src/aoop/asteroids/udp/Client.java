@@ -36,6 +36,8 @@ public class Client extends Base{
 		
 		this.serverAddress = new InetSocketAddress(host, port);
 		
+		this.isSpectator = isSpectator;
+		
 		//try {
 			this.sendSocket = createSocketOnFirstUnusedPort();//new DatagramSocket(Client.UDPPort);
 		//} catch (SocketException e1) {

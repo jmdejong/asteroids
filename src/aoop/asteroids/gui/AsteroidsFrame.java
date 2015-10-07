@@ -30,16 +30,6 @@ public class AsteroidsFrame extends JFrame
 	/** serialVersionUID */
 	public static final long serialVersionUID = 1L;
 
-	/** Quit action. */
-	private AbstractAction quitAction;
-
-	/** New game action. */
-	private AbstractAction restartGameAction;
-	
-	private AbstractAction startSinglePlayerAction;
-	
-	private AbstractAction startSpectatorAction;
-
 	/** The game model. */
 	private Game game;
 	
@@ -59,23 +49,11 @@ public class AsteroidsFrame extends JFrame
 	public AsteroidsFrame (){
 
 		
-// 		this.initActions ();
-		
 		this.setTitle ("Asteroids");
 		this.setResizable(false);
 		
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
-
-// 		JMenuBar mb = new JMenuBar ();
-// 		JMenu m = new JMenu ("Game");
-// 		mb.add (m);
-// 		m.add (this.quitAction);
-// 		m.add (this.restartGameAction);
-// 		this.setJMenuBar(mb);
-		
-		
-// 		cardLayout = new CardLayout();
 		cards = new CardContainer();
 		
 		
@@ -92,16 +70,20 @@ public class AsteroidsFrame extends JFrame
 		MenuPanel mp = new MenuPanel();
 		mp.makeButton("Single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			Server server = new Server();
-			startGame();
+			startGame("localhost", false);
 		}});
-		mp.makeButton("Spectate single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0) {
-			startGame();
+		mp.makeButton("Join", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+			cards.showCard("Address input card");
+			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+				System.out.println(aip.getAddress());
+				startGame(aip.getAddress(), false);
+			}});
 		}});
 		mp.makeButton("Spectate", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
 			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 				System.out.println(aip.getAddress());
-				startGame(aip.getAddress());
+				startGame(aip.getAddress(), false);
 			}});
 		}});
 		
@@ -120,21 +102,10 @@ public class AsteroidsFrame extends JFrame
 		cards.showCard("Menu card");
 	}
 	
-	public void startSinglePlayerGame(){
-		
-		Server server = new Server();
-		
-		
-		startGame ();
-	}
 	
-	public void startGame(){
-		startGame("127.0.0.1");
-	}
-	
-	public void startGame(String address){
+	public void startGame(String address, Boolean isSpectator){
 		
-		Client client = new Client(address, Server.UDPPort, false);
+		Client client = new Client(address, Server.UDPPort, isSpectator);
 		addKeyListener(client.game.spaceshipController);
 		
 		ap.observeGame(client.game);
@@ -159,61 +130,6 @@ public class AsteroidsFrame extends JFrame
 			e.printStackTrace ();
 		}
 		this.game.initGameData ();
-	}
-
-	/** Initializes the quit- and new game action. */
-	private void initActions() 
-	{
-		// Quits the application
-		this.quitAction = new AbstractAction ("Quit") 
-		{
-			public static final long serialVersionUID = 2L;
-
-			@Override
-			public void actionPerformed (ActionEvent arg0) 
-			{
-				System.exit(0);
-			}
-		};
-		
-		// Creates a new model
-		this.restartGameAction = new AbstractAction ("Restart Game") 
-		{
-			public static final long serialVersionUID = 3L;
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				AsteroidsFrame.this.restartGame ();
-			}
-		};
-		
-		
-		this.startSinglePlayerAction = new AbstractAction () 
-		{
-			public static final long serialVersionUID = 3L;
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				AsteroidsFrame.this.startSinglePlayerGame();
-			}
-		};
-		
-		this.startSpectatorAction = new AbstractAction () 
-		{
-			public static final long serialVersionUID = 3L;
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				//AsteroidsFrame.this.cg = new ClientGame();
-				//new Client("127.0.0.1", Server.UDPPort, true);
-				//AsteroidsFrame.this.game = new Game(AsteroidsFrame.this.cg);
-				AsteroidsFrame.this.startGame ();
-			}
-		};
-		
 	}
 	
 }

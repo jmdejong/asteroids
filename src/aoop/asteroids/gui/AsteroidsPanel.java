@@ -127,10 +127,10 @@ public class AsteroidsPanel extends JPanel
 				continue;
 			}
 
-			paintSpaceshipPart(g,(int)s.getLocation().getX()		,(int) s.getLocation().getY()		,s.getDirection(),s.isAccelerating());
-			paintSpaceshipPart(g,(int)s.getLocation().getX()		,(int) s.getMirrorLocation().getY()	,s.getDirection(),s.isAccelerating());				
-			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX()	,(int) s.getLocation().getY()		,s.getDirection(),s.isAccelerating());				
-			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX()	,(int) s.getMirrorLocation().getY()	,s.getDirection(),s.isAccelerating());				
+			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating());
+			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating());
+			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX(),(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating());
+			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX(),(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating());
 			
 		}
 		
@@ -138,25 +138,25 @@ public class AsteroidsPanel extends JPanel
 	
 	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating){
 		// Draw body of the spaceship
-				Polygon p = new Polygon ();
-				p.addPoint ((int)(x + Math.sin (direction				 ) * 20), (int)(y - Math.cos (direction				   ) * 20));
-				p.addPoint ((int)(x + Math.sin (direction + 0.8 * Math.PI) * 20), (int)(y - Math.cos (direction + 0.8 * Math.PI) * 20));
-				p.addPoint ((int)(x + Math.sin (direction + 1.2 * Math.PI) * 20), (int)(y - Math.cos (direction + 1.2 * Math.PI) * 20));
+		Polygon p = new Polygon ();
+		p.addPoint ((int)(x + Math.sin (direction				 ) * 20), (int)(y - Math.cos (direction				   ) * 20));
+		p.addPoint ((int)(x + Math.sin (direction + 0.8 * Math.PI) * 20), (int)(y - Math.cos (direction + 0.8 * Math.PI) * 20));
+		p.addPoint ((int)(x + Math.sin (direction + 1.2 * Math.PI) * 20), (int)(y - Math.cos (direction + 1.2 * Math.PI) * 20));
 
-				g.setColor (Color.BLACK);
-				g.fill (p);
-				g.setColor (Color.WHITE);
-				g.draw (p);
+		g.setColor (Color.BLACK);
+		g.fill (p);
+		g.setColor (Color.WHITE);
+		g.draw (p);
 
-				// Spaceship accelerating -> continue, otherwise abort.
-				if (!isAccelerating) return;
+		// Spaceship accelerating -> continue, otherwise abort.
+		if (!isAccelerating) return;
 
-				// Draw flame at the exhaust
-				p = new Polygon ();
-				p.addPoint ((int)(x - Math.sin (direction			     ) * 25), (int)(y + Math.cos (direction			       ) * 25));
-				p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
-				p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
-				g.setColor(Color.yellow);
+		// Draw flame at the exhaust
+		p = new Polygon ();
+		p.addPoint ((int)(x - Math.sin (direction			     ) * 25), (int)(y + Math.cos (direction			       ) * 25));
+		p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
+		p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
+		g.setColor(Color.yellow);
 				g.fill(p);
 	}
 

@@ -21,21 +21,28 @@ import java.net.SocketException;
  *
  *	@author Yannick Stoffers
  */
-public class Asteroids 
-{
+public class Asteroids {
 
 	/** 
 	 *	Main function.
 	 *
 	 *	@param args input arguments.
 	 */
-	public static void main (String [] args)
-	{
+	public static void main (String [] args)	{
 		
-
-		//Server server = new Server();
-		
-		AsteroidsFrame frame = new AsteroidsFrame ();
+		if (args.length == 0){
+			AsteroidsFrame frame = new AsteroidsFrame ();
+		} else {
+			if (args[0] == "server"){
+				new Server();
+			} else if (args[0] == "client"){
+				if (args.length == 1){
+					(new AsteroidsFrame()).startGame("localhost", false);
+				} else {
+					(new AsteroidsFrame()).startGame(args[1], false);
+				}
+			}
+		}
 	}
 	
 }

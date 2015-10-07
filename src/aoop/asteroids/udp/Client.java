@@ -84,7 +84,7 @@ public class Client extends Base{
 	
 	public void sendPlayerUpdatePacket(SpaceshipController sc){
 		PlayerUpdatePacket playerUpdatePacket = new PlayerUpdatePacket(sc.isUp(), sc.isLeft(), sc.isRight(), sc.isFire());
- 		System.out.println("Sending Player Update Packet "+ playerUpdatePacket.toJsonString());
+ 		//System.out.println("Sending Player Update Packet "+ playerUpdatePacket.toJsonString());
 		try {
 			this.sendPacket(playerUpdatePacket.toJsonString());
 		} catch (IOException e) {

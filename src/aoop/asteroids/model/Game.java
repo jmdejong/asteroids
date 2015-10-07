@@ -262,7 +262,7 @@ public class Game extends Observable implements Runnable
 			
 		}
 		
-		System.out.println("Game Ships:"+this.ships.toString());
+		//System.out.println("Game Ships:"+this.ships.toString());
 	}
 
 	/**

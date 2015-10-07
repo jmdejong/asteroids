@@ -61,7 +61,7 @@ public class Server extends Base{
 	}
 	public void addPlayerConnection(SocketAddress address){
 		playerConnections.add(new ClientConnection((InetSocketAddress)address));
- 		System.out.println(playerConnections);
+ 		//System.out.println(playerConnections);
 		this.game.addSpaceship();
 	}
 	
@@ -115,8 +115,6 @@ public class Server extends Base{
 	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
 		System.out.println(socketAddress);
 		int index = playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
-		System.out.println(playerConnections);
- 		System.out.println(index);
 		if(index == -1){
 			return;
 		}
@@ -128,6 +126,14 @@ public class Server extends Base{
 		PlayerUpdatePacket.decodePacket(packet_data, playerShip);
 	}
 	
+	public ClientConnection findClientConnection(SocketAddress socketAddress){
+		int index = playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
+		if(index == -1){
+			return null;
+		}
+		return playerConnections.get(index);
+	}
+	
 	public void sendPlayerPacket(){
 		
 	}
@@ -135,5 +141,34 @@ public class Server extends Base{
 	public void restartGame(){
 		sendRoundOverPacket();
 		//this.game = new Game(this);
+	}
+	
+	
+	
+	/** 
+	 * Clients that did not say anything for longer than 5 seconds are considered to be `dead` and are to be removed from the game.
+	 * */
+	public void tagNonrespondingClients(){
+		
+		for(ClientConnection c : playerConnections){
+			c.tagAsDisconnectedIfNotResponding();
+			System.err.println(c.toDebugString());
+		}
+	}
+	
+	public void updateConnectionData(JSONObject packetData, DatagramPacket packet){
+		
+		long packetId = ((Long) packetData.get("r"));
+		
+		ClientConnection c = this.findClientConnection(packet.getSocketAddress());
+		c.setLastPingTime(System.currentTimeMillis());
+		c.updateLastPacketId(packetId);
+	}
+	
+	public boolean checkIfLatestPacket(JSONObject packetData, DatagramPacket packet){
+		long packetId = ((Long) packetData.get("r"));
+		
+		ClientConnection c = this.findClientConnection(packet.getSocketAddress());
+		return c.getLastPacketId() < packetId;
 	}
 }

@@ -116,7 +116,8 @@ public class Server extends Base{
 		GameStatePacket gameStatePacket = new GameStatePacket(
 				game.getSpaceships(),
 				game.getBullets(),
-				game.getAsteroids());
+				game.getAsteroids(),
+				game.getExplosions());
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString());

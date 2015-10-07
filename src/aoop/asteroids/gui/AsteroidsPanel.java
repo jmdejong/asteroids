@@ -4,6 +4,7 @@ import aoop.asteroids.Logging;
 import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.ClientGame;
+import aoop.asteroids.model.Explosion;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.GameMessage;
 import aoop.asteroids.model.GameObject;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Random;
 
 /**
  *	AsteroidsPanel extends JPanel and thus provides the actual graphical 
@@ -82,6 +84,13 @@ public class AsteroidsPanel extends JPanel
 		this.paintSpaceships (g2);
 		this.paintAsteroids (g2);
 		this.paintBullets (g2);
+		
+		for(Explosion e : game.getExplosions()){
+			if(e==null){
+				continue;
+			}
+			paintExplosion(g2, e);
+		}
 		
 		this.paintGameMessages(g2, game.getMessages());
 		this.paintScores(g2);
@@ -230,5 +239,42 @@ public class AsteroidsPanel extends JPanel
 			yPos += fm.getHeight();
 			g.drawString(score, this.getWidth()-fm.stringWidth(score)-5, yPos);
 		}
+	}
+	
+	
+	private void paintExplosion(Graphics2D g, Explosion e){
+		Random r = new Random(e.getSeed());
+		float time = e.getTime();
+		Ellipse2D.Double ell = new Ellipse2D.Double ();
+
+	    for(float i=1;i<=Explosion.particleAmount;i++){
+	        double d=r.nextDouble()*Math.PI*2;
+	        double fade=(i/128.0)*time;
+	        fade /= 1 - (time/(Explosion.maxTimeUntilFadeout));
+	        int x,y,radius, finalx, finaly;
+	        x =(int)  (Math.sin(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
+	        y =(int)  (Math.cos(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
+	        radius = (int) (e.getRadius() + (time *.02));
+	        
+	        int alpha = Math.max(0,255-(int)fade);
+	        if(alpha > 255){
+	        	alpha = 0;
+	        }
+	        
+	        Color c = new Color(255,255,255,alpha);
+
+	        finalx = (int) e.getLocation().x + x;
+	        finaly = (int)e.getLocation().y + y;
+	        
+	        
+	        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, new Color(0,0,0,0)}, CycleMethod.NO_CYCLE);
+			g.setPaint(roundGradientPaint);
+			
+			ell.setFrame (finalx - radius, finaly - radius, 2 * radius, 2 * radius);
+			g.fill(ell);
+	    }
+	    
+		
+	    
 	}
 }

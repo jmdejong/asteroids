@@ -17,6 +17,9 @@ public class ClientGame extends Observable implements Runnable{
 	/** List of asteroids. */
 	private Collection <Asteroid> asteroids = new ArrayList<Asteroid>();
 	
+	/** List of explosions. */
+	private Collection <Explosion> explosions = new ArrayList<Explosion>();
+	
 	/** List of game messages. */
 	private List <GameMessage> messages = new ArrayList<GameMessage>();
 	
@@ -137,5 +140,13 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	public void unFreeze(){
 		this.isFrozen = false;
+	}
+
+	public Collection <Explosion> getExplosions() {
+		return explosions;
+	}
+
+	public void setExplosions(Collection <Explosion> explosions) {
+		this.explosions = explosions;
 	}
 }

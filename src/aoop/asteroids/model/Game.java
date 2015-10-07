@@ -58,6 +58,9 @@ public class Game extends Observable implements Runnable
 
 	/** List of asteroids. */
 	private Collection <Asteroid> asteroids;
+	
+	/** List of explosions. */
+	private List <Explosion> explosions;
 
 	/** Random number generator. */
 	private static Random rng;
@@ -100,6 +103,7 @@ public class Game extends Observable implements Runnable
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();
 		this.ships = new ArrayList<> ();
+		this.explosions = new ArrayList<> ();
 		//this.ship.reinit ();
 		
 		while(asteroids.size() < asteroidsLimit){
@@ -260,6 +264,7 @@ public class Game extends Observable implements Runnable
 				{ // Collision -> destroy both objects.
 					b.destroy ();
 					a.destroy ();
+					this.explosions.add(new Explosion(new WrappablePoint(a.locationX, a.locationY), a.hashCode()+b.hashCode()));
 				}
 			}
 			for(Spaceship s : this.ships){
@@ -335,6 +340,12 @@ public class Game extends Observable implements Runnable
 		Collection <Bullet> newBuls = new ArrayList <> ();
 		for (Bullet b : this.bullets) if (!b.isDestroyed ()) newBuls.add (b);
 		this.bullets = newBuls;
+		
+		for(int i=explosions.size()-1;i >= 0;i--){
+			if(explosions.get(i).isDestroyed()){
+				explosions.remove(i);
+			}
+		}
 	}
 
 	/**
@@ -533,6 +544,14 @@ public class Game extends Observable implements Runnable
 			
 		}
 		
+	}
+
+	public List <Explosion> getExplosions() {
+		return explosions;
+	}
+
+	public void setExplosions(List <Explosion> explosions) {
+		this.explosions = explosions;
 	}
     
 	

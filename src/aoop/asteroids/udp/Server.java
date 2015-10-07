@@ -61,25 +61,25 @@ public class Server extends Base{
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
-		long packetId = ((Long) packetData.get("r"));
-		
-		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
-		c.setLastPingTime(System.currentTimeMillis());
-		c.updateLastPacketId(packetId);
-		
-		spectatorConnections.add(c);
+		addConnection(spectatorConnections, packetData, packet);
 // 		System.out.println(spectatorConnections);
 	}
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
+
+		
+		addConnection(playerConnections, packetData, packet);
+ 		//System.out.println(playerConnections);
+		this.game.addSpaceship();
+	}
+	
+	public void addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
 		long packetId = ((Long) packetData.get("r"));
 		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
 		c.setLastPingTime(System.currentTimeMillis());
 		c.updateLastPacketId(packetId);
 		
-		getPlayerConnections().add(c);
- 		//System.out.println(playerConnections);
-		this.game.addSpaceship();
+		list.add(c);
 	}
 	
 	public void sendGameStatePacket(){

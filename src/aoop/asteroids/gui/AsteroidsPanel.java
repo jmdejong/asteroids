@@ -1,9 +1,11 @@
 package aoop.asteroids.gui;
 
+import aoop.asteroids.Logging;
 import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
+import aoop.asteroids.model.GameMessage;
 import aoop.asteroids.model.GameObject;
 import aoop.asteroids.model.Spaceship;
 import java.awt.Color;
@@ -167,14 +169,18 @@ public class AsteroidsPanel extends JPanel
 		g.fill(p);
 	}
 
-	private void paintGameMessages(Graphics2D g, List<aoop.asteroids.model.GameMessage> messages){
+	private void paintGameMessages(Graphics2D g, List<GameMessage> messages){
 		for(int i=0;i<messages.size();i++){
-			String str = messages.get(i).toString();
+			GameMessage m = messages.get(i);
+			String str = m.toString();
+			Logging.LOGGER.warning("opacity:"+m.getOpacity());
 			g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 20));
-			g.setColor(Color.WHITE);
+			g.setColor(new Color(1,1,1,m.getOpacity()));
 			FontMetrics fm = g.getFontMetrics();
 			int stringWidth = fm.stringWidth(str);
 			int stringHeight = fm.getHeight();
+			
+			
 			g.drawString(str, ((int)GameObject.worldWidth/2)-(stringWidth/2), ((int)GameObject.worldHeight/2)+(stringHeight*i));
 		}
 	}

@@ -8,8 +8,8 @@ public class Lobby extends Game {
 	
 	public long startCountdownTime = 0;
 
-	public Lobby(Server server) {
-		super(server);
+	public Lobby(Server server, int roundNumber) {
+		super(server, roundNumber);
 	}
 	
 	public double timeUntilOver(){

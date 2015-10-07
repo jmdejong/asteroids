@@ -77,6 +77,7 @@ public class AsteroidsFrame extends JFrame
 			try {
 				new Server(true);
 				startGame("localhost", false);
+				
 			} catch (SocketException e) {
 				e.printStackTrace();
 			}
@@ -147,7 +148,7 @@ public class AsteroidsFrame extends JFrame
 			System.err.println ("Could not sleep before initializing a new game.");
 			e.printStackTrace ();
 		}
-		this.game.initGameData ();
+		this.game.initGameData (0);
 	}
 	
 }

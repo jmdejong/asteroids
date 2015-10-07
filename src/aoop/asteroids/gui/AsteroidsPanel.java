@@ -4,13 +4,17 @@ import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
+import aoop.asteroids.model.GameObject;
 import aoop.asteroids.model.Spaceship;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
+import java.util.List;
 import java.awt.FontMetrics;
 import javax.swing.JPanel;
 import java.util.Observable;
@@ -71,6 +75,8 @@ public class AsteroidsPanel extends JPanel
 		this.paintSpaceships (g2);
 		this.paintAsteroids (g2);
 		this.paintBullets (g2);
+		
+		this.paintGameMessages(g2, game.getMessages());
 		this.paintScores(g2);
 		
 	}
@@ -161,7 +167,19 @@ public class AsteroidsPanel extends JPanel
 		g.fill(p);
 	}
 
+	private void paintGameMessages(Graphics2D g, List<aoop.asteroids.model.GameMessage> messages){
+		for(int i=0;i<messages.size();i++){
+			String str = messages.get(i).toString();
+			g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 20));
+			g.setColor(Color.WHITE);
+			FontMetrics fm = g.getFontMetrics();
+			int stringWidth = fm.stringWidth(str);
+			int stringHeight = fm.getHeight();
+			g.drawString(str, ((int)GameObject.worldWidth/2)-(stringWidth/2), ((int)GameObject.worldHeight/2)+(stringHeight*i));
+		}
+	}
 	private void paintScores(Graphics2D g) {
+		g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 20));
 		FontMetrics fm = g.getFontMetrics();
 		int yPos = 5;
 		List<Spaceship> spaceships = new ArrayList(this.game.getSpaceships());

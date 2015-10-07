@@ -268,8 +268,8 @@ public class Game extends Observable implements Runnable
 					
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
 					if(/*b.getShooter() != null && */b.getShooter() != s){
-						b.getShooter().increaseScore();
-						server.sendMessagePacket("Player destroyed by Player");
+						//b.getShooter().increaseScore();
+						server.sendMessagePacket("Player was shot by Player");
 					}
 					
 					b.destroy ();
@@ -291,6 +291,7 @@ public class Game extends Observable implements Runnable
 				{ // Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();
+					server.sendMessagePacket("Player was smashed by an Asteroid");
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
@@ -354,9 +355,9 @@ public class Game extends Observable implements Runnable
 		return true;
 	}
 	
-	private boolean areAllAsteroidsDestroyed(){
+	protected boolean areAllAsteroidsDestroyed(){
 		
-		if(this.asteroids.isEmpty()){
+		/*if(this.asteroids.isEmpty()){
 			if(!this.areAllShipsDestroyed()){
 				for(Spaceship s: ships){
 					if(!s.isDestroyed()){
@@ -369,7 +370,8 @@ public class Game extends Observable implements Runnable
 			return true;
 		}else{
 			return false;
-		}
+		}*/
+		return this.asteroids.isEmpty();
 		
 		
 		/*for(Asteroid a : this.asteroids){
@@ -381,8 +383,22 @@ public class Game extends Observable implements Runnable
 		
 	}
 	
+	protected boolean isThereOnlyOneShipLeft(){
+		if(this.ships.isEmpty()){//This situation happens before a player has joined.
+			return false;
+		}
+		int amount = 0;
+		for(Spaceship s : this.ships){
+			if(!s.isDestroyed()){
+				++amount;
+			}
+		}
+		Logging.LOGGER.warning("ships left:"+amount);
+		return amount == 1;
+	}
+	
 	protected boolean isGameOver(){
-		return this.areAllShipsDestroyed() || this.areAllAsteroidsDestroyed();
+		return this.isThereOnlyOneShipLeft() || this.areAllAsteroidsDestroyed();
 	}
 	
 	/**
@@ -392,11 +408,11 @@ public class Game extends Observable implements Runnable
 	 * -> If there are still some ships alive, then return those.<br>
 	 * @return
 	 */
-	private List<Spaceship> getWinners(){
+	protected List<Spaceship> getWinners(){
 		double latestDestroyTime = 0;
 		List<Spaceship> result = new ArrayList<Spaceship>();
 		
-		for(Spaceship s : this.ships){
+		for(Spaceship s : this.getSpaceships()){
 			if(s.getDestroyTime() > latestDestroyTime){
 				result = new ArrayList<Spaceship>();
 				result.add(s);
@@ -405,6 +421,7 @@ public class Game extends Observable implements Runnable
 				result.add(s);
 			}
 		}
+		Logging.LOGGER.warning(result.toString());
 		return result;
 	}
 
@@ -449,6 +466,7 @@ public class Game extends Observable implements Runnable
 				sleepTime = 40 - executionTime;
 			}
 			else {
+				
 				sleepTime = 100;
 				this.server.restartGame();
 				return;

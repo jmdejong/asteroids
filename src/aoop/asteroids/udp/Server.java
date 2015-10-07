@@ -36,7 +36,7 @@ public class Server extends Base{
 	List<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
 	private List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
 	
-	private boolean isSinglePlayerMode = false;
+	private boolean singlePlayerMode = false;
 	private int roundNumber = 0;
 	
 	Game game;
@@ -54,8 +54,8 @@ public class Server extends Base{
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
-		this.isSinglePlayerMode = isSinglePlayer;
-		if(this.isSinglePlayerMode){
+		this.singlePlayerMode = isSinglePlayer;
+		if(this.isSinglePlayerMode()){
 			++roundNumber;
 		}
 		startNextGame();
@@ -74,7 +74,7 @@ public class Server extends Base{
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
 		//In single-player mode, reject more than one connection, and also all connections that are not from the current computer.
-		if(this.isSinglePlayerMode && (playerConnections.size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
+		if(this.isSinglePlayerMode() && (playerConnections.size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
 			return;
 		}
 		
@@ -82,9 +82,9 @@ public class Server extends Base{
 		addConnection(playerConnections, packetData, packet);
 
  		//System.out.println(playerConnections);
-		this.game.addSpaceship(!isSinglePlayerMode);
+		this.game.addSpaceship(!isSinglePlayerMode());
 		if(this.playerConnections.size() == 1){
-			if(isSinglePlayerMode){
+			if(isSinglePlayerMode()){
 				sendMessagePacket("Singleplayer Game Started");
 			}else{
 				sendMessagePacket("Multiplayer Game Started");
@@ -240,5 +240,10 @@ public class Server extends Base{
 	public List<ClientConnection> getPlayerConnections() {
 		return playerConnections;
 	}
+
+	public boolean isSinglePlayerMode() {
+		return singlePlayerMode;
+	}
+
 
 }

@@ -184,7 +184,8 @@ public class AsteroidsPanel extends JPanel
 			g.drawString(str, ((int)GameObject.worldWidth/2)-(stringWidth/2), ((int)GameObject.worldHeight/2)+(stringHeight*i));
 		}
 	}
-			private void paintScores(Graphics2D g) {
+	private void paintScores(Graphics2D g) {
+		g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 20));
 		FontMetrics fm = g.getFontMetrics();
 		int yPos = 5;
 		List<Spaceship> spaceships = new ArrayList(this.game.getSpaceships());

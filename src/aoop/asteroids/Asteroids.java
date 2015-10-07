@@ -34,7 +34,11 @@ public class Asteroids {
 			AsteroidsFrame frame = new AsteroidsFrame ();
 		} else {
 			if (args[0] == "server"){
-				new Server();
+				try {
+					new Server();
+				} catch (SocketException e) {
+					e.printStackTrace();
+				}
 			} else if (args[0] == "client"){
 				if (args.length == 1){
 					(new AsteroidsFrame()).startGame("localhost", false);

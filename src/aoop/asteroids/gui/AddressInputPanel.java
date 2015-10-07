@@ -6,6 +6,8 @@ import javax.swing.BoxLayout;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.BorderFactory;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,8 +34,12 @@ public class AddressInputPanel extends JPanel {
 		addressField.setMaximumSize( new Dimension(200,50) );
 		addressField.setBackground(Color.GRAY);
 		addressField.setForeground(Color.WHITE);
-		addressField.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+		addressField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 3), new EmptyBorder(5, 5, 5, 5)));
+		addressField.setText("127.0.0.1");
+		
 		this.add(addressField);
+		
+		
 		
 		connectButton = new JButton("Connect");
 		connectButton.setAlignmentX( Component.CENTER_ALIGNMENT );

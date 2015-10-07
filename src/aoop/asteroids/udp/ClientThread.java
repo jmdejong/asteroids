@@ -30,6 +30,8 @@ public class ClientThread extends BaseServerThread {
 		switch(packet_type){
 			case GAMESTATE:
 				System.out.println("C: Gamestate Packet Received");
+				System.out.println(packet_data);
+				this.client.game.unFreeze();
 				GameStatePacket.decodePacket((JSONArray) packet_data.get("d"), client.game);
 				break;
 			case SPECTATE_JOIN:

@@ -122,12 +122,16 @@ public class Game extends Observable implements Runnable
 		return c;
 	}
 	
-	public void addSpaceship(){
+	public void addSpaceship(boolean startDestroyed){
 		Spaceship s = new Spaceship();
 // 		System.out.println("adding spaceship.");
 		
 		this.ships.add(s);
 		s.reinit();
+		
+		if(startDestroyed){
+			s.destroy();
+		}
 	}
 
 	/** 
@@ -310,7 +314,7 @@ public class Game extends Observable implements Runnable
 	 *
 	 *	@return true if game is over, false otherwise.
 	 */ 
-	private boolean areAllShipsDestroyed ()
+	protected boolean areAllShipsDestroyed ()
 	{
 		if(this.ships.isEmpty()){//This situation happens before a player has joined.
 			return false;
@@ -335,7 +339,7 @@ public class Game extends Observable implements Runnable
 		return this.asteroids.isEmpty();
 	}
 	
-	private boolean isGameOver(){
+	protected boolean isGameOver(){
 		return this.areAllShipsDestroyed() ;//|| this.areAllAsteroidsDestroyed();
 	}
 	
@@ -405,6 +409,7 @@ public class Game extends Observable implements Runnable
 			else {
 				sleepTime = 100;
 				this.server.restartGame();
+				return;
 			}
 
 			try
@@ -429,12 +434,25 @@ public class Game extends Observable implements Runnable
 	
 	private void destroyAllShipsOfDisconnectedPlayers(){
 		List<ClientConnection> playerConnections = this.server.getPlayerConnections();
-		for(int i=0;i<playerConnections.size();i++){
-			Spaceship s = ships.get(i);
-			if(!s.isDestroyed() && playerConnections.get(i).isDisconnected()){
-				s.destroy();
+		try{
+			for(int i=0;i<playerConnections.size();i++){
+				Spaceship s = ships.get(i);
+				if(!s.isDestroyed() && playerConnections.get(i).isDisconnected()){
+					s.destroy();
+				}
 			}
+		}catch(IndexOutOfBoundsException e){
+			//e.printStackTrace();
 		}
+		
+	}
+
+	public void addSpaceships(List<Spaceship> spaceships) {
+		this.ships = spaceships;
+		for(Spaceship s : spaceships){
+			s.reinit();
+		}
+		
 	}
     
 	

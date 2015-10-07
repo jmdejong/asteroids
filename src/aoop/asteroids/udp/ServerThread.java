@@ -24,13 +24,14 @@ public class ServerThread extends BaseServerThread{
 	@Override
 	protected void parsePacket(String packet_string, DatagramPacket packet){
 		System.out.println("parsing packet.");
-		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
-		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
-		if(PacketType.values().length < raw_packet_type){
+		JSONObject packetData = (JSONObject) JSONValue.parse(packet_string);
+		int rawPacketType = ((Long) packetData.get("t")).intValue();
+		if(PacketType.values().length < rawPacketType){
 			System.out.println("Unsupported Packet Type Received.");
 			return;
 		}
-		PacketType packet_type = PacketType.values()[raw_packet_type];
+		PacketType packet_type = PacketType.values()[rawPacketType];
+		
 		
 		switch(packet_type){
 			case GAMESTATE:
@@ -47,10 +48,18 @@ public class ServerThread extends BaseServerThread{
 				break;
 			case SPECTATOR_PING:
 				System.out.println("S: Spectator Ping Packet Received");
+				if(!server.checkIfLatestPacket(packetData, packet)){
+					return;
+				}
+				server.updateConnectionData(packetData, packet);
 				break;
 			case PLAYER_UPDATE:
 				System.out.println("S: Player Update Packet Received");
-				server.updatePlayerShip((JSONArray)packet_data.get("d"), packet.getSocketAddress());
+				if(!server.checkIfLatestPacket(packetData, packet)){
+					return;
+				}
+				server.updatePlayerShip((JSONArray)packetData.get("d"), packet.getSocketAddress());
+				server.updateConnectionData(packetData, packet);
 				break;
 			case PLAYER_LOSE:
 				//Do nothing. Server should send this; not receive it!
@@ -61,6 +70,8 @@ public class ServerThread extends BaseServerThread{
 				System.out.println("S: Round End Packet Received");
 				break;
 		}
+		
+		server.tagNonrespondingClients();
 	}
 	
 	

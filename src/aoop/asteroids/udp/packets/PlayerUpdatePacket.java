@@ -24,7 +24,7 @@ public class PlayerUpdatePacket extends Packet {
 		influencedShip.setRight(right);
 		influencedShip.setIsFiring(fire);
 		
-		System.out.println("up:"+up+" left:"+left+" right:"+right+" fire:"+fire);
+		//System.out.println("up:"+up+" left:"+left+" right:"+right+" fire:"+fire);
 		
 		return influencedShip;
 	}

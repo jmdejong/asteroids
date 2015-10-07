@@ -51,7 +51,7 @@ public class ClientConnection {
 	
 	public void tagAsDisconnectedIfNotResponding(){
 		long currentTime = System.currentTimeMillis();
-		if(this.getLastPingTime() < currentTime - 5000){
+		if(this.getLastPingTime() < currentTime - Server.MaxNonRespondTime){
 			this.disconnected = true;
 			System.err.println("Connection is not responding:"+this);
 		}

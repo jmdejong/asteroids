@@ -32,6 +32,17 @@ public class ServerThread extends BaseServerThread{
 		}
 		PacketType packet_type = PacketType.values()[rawPacketType];
 		
+		ClientConnection c = server.findClientConnection(packet.getSocketAddress());
+		
+		//Reject all packets from connectiosn that have been considered disconnected.
+		if(c != null && c.isDisconnected()){
+			return;
+		}
+		
+		//Reject all non-join packets from unknown connections.
+		if(c == null && !(packet_type == Packet.PacketType.SPECTATE_JOIN || packet_type == Packet.PacketType.PLAYER_JOIN)){
+			return;
+		}
 		
 		switch(packet_type){
 			case GAMESTATE:
@@ -40,11 +51,11 @@ public class ServerThread extends BaseServerThread{
 				break;
 			case SPECTATE_JOIN:
 				System.out.println("S: Specate Join Packet Received");
-				server.addSpectatorConnection(packet.getSocketAddress());
+				server.addSpectatorConnection(packetData, packet);
 				break;
 			case PLAYER_JOIN:
 				System.out.println("S: Player Join Packet Received");
-				server.addPlayerConnection(packet.getSocketAddress());
+				server.addPlayerConnection(packetData, packet);
 				break;
 			case SPECTATOR_PING:
 				System.out.println("S: Spectator Ping Packet Received");

@@ -307,7 +307,7 @@ public class Game extends Observable implements Runnable
 		{
 			if (a.isDestroyed ())
 			{
-				this.increaseScore ();
+				//this.increaseScore ();
 				Collection <Asteroid> successors = a.getSuccessors ();
 				newAsts.addAll (successors);
 			}

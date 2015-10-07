@@ -81,7 +81,7 @@ public class Spaceship extends GameObject
 		this.score			= score;
 		this.destroyed 		= destroyed;
 		this.destroyTime 	= destroyTime;
-		this.colour          = colour;
+		this.setColour(colour);
 	}
 
 
@@ -188,7 +188,7 @@ public class Spaceship extends GameObject
 	 */
 	public Spaceship clone ()
 	{
-		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.isDestroyed(), this.destroyTime, this.colour);
+		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.isDestroyed(), this.destroyTime, this.getColour());
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class Spaceship extends GameObject
 		result.add(this.isAccelerating() ? 1 : 0);
 		result.add(this.getScore());
 		result.add(this.isDestroyed() ? 1 : 0);
-		result.add(this.colour);
+		result.add(this.getColour());
 		return result;
 	}
 	
@@ -278,6 +278,14 @@ public class Spaceship extends GameObject
 		
 		super.destroy();
 		this.destroyTime = (double) System.currentTimeMillis();
+	}
+
+	public long getColour() {
+		return colour;
+	}
+
+	public void setColour(long colour) {
+		this.colour = colour;
 	}
 	
 }

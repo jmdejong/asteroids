@@ -10,7 +10,7 @@ public class Logging {
 	public final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	
 	/**
-	 * Change the loggerLevel to have the program display more shit.
+	 * Change the loggerLevel to have the program display more status messages.
 	 * @see java.util.logging.Level
 	 */
 	public final static Level loggerLevel = Level.WARNING;

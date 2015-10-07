@@ -126,24 +126,25 @@ public class AsteroidsPanel extends JPanel
 			if(s==null || s.isDestroyed()){
 				continue;
 			}
+			Color c = new Color((int) s.getColour());
 
-			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating());
-			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating());
-			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX(),(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating());
-			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX(),(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating());
+			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating(), c);
+			paintSpaceshipPart(g,(int)s.getLocation().getX()      ,(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating(), c);
+			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX(),(int) s.getLocation().getY()      ,s.getDirection(),s.isAccelerating(), c);
+			paintSpaceshipPart(g,(int)s.getMirrorLocation().getX(),(int) s.getMirrorLocation().getY(),s.getDirection(),s.isAccelerating(), c);
 			
 		}
 		
 	}
 	
-	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating){
+	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating, Color c){
 		// Draw body of the spaceship
 		Polygon p = new Polygon ();
 		p.addPoint ((int)(x + Math.sin (direction				 ) * 20), (int)(y - Math.cos (direction				   ) * 20));
 		p.addPoint ((int)(x + Math.sin (direction + 0.8 * Math.PI) * 20), (int)(y - Math.cos (direction + 0.8 * Math.PI) * 20));
 		p.addPoint ((int)(x + Math.sin (direction + 1.2 * Math.PI) * 20), (int)(y - Math.cos (direction + 1.2 * Math.PI) * 20));
 
-		g.setColor (Color.BLACK);
+		g.setColor (c);
 		g.fill (p);
 		g.setColor (Color.WHITE);
 		g.draw (p);

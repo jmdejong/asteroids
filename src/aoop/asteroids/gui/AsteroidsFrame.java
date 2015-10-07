@@ -74,16 +74,17 @@ public class AsteroidsFrame extends JFrame
 		
 		mp.makeButton("Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
-				Server server = new Server(true);
+				new Server(true);
+				startGame("localhost", false);
 			} catch (SocketException e) {
 				e.printStackTrace();
 			}
-			startGame("localhost", false);
+			
 		}});
 		
 		mp.makeButton("Multiplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
-				Server server = new Server();
+				new Server(false);
 				startGame("localhost", false);
 			} catch (SocketException e) {
 				e.printStackTrace();

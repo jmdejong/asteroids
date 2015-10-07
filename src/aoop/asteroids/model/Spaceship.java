@@ -44,15 +44,17 @@ public class Spaceship extends GameObject
 	
 	private int colour;
 	
+	private String name;
+	
 	/** Set when a ship is destroyed. Used to determine the winner after all ships have been destroyed.
 	 *  Obviously, for alive ships this is +Infinity.
 	 * */
 	private double destroyTime = Double.POSITIVE_INFINITY;
 
 	/** Constructs a new spaceship with default values. */
-	public Spaceship ()
+	public Spaceship (String name)
 	{
-		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, (new Random()).nextInt(16777216));
+		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, (new Random()).nextInt(16777216));
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, int colour)
+	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, String name, int colour)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.direction 		= direction;
@@ -81,6 +83,7 @@ public class Spaceship extends GameObject
 		this.score			= score;
 		this.destroyed 		= destroyed;
 		this.destroyTime 	= destroyTime;
+		this.name           = name;
 		this.setColour(colour);
 	}
 
@@ -102,7 +105,6 @@ public class Spaceship extends GameObject
 		this.right 			= false;
 		this.destroyed		= false;
 		this.stepsTilFire 	= 0;
-		this.score 			= 0;
 		this.destroyTime 	= Double.POSITIVE_INFINITY;
 	}
 
@@ -187,7 +189,7 @@ public class Spaceship extends GameObject
 	 */
 	public Spaceship clone ()
 	{
-		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.isDestroyed(), this.destroyTime, this.getColour());
+		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.isDestroyed(), this.destroyTime, this.name, this.getColour());
 	}
 
 	/**
@@ -251,6 +253,7 @@ public class Spaceship extends GameObject
 		result.add(this.isAccelerating() ? 1 : 0);
 		result.add(this.getScore());
 		result.add(this.isDestroyed() ? 1 : 0);
+		result.add(this.getName());
 		result.add(this.getColour());
 		return result;
 	}
@@ -264,8 +267,9 @@ public class Spaceship extends GameObject
 		boolean isAccelerating = ((long) json.get(5)) == 1;
 		int score = ((Long) json.get(6)).intValue();
 		boolean destroyed = ((long) json.get(7)) == 1;
-		int colour = ((Long) json.get(8)).intValue();
-		return new Spaceship(new WrappablePoint(x,y),velocityX, velocityY, 15, direction, isAccelerating, score, destroyed, Double.POSITIVE_INFINITY, colour);
+		String name = (String) json.get(8);
+		int colour = ((Long) json.get(9)).intValue();
+		return new Spaceship(new WrappablePoint(x,y),velocityX, velocityY, 15, direction, isAccelerating, score, destroyed, Double.POSITIVE_INFINITY, name, colour);
 	}
 
 	public double getDestroyTime() {
@@ -278,11 +282,15 @@ public class Spaceship extends GameObject
 		super.destroy();
 		this.destroyTime = (double) System.currentTimeMillis();
 	}
+	
+	public String getName() {
+		return name;
+	}
 
 	public int getColour() {
 		return colour;
 	}
-
+	
 	public void setColour(int colour) {
 		this.colour = colour;
 	}

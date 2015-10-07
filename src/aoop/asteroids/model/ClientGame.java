@@ -124,9 +124,9 @@ public class ClientGame extends Observable implements Runnable{
 		this.messages.add(new GameMessage(message));
 	}
 	
-	public Spaceship getSpaceship(){
-		return ships.toArray(new Spaceship[1])[0];
-	}
+// 	public Spaceship getSpaceship(){
+// 		return ships.toArray(new Spaceship[1])[0];
+// 	}
 	
 	public Collection<Asteroid> getAsteroids() {
 		return asteroids;

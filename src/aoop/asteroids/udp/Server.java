@@ -20,6 +20,7 @@ import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessagePacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
+import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 import aoop.asteroids.udp.packets.RoundEndPacket;
 
@@ -80,11 +81,11 @@ public class Server extends Base{
 			return;
 		}
 		
-		//System.out.println("Adding player connection.");
 		addConnection(playerConnections, packetData, packet);
-
- 		//System.out.println(playerConnections);
-		this.game.addSpaceship(!isSinglePlayerMode);
+		
+		String name = PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d"));
+		
+		this.game.addSpaceship(name, !isSinglePlayerMode);
 		
 		sendMessagePacket("New Player Connected: "+playerConnections.get(playerConnections.size()-1).toString());
 

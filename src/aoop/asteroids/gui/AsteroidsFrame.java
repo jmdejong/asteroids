@@ -41,6 +41,8 @@ public class AsteroidsFrame extends JFrame
 	/** The panel in which the game is painted. */
 	private AsteroidsPanel ap;
 	
+	private MenuPanel mp;
+	
 // 	private AddressInputPanel aip;
 	/** 
 	 *	Constructs a new Frame, requires a game model.
@@ -69,8 +71,7 @@ public class AsteroidsFrame extends JFrame
 		final AddressInputPanel aip = new AddressInputPanel();
 		
 		cards.add(aip, "Address input card");
-		
-		MenuPanel mp = new MenuPanel();
+		mp = new MenuPanel();
 		
 		mp.makeButton("Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
@@ -122,7 +123,7 @@ public class AsteroidsFrame extends JFrame
 	
 	public void startGame(String address, Boolean isSpectator){
 		
-		Client client = new Client(address, Server.UDPPort, isSpectator);
+		Client client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
 		addKeyListener(client.game.spaceshipController);
 		
 		ap.observeGame(client.game);
@@ -143,7 +144,7 @@ public class AsteroidsFrame extends JFrame
 		}
 		catch (InterruptedException e)
 		{
-			System.err.println ("Could not sleep before initialing a new game.");
+			System.err.println ("Could not sleep before initializing a new game.");
 			e.printStackTrace ();
 		}
 		this.game.initGameData ();

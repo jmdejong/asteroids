@@ -39,16 +39,14 @@ public class Server extends Base{
 	
 	DatagramSocket sendSocket;
 	
-	public Server(){
+	public Server() throws SocketException{
 		super();
 		
 		
 		
-		try {
-			this.sendSocket = new DatagramSocket(Server.UDPPort);
-		} catch (SocketException e1) {
-			e1.printStackTrace();
-		}
+		
+		this.sendSocket = new DatagramSocket(Server.UDPPort);
+		
 		
 		this.game = new Game(this);
 		Thread t = new Thread (game);

@@ -14,6 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+import java.net.SocketException;
 
 import aoop.asteroids.udp.Client;
 import aoop.asteroids.udp.Server;
@@ -91,8 +92,13 @@ public class AsteroidsFrame extends JFrame
 		
 		MenuPanel mp = new MenuPanel();
 		mp.makeButton("Single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
-			Server server = new Server();
-			startGame();
+			try {
+				Server server = new Server();
+				startGame();
+			} catch (SocketException e) {
+				e.printStackTrace();
+			}
+			
 		}});
 		mp.makeButton("Spectate single player", new AbstractAction (){ public void actionPerformed(ActionEvent arg0) {
 			startGame();
@@ -122,10 +128,15 @@ public class AsteroidsFrame extends JFrame
 	
 	public void startSinglePlayerGame(){
 		
-		Server server = new Server();
+		try {
+			Server server = new Server();
+			startGame ();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
 		
 		
-		startGame ();
+		
 	}
 	
 	public void startGame(){

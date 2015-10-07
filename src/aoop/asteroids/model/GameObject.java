@@ -61,7 +61,9 @@ public abstract class GameObject
 	}
 
 	/** Subclasses need to specify their own behaviour. */
-	abstract public void nextStep ();
+	public void nextStep (){
+		this.setLocation(new WrappablePoint(this.locationX+this.velocityX,this.locationY+this.velocityY));
+	}
 
 	/** Destroys the object by setting the destroyed value to true. */
 	public void destroy ()

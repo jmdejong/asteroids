@@ -17,6 +17,7 @@ public class Lobby extends Game {
 			return Double.POSITIVE_INFINITY;
 		}else if(this.startCountdownTime==0){
 			startCountdownTime = System.currentTimeMillis();
+			server.sendMessagePacket("Starting Next Round in "+(waitingTime/1000)+" seconds");
 		}
 		double time = System.currentTimeMillis() - this.startCountdownTime;
 		return Lobby.waitingTime - time;

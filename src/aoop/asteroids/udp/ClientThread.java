@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import aoop.asteroids.udp.packets.GameStatePacket;
+import aoop.asteroids.udp.packets.MessagePacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
 
 public class ClientThread extends BaseServerThread {
@@ -61,6 +62,14 @@ public class ClientThread extends BaseServerThread {
 				this.client.game.freeze();
 				//TODO: More sophisticated round restart logic?
 				break;
+			case MESSAGE:
+				Logging.LOGGER.fine("C: Message Packet Received");
+				Logging.LOGGER.info(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
+				break;	
+			default:
+				Logging.LOGGER.fine("C: Unknown packet type!");
+				break;
+				
 		}
 		
 	}

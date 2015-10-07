@@ -52,6 +52,7 @@ public class Bullet extends GameObject
 	{
 		super (location, velocityX, velocityY, 0);
 		this.stepsLeft = stepsLeft;
+		this.shooter = shooter;
 	}
 
 	/**
@@ -63,8 +64,9 @@ public class Bullet extends GameObject
 	@Override 
 	public void nextStep () 
 	{
+		super.nextStep();
 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
-		this.setLocation(new WrappablePoint (this.locationX+this.velocityX,this.locationY+this.velocityY));
+		
 		this.stepsLeft--;
 
 		if (this.stepsLeft < 0)

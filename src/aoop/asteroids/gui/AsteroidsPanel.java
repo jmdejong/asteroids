@@ -84,10 +84,11 @@ public class AsteroidsPanel extends JPanel
 	 */
 	private void paintBullets (Graphics2D g)
 	{
-		g.setColor(Color.yellow);
+		g.setColor(Color.YELLOW);
 
-		for (Bullet b : this.game.getBullets ())
-		    g.drawOval (((int)b.getLocation ().x) - 2, ((int)b.getLocation ().y) - 2, 5, 5);
+		for (Bullet b : this.game.getBullets ()){
+		    g.fillOval (((int)b.getLocation ().x) - 2, ((int)b.getLocation ().y) - 2, 5, 5);
+		}
 	}
 
 	/**

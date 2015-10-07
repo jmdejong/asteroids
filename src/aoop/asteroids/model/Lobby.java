@@ -1,5 +1,6 @@
 package aoop.asteroids.model;
 
+import aoop.asteroids.Logging;
 import aoop.asteroids.udp.Server;
 
 public class Lobby extends Game {
@@ -22,7 +23,7 @@ public class Lobby extends Game {
 	}
 	
 	protected boolean isGameOver(){
-		System.out.println("Time until next level:"+this.timeUntilOver());
+		Logging.LOGGER.fine("Time until next level:"+this.timeUntilOver());
 		return this.timeUntilOver() <= 0;
 	}
 

@@ -30,7 +30,7 @@ public class ClientThread extends BaseServerThread {
 		switch(packet_type){
 			case GAMESTATE:
 				Logging.LOGGER.fine("C: Gamestate Packet Received");
-				Logging.LOGGER.fine(packet_data);
+				Logging.LOGGER.fine(packet_data.toString());
 				this.client.game.unFreeze();
 				GameStatePacket.decodePacket((JSONArray) packet_data.get("d"), client.game);
 				break;

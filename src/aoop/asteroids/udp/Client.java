@@ -57,11 +57,11 @@ public class Client extends Base{
 	
 	private DatagramSocket createSocketOnFirstUnusedPort(){
 		int port = Client.UDPPort;
-		while(port-Client.UDPPort < 100){
+		while(port < Client.UDPPort + 100){
 			try{
 				return new DatagramSocket(port);
 			}catch(SocketException b){
-				
+				port++;
 			}
 		}
 		return null;

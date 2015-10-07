@@ -1,5 +1,6 @@
 package aoop.asteroids.model;
 
+import aoop.asteroids.udp.ClientConnection;
 import aoop.asteroids.udp.Server;
 import aoop.asteroids.udp.packets.GameStatePacket;
 
@@ -178,6 +179,8 @@ public class Game extends Observable implements Runnable
 
 		this.checkCollisions ();
 		this.removeDestroyedObjects ();
+		
+		this.destroyAllShipsOfDisconnectedPlayers();
 
 		if (this.cycleCounter == 0 && this.asteroids.size () < this.asteroidsLimit) this.addRandomAsteroid ();
 		this.cycleCounter++;
@@ -422,6 +425,16 @@ public class Game extends Observable implements Runnable
 			return null;
 		}
 		return this.ships.toArray(new Spaceship[this.ships.size()])[index];
+	}
+	
+	private void destroyAllShipsOfDisconnectedPlayers(){
+		List<ClientConnection> playerConnections = this.server.getPlayerConnections();
+		for(int i=0;i<playerConnections.size();i++){
+			Spaceship s = ships.get(i);
+			if(!s.isDestroyed() && playerConnections.get(i).isDisconnected()){
+				s.destroy();
+			}
+		}
 	}
     
 	

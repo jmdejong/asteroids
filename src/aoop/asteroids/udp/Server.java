@@ -25,8 +25,15 @@ public class Server extends Base{
 	
 	public static int UDPPort = 8090;
 	
+	/**
+	 * If a client takes longer than this to send a packet, the connection to that client will be considered disconnected.
+	 */
+	public static int MaxNonRespondTime = 5000; 
+	
 	List<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
-	List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
+	private List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
+	
+	
 	
 	Game game;
 	
@@ -55,12 +62,24 @@ public class Server extends Base{
 		}
 	}
 	
-	public void addSpectatorConnection(SocketAddress address){
-		spectatorConnections.add(new ClientConnection((InetSocketAddress)address));
+	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
+		long packetId = ((Long) packetData.get("r"));
+		
+		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
+		c.setLastPingTime(System.currentTimeMillis());
+		c.updateLastPacketId(packetId);
+		
+		spectatorConnections.add(c);
 // 		System.out.println(spectatorConnections);
 	}
-	public void addPlayerConnection(SocketAddress address){
-		playerConnections.add(new ClientConnection((InetSocketAddress)address));
+	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
+		long packetId = ((Long) packetData.get("r"));
+		
+		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
+		c.setLastPingTime(System.currentTimeMillis());
+		c.updateLastPacketId(packetId);
+		
+		getPlayerConnections().add(c);
  		//System.out.println(playerConnections);
 		this.game.addSpaceship();
 	}
@@ -81,11 +100,11 @@ public class Server extends Base{
 	}
 	
 	public void sendPlayerLosePacket(int ship_index){
-		if(ship_index < 0 || ship_index > playerConnections.size()){
+		if(ship_index < 0 || ship_index > getPlayerConnections().size()){
 			return;
 		}
 		
-		InetSocketAddress connection = playerConnections.get(ship_index).getSocketAddress();
+		InetSocketAddress connection = getPlayerConnections().get(ship_index).getSocketAddress();
 		
 		PlayerLosePacket playerLosePacket = new PlayerLosePacket();
 		try {
@@ -104,7 +123,7 @@ public class Server extends Base{
 	}
 	
 	private void sendPacketToAll(String packet_string) throws IOException{
-		for(ClientConnection connection : playerConnections){
+		for(ClientConnection connection : getPlayerConnections()){
 			super.sendPacket(packet_string, connection.getAddress(), connection.getPort(), sendSocket);
 		}
 		for(ClientConnection connection : spectatorConnections){
@@ -114,7 +133,7 @@ public class Server extends Base{
 
 	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
 		System.out.println(socketAddress);
-		int index = playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
+		int index = getPlayerConnections().indexOf(new ClientConnection((InetSocketAddress)socketAddress));
 		if(index == -1){
 			return;
 		}
@@ -127,11 +146,11 @@ public class Server extends Base{
 	}
 	
 	public ClientConnection findClientConnection(SocketAddress socketAddress){
-		int index = playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
+		int index = getPlayerConnections().indexOf(new ClientConnection((InetSocketAddress)socketAddress));
 		if(index == -1){
 			return null;
 		}
-		return playerConnections.get(index);
+		return getPlayerConnections().get(index);
 	}
 	
 	public void sendPlayerPacket(){
@@ -150,7 +169,7 @@ public class Server extends Base{
 	 * */
 	public void tagNonrespondingClients(){
 		
-		for(ClientConnection c : playerConnections){
+		for(ClientConnection c : getPlayerConnections()){
 			c.tagAsDisconnectedIfNotResponding();
 			System.err.println(c.toDebugString());
 		}
@@ -171,4 +190,9 @@ public class Server extends Base{
 		ClientConnection c = this.findClientConnection(packet.getSocketAddress());
 		return c.getLastPacketId() < packetId;
 	}
+
+	public List<ClientConnection> getPlayerConnections() {
+		return playerConnections;
+	}
+
 }

@@ -103,6 +103,7 @@ public class Server extends Base{
 		long packetId = ((Long) packetData.get("r"));
 		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
+		c.setName(PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d")));
 		c.setLastPingTime(System.currentTimeMillis());
 		c.updateLastPacketId(packetId);
 		
@@ -218,7 +219,7 @@ public class Server extends Base{
 			c.tagAsDisconnectedIfNotResponding();
 			Logging.LOGGER.fine(c.toDebugString());
 			if(c.isDisconnected()){
-				this.sendMessagePacket("Connection Lost with: "+c.toString());
+				this.sendMessagePacket("Connection Lost with: "+c.getName());
 			}
 		}
 	}

@@ -421,7 +421,7 @@ public class Game extends Observable implements Runnable
 				result.add(s);
 			}
 		}
-		Logging.LOGGER.warning(result.toString());
+		Logging.LOGGER.warning("Winners:"+result);
 		return result;
 	}
 

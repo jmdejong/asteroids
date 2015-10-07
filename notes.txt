@@ -1,0 +1,8 @@
+
+
+Always use most generic types (eg: List or Collection instead of ArrayList)
+mention when you made Lazovik happy
+Lazovik gets happe when we use Future
+
+Why use one garbage collection instead of another
+question about GC optional: When to use

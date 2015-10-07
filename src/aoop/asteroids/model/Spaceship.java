@@ -72,7 +72,7 @@ public class Spaceship extends GameObject
 	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, int colour)
 	{
 		super (location, velocityX, velocityY, radius);
-		this.direction 		= direction;
+		this.setDirection(direction);
 		this.up 			= up;
 		this.isFiring 		= false;
 		this.left 			= false;
@@ -95,7 +95,7 @@ public class Spaceship extends GameObject
 		this.locationY 		= 400;
 		this.velocityX 		= 0;
 		this.velocityY 		= 0;
-		this.direction 		= 0;
+		this.setDirection(0);
 		this.up 			= false;
 		this.isFiring 		= false;
 		this.left 			= false;
@@ -162,12 +162,12 @@ public class Spaceship extends GameObject
 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		// Update direction if turning.
-		if (this.left ) this.direction -= 0.04 * Math.PI;
-		if (this.right) this.direction += 0.04 * Math.PI;
+		if (this.left ) this.setDirection(this.getDirection() - 0.04 * Math.PI);
+		if (this.right) this.setDirection(this.getDirection() + 0.04 * Math.PI);
 		if (this.up)
 		{ // Update speed if accelerating, but constrain values.
-			this.velocityX = Math.max (-10, Math.min (10, this.velocityX + Math.sin (direction) * 0.4));
-			this.velocityY = Math.max (-10, Math.min (10, this.velocityY - Math.cos (direction) * 0.4));
+			this.velocityX = Math.max (-10, Math.min (10, this.velocityX + Math.sin (getDirection()) * 0.4));
+			this.velocityY = Math.max (-10, Math.min (10, this.velocityY - Math.cos (getDirection()) * 0.4));
 		}
 
 		// Decrease speed due to traction.
@@ -187,7 +187,7 @@ public class Spaceship extends GameObject
 	 */
 	public Spaceship clone ()
 	{
-		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.isDestroyed(), this.destroyTime, this.getColour());
+		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.getDirection(), this.up, this.score, this.isDestroyed(), this.destroyTime, this.getColour());
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class Spaceship extends GameObject
 	
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
-		result.add(this.direction);
+		result.add(this.getDirection());
 		result.add(this.isAccelerating() ? 1 : 0);
 		result.add(this.getScore());
 		result.add(this.isDestroyed() ? 1 : 0);
@@ -285,6 +285,10 @@ public class Spaceship extends GameObject
 
 	public void setColour(int colour) {
 		this.colour = colour;
+	}
+
+	public void setDirection(double direction) {
+		this.direction = direction;
 	}
 	
 }

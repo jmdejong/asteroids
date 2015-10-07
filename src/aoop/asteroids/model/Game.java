@@ -482,10 +482,30 @@ public class Game extends Observable implements Runnable
 		
 	}
 
+	/**
+	 * Adds multiple spaceships at once to the game.
+	 * Used when starting a new game round.
+	 * In singleplayer mode, ship is rendered in the middle of the screen, pointing up.
+	 * In multiplayer, ships are set in a circle, pointing outward.
+	 * @param spaceships
+	 */
 	public void addSpaceships(List<Spaceship> spaceships) {
 		this.ships = spaceships;
-		for(Spaceship s : spaceships){
+		for(int i=0;i<spaceships.size();i++){
+			Spaceship s = spaceships.get(i);
 			s.reinit();
+			if(spaceships.size()==1){
+				s.setLocation(new WrappablePoint(GameObject.worldWidth/2, GameObject.worldHeight/2));
+			}else{
+				int amount = spaceships.size();
+				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
+				int radius = 50;
+				int dx = 0;
+				int dy = 0;
+				s.setLocation(new WrappablePoint((GameObject.worldWidth/2) + radius*Math.sin(rotation), (GameObject.worldHeight/2) + radius*Math.cos(rotation)));
+				s.setDirection(Math.PI-rotation);
+			}
+			
 		}
 		
 	}

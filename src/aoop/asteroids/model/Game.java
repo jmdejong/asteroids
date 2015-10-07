@@ -99,7 +99,7 @@ public class Game extends Observable implements Runnable
 	{
 		this.aborted = false;
 		this.numberOfSpawnedAsteroids = 0;
-		this.asteroidsLimit = roundNumber;
+		this.asteroidsLimit = roundNumber == 0 ? 0 : Math.max(1, roundNumber / 3);
 		Logging.LOGGER.warning("round number:"+roundNumber);
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();

@@ -1,9 +1,14 @@
 package aoop.asteroids.model;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Observable;
+
+import javax.imageio.ImageIO;
 
 import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.udp.Client;
@@ -29,6 +34,8 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private Client client;
 	
+	public BufferedImage bgimage;
+	
 	/** if set to true, this Game will not try to send any more input packets until the current round is over.*/
 	public boolean hasLost = false;
 
@@ -40,6 +47,12 @@ public class ClientGame extends Observable implements Runnable{
 		
 		if(!this.client.isSpectator){
 			this.spaceshipController = new SpaceshipController();
+		}
+		
+		try {
+			this.bgimage = ImageIO.read(new File("images/scape0.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 	}

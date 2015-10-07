@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.Polygon;
 import java.awt.RadialGradientPaint;
@@ -80,6 +81,11 @@ public class AsteroidsPanel extends JPanel
 		g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.setBackground (Color.black);
 		
+		g2.drawImage((Image)game.bgimage, 0,0, null);
+		g2.setColor(new Color(0,0,0,0.8f));
+		g2.fillRect(0, 0, (int)GameObject.worldWidth, (int)GameObject.worldHeight);
+		
+		
 		this.paintSun(g2);
 
 		this.paintSpaceships (g2);
@@ -144,7 +150,7 @@ public class AsteroidsPanel extends JPanel
 		int x = (int) (GameObject.worldWidth / 2);
 		int y = (int) (GameObject.worldHeight / 2);
 		e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
-		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0, 0.05f, 0.2f, 1}, new Color[]{Color.WHITE, new Color(0,40,41), new Color(0,10,10), Color.BLACK}, CycleMethod.NO_CYCLE);
+		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0, 0.05f, 0.2f, 1}, new Color[]{Color.WHITE, new Color(0,40,41, 191), new Color(0,10,10, 0), new Color(0,0,0,0)}, CycleMethod.NO_CYCLE);
 		g.setPaint(roundGradientPaint);
 		g.fill (e);
 	}
@@ -262,7 +268,6 @@ public class AsteroidsPanel extends JPanel
 	        	alpha = 0;
 	        }
 	        Color oc = new Color(e.getColor());
-	        Logging.LOGGER.severe(oc.toString());
 	        Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
 	        Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
 

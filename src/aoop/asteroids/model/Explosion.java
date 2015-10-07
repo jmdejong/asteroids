@@ -5,7 +5,7 @@ import org.json.simple.JSONArray;
 public class Explosion extends GameObject {
 	
 	//public static int radius = 20;
-	public static int particleAmount = 50;
+	public static int particleAmount = 25;
 	public static int maxTimeUntilFadeout = 2000;
 	
 	

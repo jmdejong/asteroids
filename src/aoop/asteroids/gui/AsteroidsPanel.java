@@ -17,12 +17,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MultipleGradientPaint.CycleMethod;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RadialGradientPaint;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.TexturePaint;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.awt.FontMetrics;
 import javax.swing.JPanel;
@@ -82,12 +86,17 @@ public class AsteroidsPanel extends JPanel
 		g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.setBackground (Color.black);
 		
-		g2.drawImage((Image)game.bgimage, 0,0, null);
-		g2.setColor(new Color(0,0,0,0.8f));
+		//g2.drawImage((Image)game.bgimage, 0,0, null);
+		
+		paintBackground(g2, game.bgimage, (int)game.bgPos.x,(int) game.bgPos.y);
+		
+		
+		
+		g2.setColor(new Color(0,0,0,0.5f));
 		g2.fillRect(0, 0, (int)GameObject.worldWidth, (int)GameObject.worldHeight);
 		
 		
-		this.paintSun(g2);
+		//this.paintSun(g2);
 
 		this.paintSpaceships (g2);
 		this.paintAsteroids (g2);
@@ -306,8 +315,19 @@ public class AsteroidsPanel extends JPanel
 			ell.setFrame (finalx - radius, finaly - radius, 2 * radius, 2 * radius);
 			g.fill(ell);
 	    }
+	}
 	    
-		
+    private void paintBackground(Graphics2D g, BufferedImage i, int xoffset, int yoffset){
+    	int iw, ih;
+    	iw = i.getWidth();
+    	ih = i.getHeight();
+    	
+    	
+    	
+    	Rectangle imageBounds = new Rectangle(xoffset, yoffset, iw, ih);
+	    TexturePaint    tp = new TexturePaint(i, imageBounds);
 	    
+	    g.setPaint(tp);
+	    g.fillRect(0, 0, (int) GameObject.worldWidth, (int) GameObject.worldHeight);
 	}
 }

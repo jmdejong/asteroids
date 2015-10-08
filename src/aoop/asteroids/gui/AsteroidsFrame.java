@@ -55,7 +55,8 @@ public class AsteroidsFrame extends JFrame
 	/** The game model. */
 	private Game game;
 	
-	private CardContainer cards;
+	private JPanel cards;
+	private CardLayout cardLayout = new CardLayout();
 
 	/** The panel in which the game is painted. */
 	private AsteroidsPanel ap;
@@ -78,24 +79,17 @@ public class AsteroidsFrame extends JFrame
 		
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
-		cards = new CardContainer();
+		cards = new JPanel(cardLayout);
+		cards.setSize(800,700);
 		
 		
 		this.setSize(cards.getSize());
 		
 		
 		ap = new AsteroidsPanel ();
-		cards.add(ap, "Game card");
+		cards.add(ap, "game card");
 		
-		final AddressInputPanel aip = new AddressInputPanel();
-		
-		aip.setBackAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-			cards.showCard("Menu card");
-		}});
-		
-		
-		cards.add(aip, "Address input card");
-		mp = new MenuPanel("ASTEROIDS");
+		mp = new MenuPanel();
 		
 		mp.setPlayAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
@@ -117,25 +111,19 @@ public class AsteroidsFrame extends JFrame
 			}
 		}});
 		mp.setJoinAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-			cards.showCard("Address input card");
-			aip.setClickAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
-				Logging.LOGGER.fine(aip.getAddress());
-				startGame(aip.getAddress(), false);
-			}});
+			Logging.LOGGER.fine(mp.getAddress());
+			startGame(mp.getAddress(), false);
 		}});
 		mp.setSpectateAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-			cards.showCard("Address input card");
-			aip.setClickAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
-				Logging.LOGGER.fine(aip.getAddress());
-				startGame(aip.getAddress(), true);
-			}});
+			Logging.LOGGER.fine(mp.getAddress());
+			startGame(mp.getAddress(), true);
 		}});
 		
 		mp.setQuitAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			System.exit(0);
 		}});
 		
-		cards.add(mp, "Menu card");
+		cards.add(mp, "menu card");
 		
 		this.add(cards);
 		
@@ -147,7 +135,7 @@ public class AsteroidsFrame extends JFrame
 	
 	private void showMenu(){
 		
-		cards.showCard("Menu card");
+		cardLayout.show(cards, "menu card");
 	}
 	
 	public void startGame(String address, Boolean isSpectator){
@@ -157,7 +145,7 @@ public class AsteroidsFrame extends JFrame
 		
 		ap.observeGame(client.game);
 		
-		cards.showCard( "Game card");
+		cardLayout.show(cards, "game card");
 		
 
 		this.requestFocusInWindow();

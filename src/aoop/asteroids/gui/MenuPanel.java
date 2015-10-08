@@ -12,6 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.Box;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
+import javax.swing.Action;
+import javax.swing.AbstractAction;
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -27,12 +30,12 @@ public class MenuPanel extends JPanel {
 	
 	private static Color ButtonBorderColor = Color.GREEN;
 	private static Color TextColor = Color.GREEN;
-	private static Color ButtonBackColor = Color.BLACK;
+	private static Color BackColor = Color.BLACK;
 	private static int ButtonBorderWidth = 1;
-	private static Color TRASPARENT = new Color(0,0,0,0);
-	private JPanel middle;
-	private JPanel left;
-	private JPanel right;
+// 	private static Color TRASPARENT = new Color(0,0,0,0);
+// 	private JPanel middle;
+// 	private JPanel left;
+// 	private JPanel right;
 	
 	private JTextField nameField;
 	
@@ -42,107 +45,152 @@ public class MenuPanel extends JPanel {
 	private JButton spectateButton;
 	private JButton quitButton;
 	
-	public MenuPanel(String titleText) {
+// 	private JPanel mainPanel;
+// 	private JPanel addressPanel;
+	
+// 	private JButton connectButton;
+
+	private JTextField addressField;
+	
+	public MenuPanel() {
 		
 		// Set color of menu panel background
-		setBackground(Color.BLACK);
+		setBackground(BackColor);
 		
 		// Make a box layout of vertical buttons, rigid area dimensions determine it's location on the y-axis
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		
 		
+		JPanel titlePanel = makeBox(new Dimension(800, 100), BoxLayout.Y_AXIS);
+		this.addTitle(titlePanel, "ASTEROIDS");
+		this.add(titlePanel);
 		
-		JPanel body = new JPanel();
-		body.setLayout(new BoxLayout(body, BoxLayout.X_AXIS));
-		body.setBackground(TRASPARENT);
-		
-		middle = new JPanel();
-		middle.setLayout(new BoxLayout(middle, BoxLayout.Y_AXIS));
-		middle.setBackground(TRASPARENT);
-		
-		addCentralPart();
+		JPanel namePanel = makeBox(new Dimension(800, 100), BoxLayout.Y_AXIS);
+		nameField = addInput(namePanel, generateName());
+		this.add(nameField);
 		
 		
-		left = new JPanel();
-		left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
-		left.setBackground(TRASPARENT);
-		left.setMaximumSize(new Dimension(300,500));
-// 		left.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JPanel body = makeBox(new Dimension(800, 500), BoxLayout.X_AXIS);
 		
+		body.add(Box.createRigidArea(new Dimension(50,0)));
 		
-		
-		right = new JPanel();
-		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-		right.setMaximumSize(new Dimension(300,500));
-		right.setBackground(TRASPARENT);
-		
+		JPanel left = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
 		addHighScores(left, HighScores.getInstance().getHighScores());
-		addHighScores(right, HighScores.getInstance().getLastHourHighScores());
-		
-		
-		addTitle(titleText);
 		body.add(left);
-		body.add(Box.createRigidArea(new Dimension(100,0)));
+		
+// 		body.add(Box.createRigidArea(new Dimension(50,0)));
+		
+		JPanel middle = new JPanel();
+		middle.setBackground(BackColor);
+		CardLayout middleLayout = new CardLayout();
+		middle.setLayout(middleLayout);
+		
+		JPanel main = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+		playButton = makeButton(main, "Singleplayer");
+		hostButton = makeButton(main, "Multiplayer");
+		JButton joinMenuButton = makeButton(main, "Join Multiplayer");
+		joinMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+			middleLayout.show(middle, "address panel");
+		}});
+		
+		middle.add(main, "main panel");
+		
+		
+		JPanel addressPanel = makeBox(new Dimension(800, 300), BoxLayout.Y_AXIS);
+		addressField = addInput(addressPanel, "localhost");
+		joinButton = makeButton(addressPanel, "Join");
+		spectateButton = makeButton(addressPanel, "Spectate");
+		JButton mainMenuButton = makeButton(addressPanel, "Back to menu");
+		mainMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+			middleLayout.show(middle, "main panel");
+		}});
+		
+		middle.add(addressPanel, "address panel");
+		
+		
+		middleLayout.show(middle, "main panel");
+		
 		body.add(middle);
-		body.add(Box.createRigidArea(new Dimension(100,0)));
+		
+		body.add(Box.createRigidArea(new Dimension(50,0)));
+		
+		JPanel right = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+		addHighScores(right, HighScores.getInstance().getLastHourHighScores());
 		body.add(right);
+		
+		body.add(Box.createRigidArea(new Dimension(50,0)));
+		
 		this.add(body);
+		
+		JPanel footer = makeBox(new Dimension(800, 100), BoxLayout.Y_AXIS);
+		quitButton = makeButton(footer, "Quit");
+		this.add(footer);
+		
+		
+		
+		
+// 		this.add(Box.createRigidArea(new Dimension(0, 10)));
 	}
 	
-	private void addTitle(String titleText){
+	
+	private JPanel makeBox(Dimension size, int axis){
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, axis));
+		if (size != null){
+			panel.setMaximumSize(size);
+		}
+		panel.setBackground(BackColor);
+		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		return panel;
+	}
+	
+	private void addTitle(JPanel panel, String titleText){
 		
 		this.add(Box.createRigidArea(new Dimension(0, 20)));
 		
 		JLabel title = new JLabel(titleText);
 		title.setAlignmentX( Component.CENTER_ALIGNMENT );
+		title.setMaximumSize(new Dimension(800,50));
 		title.setHorizontalAlignment( JLabel.CENTER );
 		title.setFont(new Font("sansserif", Font.PLAIN, 40));
-		title.setForeground(AsteroidsFrame.TextColor);
-		this.add(title);
+		title.setForeground(this.TextColor);
+		panel.add(title);
 		
-		this.add(Box.createRigidArea(new Dimension(0, 30)));
+		panel.add(Box.createRigidArea(new Dimension(0, 30)));
 	}
 	
-	private void addCentralPart(){
+	private JTextField addInput(JPanel panel, String defaultText){
+		JTextField inputField = new JTextField();
+// 		inputField.setAlignmentY( Component.TOP_ALIGNMENT );
+		inputField.setMaximumSize( new Dimension(120,40) );
+		inputField.setBackground(this.BackColor);
+		inputField.setForeground(this.TextColor);
+		inputField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(this.ButtonBorderColor, MenuPanel.ButtonBorderWidth), new EmptyBorder(5, 5, 5, 5)));
+		inputField.setText( defaultText);
+		inputField.setCaretColor(this.TextColor);
+		inputField.getCaret().setVisible(true);
+		panel.add(inputField);
 		
-		nameField = new JTextField();
-		nameField.setAlignmentY( Component.TOP_ALIGNMENT );
-		nameField.setMaximumSize( new Dimension(120,40) );
-		nameField.setBackground(AsteroidsFrame.ButtonBackColor);
-		nameField.setForeground(AsteroidsFrame.TextColor);
-		nameField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(AsteroidsFrame.ButtonBorderColor, MenuPanel.ButtonBorderWidth), new EmptyBorder(5, 5, 5, 5)));
-		nameField.setText( generateName());
-		nameField.setCaretColor(AsteroidsFrame.TextColor);
-		nameField.getCaret().setVisible(true);
-		middle.add(nameField);
+		panel.add(Box.createRigidArea(new Dimension(0, 40)));
 		
-		middle.add(Box.createRigidArea(new Dimension(0, 50)));
-		
-		
-		playButton = makeButton("Singleplayer");
-		hostButton = makeButton("Multiplayer");
-		joinButton = makeButton("Join Multiplayer");
-		spectateButton = makeButton("Spectate");
-		
-		middle.add(Box.createRigidArea(new Dimension(0, 40)));
-		quitButton = makeButton("Quit");
-		
+		return inputField;
 	}
 	
 	
-	private JButton makeButton(String text){
+	
+	private JButton makeButton(JPanel panel, String text){
 		
 		JButton button = new JButton(text);
 // 		button.setFont(Font.getFont("Courier"));
 		button.setAlignmentX( Component.CENTER_ALIGNMENT );
-		button.setMaximumSize( new Dimension(200,50) );
-		button.setBackground(AsteroidsFrame.ButtonBackColor);
-		button.setForeground(AsteroidsFrame.TextColor);
-		button.setBorder(BorderFactory.createLineBorder(AsteroidsFrame.ButtonBorderColor, AsteroidsFrame.ButtonBorderWidth));
+		button.setMaximumSize( new Dimension(180,50) );
+		button.setBackground(this.BackColor);
+		button.setForeground(this.TextColor);
+		button.setBorder(BorderFactory.createLineBorder(this.ButtonBorderColor, this.ButtonBorderWidth));
 		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		middle.add(button);
-		middle.add(Box.createRigidArea(new Dimension(0, 20)));
+		panel.add(button);
+		panel.add(Box.createRigidArea(new Dimension(0, 20)));
 		
 		return button;
 
@@ -183,10 +231,15 @@ public class MenuPanel extends JPanel {
 		quitButton.addActionListener(action);
 	}
 	
-	
 	public String getPlayerName(){
 		return this.nameField.getText();
 	}
+	
+	public String getAddress(){
+		return this.addressField.getText();
+	}
+	
+	
 	
 	
 	/**
@@ -199,7 +252,7 @@ public class MenuPanel extends JPanel {
 	 */
 	public static String generateName(){
 		String vowels = "aaaeeeiiiooouuuy";
-		String consonants = "bbcddffgghjjkkllmmnnppqrrssttvvwxz";
+		String consonants = "bbcddffgghjjkkllmmmnnnppqrrrsssttttvvwxz";
 		String name = "";
 		Random rand = new Random();
 		Boolean wroteVowel = rand.nextBoolean();

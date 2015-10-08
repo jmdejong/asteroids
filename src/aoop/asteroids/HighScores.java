@@ -20,7 +20,7 @@ public class HighScores {
 	
 	private static HighScores instance = null;
 	
-	private static String filename = "highscores.json";
+	private static String dbname = "$objectdb/db/highscores.odb";
 	
 	
 	private HighScores(){
@@ -41,14 +41,18 @@ public class HighScores {
 		//long oldScore = getScore(name);
 		PlayerScore ps = getScoreObj(name);
 		
+		Logging.LOGGER.severe("name: "+name+ " score:"+score+" oldScore:"+ps);
+		
 		if(ps == null || score > ps.getScore()){
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
 			EntityManager em = emf.createEntityManager();
 			
 			em.getTransaction().begin();
 			if(ps == null){
+				Logging.LOGGER.severe("New PlayerScore created.");
 				em.persist(new PlayerScore(name,score,System.currentTimeMillis()));
 			}else{
+				Logging.LOGGER.severe("PS updated.");
 				ps.setScore(score);
 			}
 			em.getTransaction().commit();
@@ -65,7 +69,7 @@ public class HighScores {
 	}
 	
 	private PlayerScore getScoreObj(String name){
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
 		EntityManager em = emf.createEntityManager();
 		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.name == '"+name+"'", PlayerScore.class);
 		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.getResultList();
@@ -81,7 +85,7 @@ public class HighScores {
 	}
 	
 	public ArrayList<PlayerScore> getHighScoresNewerThan(long datetime){
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
 		EntityManager em = emf.createEntityManager();
 		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.datetime > :maxtime ORDER BY p.score DESC", PlayerScore.class);
 		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.setParameter("maxtime", datetime).setMaxResults(10).getResultList();

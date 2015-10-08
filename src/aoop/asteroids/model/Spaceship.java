@@ -21,6 +21,7 @@ import org.json.simple.JSONArray;
  */
 public class Spaceship extends GameObject
 {
+	private static int timeUntilFireAgain = 10;
 
 	/** Direction the spaceship is pointed in. */
 	private double direction;
@@ -231,7 +232,7 @@ public class Spaceship extends GameObject
 	 */
 	public void setFired ()
 	{
-		this.stepsTilFire = 20;
+		this.stepsTilFire = Spaceship.timeUntilFireAgain;
 	}
 
 	/** Increments score field. */

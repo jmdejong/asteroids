@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.json.simple.JSONArray;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 import aoop.asteroids.Logging;
 import aoop.asteroids.model.*;

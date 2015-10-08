@@ -3609,3 +3609,14 @@ Type aoop.asteroids.PlayerScore is not enhanced.
 [2015-10-08 17:30:42 #3 store] 
 Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is closed by 13279@Qark
 
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 17:33:43 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 13402@Qark
+
+[2015-10-08 17:33:43 #2 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+
+[2015-10-08 17:33:43 #3 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is closed by 13402@Qark
+

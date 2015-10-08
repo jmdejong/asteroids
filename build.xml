@@ -2,7 +2,7 @@
     <target name="clean">
         <delete dir="bin"/>
     </target>
-    <target name="compile" depends="clean">
+    <target name="compile">
         <mkdir dir="bin"/>
         <mkdir dir="bin/images"/>
         <copy todir="bin/images">

@@ -251,7 +251,7 @@ public class AsteroidsPanel extends JPanel
 		}
 	}
 	private void paintScores(Graphics2D g) {
-		g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 20));
+		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		FontMetrics fm = g.getFontMetrics();
 		int yPos = 5;
 		List<Spaceship> spaceships = new ArrayList(this.game.getSpaceships());
@@ -266,7 +266,7 @@ public class AsteroidsPanel extends JPanel
 			Color c0 = new Color((int) s.getColour());
 			Color c = new Color(c0.getRed(), c0.getGreen(), c0.getBlue(), 191);
 			g.setColor(c);
-			String score = s.getName() + ": " + Integer.toString(s.getScore());
+			String score = String.format("%s: %5d",s.getName(), s.getScore());//s.getName() + ": " + Integer.toString(s.getScore());
 			yPos += fm.getHeight();
 			g.drawString(score, this.getWidth()-fm.stringWidth(score)-5, yPos);
 		}

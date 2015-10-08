@@ -1,5 +1,7 @@
 package aoop.asteroids.gui;
 
+import aoop.asteroids.HighScores;
+import aoop.asteroids.PlayerScore;
 
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
@@ -7,6 +9,9 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.Box;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTextField;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -14,10 +19,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JTextField;
-import javax.swing.Box;
-import javax.swing.border.EmptyBorder;
 import java.util.Random;
+import java.util.List;
 
 
 public class MenuPanel extends JPanel {
@@ -26,7 +29,9 @@ public class MenuPanel extends JPanel {
 	private static Color TextColor = Color.GREEN;
 	private static Color ButtonBackColor = Color.BLACK;
 	private static int ButtonBorderWidth = 1;
+	private static Color TRASPARENT = new Color(0,0,0,0);
 	private JPanel middle;
+	private JPanel left;
 	private JPanel right;
 	
 	private JTextField nameField;
@@ -47,33 +52,59 @@ public class MenuPanel extends JPanel {
 		
 		
 		
+		
+		JPanel body = new JPanel();
+		body.setLayout(new BoxLayout(body, BoxLayout.X_AXIS));
+		body.setBackground(TRASPARENT);
+		
+		middle = new JPanel();
+		middle.setLayout(new BoxLayout(middle, BoxLayout.Y_AXIS));
+		middle.setBackground(TRASPARENT);
+		
+		addCentralPart();
+		
+		
+		left = new JPanel();
+		left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
+		left.setBackground(TRASPARENT);
+		left.setMaximumSize(new Dimension(300,500));
+// 		left.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		
+		
+		right = new JPanel();
+		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
+		right.setMaximumSize(new Dimension(300,500));
+		right.setBackground(TRASPARENT);
+		
+		addHighScores(left, HighScores.getInstance().getHighScores());
+		
+		
+		
+		addTitle(titleText);
+		body.add(left);
+		body.add(Box.createRigidArea(new Dimension(100,0)));
+		body.add(middle);
+		body.add(Box.createRigidArea(new Dimension(100,0)));
+		body.add(right);
+		this.add(body);
+	}
+	
+	private void addTitle(String titleText){
+		
 		this.add(Box.createRigidArea(new Dimension(0, 20)));
 		
 		JLabel title = new JLabel(titleText);
 		title.setAlignmentX( Component.CENTER_ALIGNMENT );
-		title.setFont(new Font("Monospace", Font.PLAIN, 40));
+		title.setHorizontalAlignment( JLabel.CENTER );
+		title.setFont(new Font("sansserif", Font.PLAIN, 40));
 		title.setForeground(AsteroidsFrame.TextColor);
 		this.add(title);
 		
 		this.add(Box.createRigidArea(new Dimension(0, 30)));
-		
-		JPanel body = new JPanel();
-		body.setLayout(new BoxLayout(body, BoxLayout.X_AXIS));
-		body.setBackground(Color.BLACK);
-		this.add(body);
-		
-		middle = new JPanel();
-		middle.setLayout(new BoxLayout(middle, BoxLayout.Y_AXIS));
-		middle.setBackground(Color.BLACK);
-		body.add(middle);
-		
-// 		body.add(Box.createRigidArea(new Dimension(100,0)));
-		
-		right = new JPanel();
-		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-		right.setBackground(Color.BLACK);
-		body.add(right);
-		
+	}
+	
+	private void addCentralPart(){
 		
 		nameField = new JTextField();
 		nameField.setAlignmentY( Component.TOP_ALIGNMENT );
@@ -97,13 +128,13 @@ public class MenuPanel extends JPanel {
 		middle.add(Box.createRigidArea(new Dimension(0, 40)));
 		quitButton = makeButton("Quit");
 		
-		
 	}
 	
-	public JButton makeButton(String text){
+	
+	private JButton makeButton(String text){
 		
 		JButton button = new JButton(text);
-		button.setFont(Font.getFont("Monospace"));
+// 		button.setFont(Font.getFont("Courier"));
 		button.setAlignmentX( Component.CENTER_ALIGNMENT );
 		button.setMaximumSize( new Dimension(200,50) );
 		button.setBackground(AsteroidsFrame.ButtonBackColor);
@@ -116,6 +147,21 @@ public class MenuPanel extends JPanel {
 		return button;
 
 	}
+	
+	
+	private void addHighScores(JPanel panel, List<PlayerScore> scores){
+		Font scoreFont = new Font(Font.MONOSPACED, Font.PLAIN, 15);
+		for (PlayerScore score : scores){
+			JLabel scoreLabel = new JLabel();
+			scoreLabel.setHorizontalAlignment( JLabel.RIGHT );
+			scoreLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+			scoreLabel.setFont(scoreFont);
+			scoreLabel.setForeground(Color.WHITE);
+			scoreLabel.setText(score.toString());
+			panel.add(scoreLabel);
+		}
+	}
+	
 	
 	public void setPlayAction(ActionListener action){
 		playButton.addActionListener(action);

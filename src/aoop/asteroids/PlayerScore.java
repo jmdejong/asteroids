@@ -53,7 +53,7 @@ public class PlayerScore implements Serializable{
 	}
 	
 	public String toString(){
-		return this.name+": "+this.score;
+		return String.format("%s: %5d",this.name, this.score);
 	}
 	
 }

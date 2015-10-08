@@ -25,6 +25,7 @@ import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import aoop.asteroids.Asteroids;
 import aoop.asteroids.Logging;
 import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.udp.Client;
@@ -303,6 +304,7 @@ public class ClientGame extends Observable implements Runnable{
 		}).start();
         
 	}
+	
 	
 	public void hasLost(){
 		this.hasLost = true;

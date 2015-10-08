@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 import org.json.simple.JSONArray;
 
@@ -50,17 +51,19 @@ public class Asteroid extends GameObject
 	public Collection <Asteroid> getSuccessors ()
 	{
 		Collection <Asteroid> list = new ArrayList <> ();
+		Random r = new Random();
+		
 		if (radius > 10){
 			list.add (new Asteroid (
 				this.getLocation (),
-				this.getVelocityX () * Math.cos (Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (Math.PI / 2) * 1.5,
-				this.getVelocityX () * Math.sin (Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (Math.PI / 2) * 1.5,
+				this.getVelocityX () * Math.cos (Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (Math.PI / 2) * 1.5 + r.nextDouble(),
+				this.getVelocityX () * Math.sin (Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (Math.PI / 2) * 1.5 + r.nextDouble(),
 				this.radius/2
 			));
 			list.add (new Asteroid (
 				this.getLocation (),
-				this.getVelocityX () * Math.cos (- Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (- Math.PI / 2) * 1.5,
-				this.getVelocityX () * Math.sin (- Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (- Math.PI / 2) * 1.5,
+				this.getVelocityX () * Math.cos (- Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (- Math.PI / 2) * 1.5 + r.nextDouble(),
+				this.getVelocityX () * Math.sin (- Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (- Math.PI / 2) * 1.5 + r.nextDouble(),
 				this.radius/2
 			));
 		}

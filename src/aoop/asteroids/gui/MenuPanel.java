@@ -78,7 +78,7 @@ public class MenuPanel extends JPanel {
 		right.setBackground(TRASPARENT);
 		
 		addHighScores(left, HighScores.getInstance().getHighScores());
-		
+		addHighScores(right, HighScores.getInstance().getLastHourHighScores());
 		
 		
 		addTitle(titleText);

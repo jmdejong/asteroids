@@ -32,6 +32,12 @@ public class Asteroids {
 	
 	public static void main (String [] args)	{
 		
+		
+		HighScores h = HighScores.getInstance();
+		h.saveScore("test1", 100);
+		h.saveScore("test2", 50);
+		
+		
 		if (args.length == 0){
 			AsteroidsFrame frame = new AsteroidsFrame ();
 		} else {

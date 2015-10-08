@@ -4,16 +4,17 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
+import java.util.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class HighScores {
 	
@@ -21,10 +22,12 @@ public class HighScores {
 	
 	private static String filename = "highscores.json";
 	
-	private HashMap<String,long[]> scores = null;
+	private EntityManager em = null;
 	
 	private HighScores(){
-		this.loadScores();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
+        em = emf.createEntityManager();
+		
 	}
 	
 	public static HighScores getInstance(){
@@ -34,24 +37,53 @@ public class HighScores {
 		return instance;
 	}
 	
-	private void loadScores(){
-		this.scores = new HashMap<>();
+	public void saveScore(String name, long score){
+		//long oldScore = getScore(name);
+		PlayerScore ps = getScoreObj(name);
 		
-		//String.join("\n", Files.readAllLines(Paths.get(HighScores.filename), Charset.forName("UTF-8")));
-	    try {
-			String encodedScores = new String(Files.readAllBytes(Paths.get(HighScores.filename)), Charset.forName("UTF-8"));
-			JSONArray jsonScores=(JSONArray) JSONValue.parse(encodedScores);
-			for(int i=0;i<jsonScores.size();i++){
-				JSONArray elem = (JSONArray) jsonScores.get(i);
-				String name = (String) elem.get(0);
-				long score = (long) elem.get(1);
-				long datetime = (long) elem.get(2);
-				this.scores.put(name, new long[]{score,datetime});
+		if(ps == null || score > ps.getScore()){
+			
+			em.getTransaction().begin();
+			if(ps == null){
+				em.persist(new PlayerScore(name,score,System.currentTimeMillis()));
+			}else{
+				ps.setScore(score);
 			}
-	    } catch (IOException e) {
-			//If no file available, do nothing. New one will be made after first player scores.
+			em.getTransaction().commit();
 		}
 	}
 	
+	public long getScore(String name){
+		PlayerScore ps = getScoreObj(name);
+		if(ps == null){
+			return -1;
+		}
+		return ps.getScore();
+	}
 	
+	private PlayerScore getScoreObj(String name){
+		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.name == '"+name+"'", PlayerScore.class);
+		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.getResultList();
+		if(list.isEmpty()){
+			return null;
+		}
+		return list.get(0);
+	}
+	
+	public ArrayList<PlayerScore> getHighScores(){
+		return getHighScoresNewerThan(Long.MIN_VALUE);
+	}
+	
+	public ArrayList<PlayerScore> getHighScoresNewerThan(long datetime){
+		
+		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.datetime > :maxtime ORDER BY p.score DESC", PlayerScore.class);
+		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.setParameter("maxtime", datetime).setMaxResults(10).getResultList();
+		
+		return list;
+	}
+	
+	public ArrayList<PlayerScore> getLastHourHighScores(){
+		long msInHour = (1000*60*60);
+		return getHighScoresNewerThan(System.currentTimeMillis()-msInHour);
+	}
 }

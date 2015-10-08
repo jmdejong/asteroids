@@ -1,0 +1,62 @@
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 13:50:27 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 29844@Qark
+
+[2015-10-08 13:50:27 #2 type.registry] 
+New type aoop.asteroids.PlayerScore
+
+[2015-10-08 13:50:27 #3 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 13:50:53 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' has been recovered (tr. 1-5)
+
+[2015-10-08 13:50:53 #2 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 29888@Qark
+
+[2015-10-08 13:50:53 #3 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 13:53:00 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 29978@Qark
+
+[2015-10-08 13:53:00 #2 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 13:54:54 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 30147@Qark
+
+[2015-10-08 13:54:54 #2 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 13:55:12 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 30184@Qark
+
+[2015-10-08 13:55:12 #2 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 13:58:26 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 30323@Qark
+
+[2015-10-08 13:58:26 #2 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2015-10-08 13:59:56 #1 store] 
+Database '/home/qqwy/Programming/Rug/AOOP/Assignments/assignment4/4-asteroids/db/points.odb' is opened by 30496@Qark
+
+[2015-10-08 13:59:56 #2 type] 
+Type aoop.asteroids.PlayerScore is not enhanced.
+

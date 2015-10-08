@@ -1,5 +1,7 @@
 package aoop.asteroids.model;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -23,6 +25,7 @@ import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import aoop.asteroids.Asteroids;
 import aoop.asteroids.Logging;
 import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.udp.Client;
@@ -45,16 +48,22 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public SpaceshipController spaceshipController;
 	
+	private int roundNumber = 1;
+	
 	
 	private Client client;
 	
 	public BufferedImage bgimage;
 	
+	public Point2D.Double bgPos = new Point2D.Double();
+	
 	/** if set to true, this Game will not try to send any more input packets until the current round is over.*/
 	public boolean hasLost = false;
-
 	
 	public boolean isFrozen = false;
+	
+	public boolean bgmHasStarted = false;
+	
 	
 	public ClientGame(Client client){
 		this.client = client;
@@ -63,12 +72,16 @@ public class ClientGame extends Observable implements Runnable{
 			this.spaceshipController = new SpaceshipController();
 		}
 		
+
+		setBackgroundImage(this.roundNumber);
+	}
+	
+	public void setBackgroundImage(int index){
 		try {
-			this.bgimage = ImageIO.read(new File("images/scape0.jpg"));
+			this.bgimage = ImageIO.read(new File("images/tscape"+(index%7)+".jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private void update(){
@@ -95,6 +108,11 @@ public class ClientGame extends Observable implements Runnable{
 		
 		this.setChanged ();
 		this.notifyObservers ();
+				
+		Random r = new Random(113*this.roundNumber);
+		double xVelocity = 3 * (r.nextDouble() - .5);
+		double yVelocity = 3 * (r.nextDouble() - .5);
+		this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
 	}
 	
 	public void setSpaceships(Collection<Spaceship> ships){
@@ -178,7 +196,9 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	public void unFreeze(){
 		if(this.isFrozen){
-			playSound("LevelClear");
+			playSound("NextLevel.wav");
+			++roundNumber;
+			setBackgroundImage(this.roundNumber);
 		}
 		this.isFrozen = false;
 	}
@@ -202,66 +222,92 @@ public class ClientGame extends Observable implements Runnable{
 
 	private void playShootSound(Bullet b){
 		int index = new Random(b.hashCode()).nextInt(2);
-		playSound("Shoot"+index);
+		playSound("Shoot"+index+".wav");
 	}
 	
 	private void playExplosionSound(Explosion explosion){
 		int index = new Random(explosion.hashCode()).nextInt(5);
-		playSound("Explosion"+index);
+		playSound("Explosion"+index+".wav");
 	}
 	
-	public void playSound(String filename){/*
-        Clip clip;
-        class AudioListener implements LineListener {
-            private boolean done = false;
-            @Override public synchronized void update(LineEvent event) {
-              Type eventType = event.getType();
-              if (eventType == Type.STOP || eventType == Type.CLOSE) {
-                done = true;
-                notifyAll();
-              }
-            }
-            public synchronized void waitUntilDone() throws InterruptedException {
-              while (!done) { wait(); }
-            }
-          }
-        
-		try {
-			
-			InputStream stream = new BufferedInputStream(new FileInputStream("sounds/"+filename+".wav"));
-			Logging.LOGGER.severe(stream.toString());
-			AudioInputStream inputStream = AudioSystem.getAudioInputStream(stream);
-			
-			DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
-			//AudioListener listener = new AudioListener();
-	        
-	        try {
-	            Clip clip = AudioSystem.getClip();
-	            
-	            clip.open(audioInputStream);
-	            
-	            clip = (Clip) AudioSystem.getLine(info);
-	            clip.addLineListener(listener);
-		        clip.open(inputStream);
-	            try {
-	              clip.start();
-	              listener.waitUntilDone();
-	            } finally {
-	              clip.close();
-	            }
-	          } finally {
-	            audioInputStream.close();
-	          }
-	        
-		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-			//This happens when a file is unavailable or the sound device is busy.
-			//Just don't play any sound when that happens.
-		}
-        */
+	public void playSound(String filename){
+		playSound(filename,0);
 	}
+	
+	public void playSound(final String filename, final int startOffset){
+		
+		
+		
+		new Thread(new Runnable() {
+		
+			@Override
+			public void run() {
+				
+				class AudioListener implements LineListener {
+		            private boolean done = false;
+		            @Override public synchronized void update(LineEvent event) {
+		              LineEvent.Type eventType = event.getType();
+		              if (eventType == LineEvent.Type.STOP || eventType == LineEvent.Type.CLOSE) {
+		                done = true;
+		                notifyAll();
+		              }
+		            }
+		            public synchronized void waitUntilDone() throws InterruptedException {
+		              while (!done) { wait(); }
+		            }
+		          }
+	        
+				try {
+					
+					InputStream stream = new BufferedInputStream(new FileInputStream("sounds/"+filename));
+					AudioInputStream inputStream = AudioSystem.getAudioInputStream(stream);
+					
+					
+					
+					DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
+					
+					AudioListener listener = new AudioListener();
+			        
+			        try {
+			            Clip clip;// = AudioSystem.getClip();
+			            	            
+			            clip = (Clip) AudioSystem.getLine(info);
+			            clip.addLineListener(listener);
+				        clip.open(inputStream);
+				        
+				        if(startOffset != 0){
+				        	clip.setFramePosition(startOffset);
+				        }
+				        
+			            try {
+			              clip.start();
+			              listener.waitUntilDone();
+			            } catch (InterruptedException e) {
+		
+						} finally {
+			              clip.close();
+			            }
+			          } finally {
+			        	  inputStream.close();
+			          }
+			        
+				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+					//This happens when a file is unavailable or the sound device is busy.
+					//Just don't play any sound when that happens.
+				}
+				
+					// TODO Auto-generated method stub
+					
+			}
+			
+		
+		}).start();
+        
+	}
+	
 	
 	public void hasLost(){
 		this.hasLost = true;
-		playSound("ShipExplosion");
+		playSound("ShipExplosion.wav");
 	}
 }

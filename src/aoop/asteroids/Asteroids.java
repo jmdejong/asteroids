@@ -34,7 +34,6 @@ public class Asteroids {
 		
 		
 		HighScores h = HighScores.getInstance();
-		Logging.LOGGER.severe(h.getHighScores().toString());
 		
 		
 		if (args.length == 0){

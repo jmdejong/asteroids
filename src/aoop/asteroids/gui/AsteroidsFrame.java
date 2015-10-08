@@ -81,6 +81,7 @@ public class AsteroidsFrame extends JFrame
 		cards = new CardContainer();
 		
 		
+		
 		this.setSize(cards.getSize());
 		
 		

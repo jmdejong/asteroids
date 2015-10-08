@@ -130,14 +130,14 @@ public class AsteroidsPanel extends JPanel
 
 		for (Asteroid a : this.game.getAsteroids ())
 		{
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getLocation().getY()		,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getLocation().getY()		,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY());
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getMirrorLocation().getY()	,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getMirrorLocation().getY()	,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY());
+			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getLocation().getY()		,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
+			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getLocation().getY()		,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
+			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getMirrorLocation().getY()	,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
+			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getMirrorLocation().getY()	,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
 		}
 	}
 	
-	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius, double seed){
+	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius, double seed, double rotation){
 		//Ellipse2D.Double e = new Ellipse2D.Double ();
 		//e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
 		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0,1}, new Color[]{Color.LIGHT_GRAY, Color.DARK_GRAY}, CycleMethod.NO_CYCLE);
@@ -147,13 +147,13 @@ public class AsteroidsPanel extends JPanel
 		GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 		Random r = new Random((int)seed);
 		
-		int orthagonalJitter = radius/2;
+		int orthagonalJitter = (int)(radius * .6);
 		int amountOfPoints = 6 + r.nextInt(4);
 		
 		for(int i=0;i<amountOfPoints;i++){
 			double px, py;
-			px = x + (radius) * Math.sin(((2*Math.PI)/amountOfPoints) * i) + r.nextInt(orthagonalJitter) - (orthagonalJitter/2) ;
-			py = y + (radius) * Math.cos(((2*Math.PI)/amountOfPoints) * i) + r.nextInt(orthagonalJitter) - (orthagonalJitter/2);
+			px = x + (radius) * Math.sin(((2*Math.PI)/amountOfPoints) * i + rotation) + r.nextInt(orthagonalJitter) - (orthagonalJitter/2) ;
+			py = y + (radius) * Math.cos(((2*Math.PI)/amountOfPoints) * i + rotation) + r.nextInt(orthagonalJitter) - (orthagonalJitter/2);
 			if(i==0){
 				polygon.moveTo(px, py);
 			}else{

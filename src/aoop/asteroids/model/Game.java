@@ -231,9 +231,9 @@ public class Game extends Observable implements Runnable
 		}
 		while (!pointDoesNotOverlapAnySpaceships(loc,50));
 
-		if (prob < 1000)		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 40));
-		else if (prob < 2000)	this.asteroids.add (new Asteroid (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 20));
-		else					this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 10));
+		if (prob < 1000)		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 40, Game.rng.nextDouble()*2*Math.PI- Math.PI));
+		else if (prob < 2000)	this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 20, Game.rng.nextDouble()*2*Math.PI- Math.PI));
+		else					this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 10, Game.rng.nextDouble()*2*Math.PI- Math.PI));
 	}
 	
 	private boolean pointDoesNotOverlapAnySpaceships(WrappablePoint p, int radius){

@@ -20,6 +20,8 @@ import org.json.simple.JSONArray;
 public class Asteroid extends GameObject
 {
     
+	private double rotation;
+	
     /**
      *	Constructs a new asteroid at the specified location, with specified 
      *	velocities in both X and Y direction and the specified radius.
@@ -29,9 +31,10 @@ public class Asteroid extends GameObject
      *	@param velocityY the velocity in Y direction.
      *	@param radius radius of the asteroid.
      */
-	public Asteroid (WrappablePoint location, double velocityX, double velocityY, int radius)
+	public Asteroid (WrappablePoint location, double velocityX, double velocityY, int radius, double rotation)
 	{
 		super (location, velocityX, velocityY, radius);
+		this.setRotation(rotation);
 	}
 
 	/** Updates location of the asteroid with traveled distance. */
@@ -40,6 +43,8 @@ public class Asteroid extends GameObject
 	{
 		super.nextStep();
 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
+		
+		this.rotation += Math.signum(this.rotation)* .005*(this.velocityX*this.velocityX + this.velocityY*this.velocityY);
 	}
 
 	/**
@@ -58,13 +63,15 @@ public class Asteroid extends GameObject
 				this.getLocation (),
 				this.getVelocityX () * Math.cos (Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (Math.PI / 2) * 1.5 + r.nextDouble(),
 				this.getVelocityX () * Math.sin (Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (Math.PI / 2) * 1.5 + r.nextDouble(),
-				this.radius/2
+				this.radius/2,
+				r.nextDouble()*Math.PI*2 - Math.PI
 			));
 			list.add (new Asteroid (
 				this.getLocation (),
 				this.getVelocityX () * Math.cos (- Math.PI / 2) * 1.5 - this.getVelocityY () * Math.sin (- Math.PI / 2) * 1.5 + r.nextDouble(),
 				this.getVelocityX () * Math.sin (- Math.PI / 2) * 1.5 + this.getVelocityY () * Math.cos (- Math.PI / 2) * 1.5 + r.nextDouble(),
-				this.radius/2
+				this.radius/2,
+				r.nextDouble()*Math.PI*2 - Math.PI
 			));
 		}
 		return list;
@@ -74,12 +81,13 @@ public class Asteroid extends GameObject
 	/** Creates an exact copy of the asteroid. */
 	public Asteroid clone ()
 	{
-		return new Asteroid (this.getLocation (), this.velocityX, this.velocityY, this.radius);
+		return new Asteroid (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.getRotation());
 	}
 	
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
 		result.add(this.radius);
+		result.add(this.getRotation());
 		return result;
 	}
 	
@@ -89,8 +97,16 @@ public class Asteroid extends GameObject
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
 		int radius = ((Long) json.get(4)).intValue();
-		return new Asteroid(new WrappablePoint(x,y),velocityX, velocityY, radius);
-		//TODO: different types of Asteroid classes depending on radius?
+		double rotation = (double) json.get(5);
+		return new Asteroid(new WrappablePoint(x,y),velocityX, velocityY, radius, rotation);
+	}
+
+	public double getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(double rotation) {
+		this.rotation = rotation;
 	}
 	
 	

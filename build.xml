@@ -1,10 +1,16 @@
 <project default="compile">
-    <target name="compile">
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target name="compile" depends="clean">
         <mkdir dir="bin"/>
         <mkdir dir="bin/images"/>
         <copy todir="bin/images">
-            <dirset dir="images"/>
+            <fileset dir="images" />
         </copy>
-        <javac srcdir="src/" destdir="bin"/>
+        <javac srcdir="src/" destdir="bin" debug="on">
+            <classpath path="lib/javax.persistence_2.0.0.jar"/>
+            <classpath path="lib/objectdb.jar"/>
+        </javac>
     </target>
 </project>

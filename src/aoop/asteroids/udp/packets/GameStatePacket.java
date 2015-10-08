@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.json.simple.JSONArray;
 
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
 import aoop.asteroids.Logging;
 import aoop.asteroids.model.*;
 
@@ -49,15 +51,15 @@ public class GameStatePacket extends Packet {
 		for(Object s : jsonSpaceships) spaceships.add(Spaceship.fromJSON(((JSONArray) s)));
 		currentGameState.setSpaceships(spaceships);
 		
-		Collection <Bullet> bullets = new ArrayList<Bullet>();
+		ArrayList <Bullet> bullets = new ArrayList<Bullet>();
 		for(Object b : jsonBullets) bullets.add(Bullet.fromJSON(((JSONArray) b)));
 		currentGameState.setBullets(bullets);
 		
-		Collection <Asteroid> asteroids = new ArrayList<Asteroid>();
+		ArrayList <Asteroid> asteroids = new ArrayList<Asteroid>();
 		for(Object a : jsonAsteroids) asteroids.add(Asteroid.fromJSON(((JSONArray) a)));
 		currentGameState.setAsteroids(asteroids);
 
-		Collection <Explosion> explosions = new ArrayList<Explosion>();
+		ArrayList <Explosion> explosions = new ArrayList<Explosion>();
 		for(Object a : jsonExplosions) explosions.add(Explosion.fromJSON(((JSONArray) a)));
 		currentGameState.setExplosions(explosions);
 		

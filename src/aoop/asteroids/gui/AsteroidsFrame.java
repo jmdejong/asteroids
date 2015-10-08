@@ -77,6 +77,11 @@ public class AsteroidsFrame extends JFrame
 		
 		final AddressInputPanel aip = new AddressInputPanel();
 		
+		aip.setBackAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+			cards.showCard("Menu card");
+		}});
+		
+		
 		cards.add(aip, "Address input card");
 		mp = new MenuPanel("ASTEROIDS");
 		
@@ -101,14 +106,14 @@ public class AsteroidsFrame extends JFrame
 		}});
 		mp.setJoinAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
-			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+			aip.setClickAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 				Logging.LOGGER.fine(aip.getAddress());
 				startGame(aip.getAddress(), false);
 			}});
 		}});
 		mp.setSpectateAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
-			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+			aip.setClickAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 				Logging.LOGGER.fine(aip.getAddress());
 				startGame(aip.getAddress(), true);
 			}});

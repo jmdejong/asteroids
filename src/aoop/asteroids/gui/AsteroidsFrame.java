@@ -83,6 +83,7 @@ public class AsteroidsFrame extends JFrame
 		cards.setSize(800,700);
 		
 		
+		
 		this.setSize(cards.getSize());
 		
 		

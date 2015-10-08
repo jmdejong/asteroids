@@ -229,11 +229,19 @@ public class Game extends Observable implements Runnable
 		{
 			loc = new WrappablePoint (Game.rng.nextInt ((int)GameObject.worldWidth), Game.rng.nextInt ((int)GameObject.worldHeight));
 		}
-		while (!pointDoesNotOverlapAnySpaceships(loc,50));
+		while (pointOverlapsCenterCircle(loc));
 
 		if (prob < 1000)		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 40, Game.rng.nextDouble()*2*Math.PI- Math.PI));
 		else if (prob < 2000)	this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 20, Game.rng.nextDouble()*2*Math.PI- Math.PI));
 		else					this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 10, Game.rng.nextDouble()*2*Math.PI- Math.PI));
+	}
+	
+	private boolean pointOverlapsCenterCircle(WrappablePoint p){
+		int radius = 100;
+		double x,y;
+		x = p.getX() - GameObject.worldWidth/2;
+		y = p.getY() - GameObject.worldHeight/2;
+		return (x*x+y*y) < radius * radius;
 	}
 	
 	private boolean pointDoesNotOverlapAnySpaceships(WrappablePoint p, int radius){

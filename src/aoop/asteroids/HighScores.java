@@ -39,13 +39,13 @@ public class HighScores {
 	
 	public void saveScore(String name, long score){
 		//long oldScore = getScore(name);
-		PlayerScore ps = getScoreObj(name);
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
+		EntityManager em = emf.createEntityManager();
+		PlayerScore ps = getScoreObj(em, name);
 		
 		Logging.LOGGER.severe("name: "+name+ " score:"+score+" oldScore:"+ps);
 		
 		if(ps == null || score > ps.getScore()){
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
-			EntityManager em = emf.createEntityManager();
 			
 			em.getTransaction().begin();
 			if(ps == null){
@@ -56,24 +56,26 @@ public class HighScores {
 				ps.setScore(score);
 			}
 			em.getTransaction().commit();
-			emf.close();
+			
 		}
+		emf.close();
 	}
 	
 	public long getScore(String name){
-		PlayerScore ps = getScoreObj(name);
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
+		EntityManager em = emf.createEntityManager();
+		PlayerScore ps = getScoreObj(em, name);
+		emf.close();
 		if(ps == null){
 			return -1;
 		}
 		return ps.getScore();
 	}
 	
-	private PlayerScore getScoreObj(String name){
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
-		EntityManager em = emf.createEntityManager();
+	private PlayerScore getScoreObj(EntityManager em, String name){
+		
 		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.name == '"+name+"'", PlayerScore.class);
 		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.getResultList();
-		emf.close();
 		if(list.isEmpty()){
 			return null;
 		}

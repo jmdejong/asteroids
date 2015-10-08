@@ -78,9 +78,9 @@ public class AsteroidsFrame extends JFrame
 		final AddressInputPanel aip = new AddressInputPanel();
 		
 		cards.add(aip, "Address input card");
-		mp = new MenuPanel();
+		mp = new MenuPanel("ASTEROIDS");
 		
-		mp.makeButton("Play Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+		mp.setPlayAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
 				new Server(true);
 				startGame("localhost", false);
@@ -91,7 +91,7 @@ public class AsteroidsFrame extends JFrame
 			
 		}});
 		
-		mp.makeButton("Host Multiplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+		mp.setHostAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
 				new Server(false);
 				startGame("localhost", false);
@@ -99,19 +99,23 @@ public class AsteroidsFrame extends JFrame
 				e.printStackTrace();
 			}
 		}});
-		mp.makeButton("Join Multiplayer", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+		mp.setJoinAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
 			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 				Logging.LOGGER.fine(aip.getAddress());
 				startGame(aip.getAddress(), false);
 			}});
 		}});
-		mp.makeButton("Spectate", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+		mp.setSpectateAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			cards.showCard("Address input card");
 			aip.addClickListener(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 				Logging.LOGGER.fine(aip.getAddress());
 				startGame(aip.getAddress(), true);
 			}});
+		}});
+		
+		mp.setQuitAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+			System.exit(0);
 		}});
 		
 		cards.add(mp, "Menu card");

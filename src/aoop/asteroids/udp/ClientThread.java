@@ -35,6 +35,10 @@ public class ClientThread extends BaseServerThread {
 				Logging.LOGGER.fine(packet_data.toString());
 				this.client.game.unFreeze();
 				GameStatePacket.decodePacket((JSONArray) packet_data.get("d"), client.game);
+				if(!client.game.bgmHasStarted){
+					client.game.bgmHasStarted = true;
+					client.game.playSound("background_music_the_cosmos.wav", ((Long) packet_data.get("r")).intValue() % 3600);
+				}
 				break;
 			case SPECTATE_JOIN:
 				//Do nothing. Client should send this; not receive it!

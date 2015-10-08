@@ -61,6 +61,9 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public boolean isFrozen = false;
 	
+	public boolean bgmHasStarted = false;
+	
+	
 	public ClientGame(Client client){
 		this.client = client;
 		
@@ -192,7 +195,7 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	public void unFreeze(){
 		if(this.isFrozen){
-			playSound("NextLevel");
+			playSound("NextLevel.wav");
 			++roundNumber;
 			setBackgroundImage(this.roundNumber);
 		}
@@ -218,15 +221,19 @@ public class ClientGame extends Observable implements Runnable{
 
 	private void playShootSound(Bullet b){
 		int index = new Random(b.hashCode()).nextInt(2);
-		playSound("Shoot"+index);
+		playSound("Shoot"+index+".wav");
 	}
 	
 	private void playExplosionSound(Explosion explosion){
 		int index = new Random(explosion.hashCode()).nextInt(5);
-		playSound("Explosion"+index);
+		playSound("Explosion"+index+".wav");
 	}
 	
-	public void playSound(final String filename){
+	public void playSound(String filename){
+		playSound(filename,0);
+	}
+	
+	public void playSound(final String filename, final int startOffset){
 		
 		
 		
@@ -251,10 +258,13 @@ public class ClientGame extends Observable implements Runnable{
 	        
 				try {
 					
-					InputStream stream = new BufferedInputStream(new FileInputStream("sounds/"+filename+".wav"));
+					InputStream stream = new BufferedInputStream(new FileInputStream("sounds/"+filename));
 					AudioInputStream inputStream = AudioSystem.getAudioInputStream(stream);
 					
+					
+					
 					DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
+					
 					AudioListener listener = new AudioListener();
 			        
 			        try {
@@ -263,6 +273,11 @@ public class ClientGame extends Observable implements Runnable{
 			            clip = (Clip) AudioSystem.getLine(info);
 			            clip.addLineListener(listener);
 				        clip.open(inputStream);
+				        
+				        if(startOffset != 0){
+				        	clip.setFramePosition(startOffset);
+				        }
+				        
 			            try {
 			              clip.start();
 			              listener.waitUntilDone();
@@ -291,6 +306,6 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public void hasLost(){
 		this.hasLost = true;
-		playSound("ShipExplosion");
+		playSound("ShipExplosion.wav");
 	}
 }

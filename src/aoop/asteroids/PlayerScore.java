@@ -52,4 +52,8 @@ public class PlayerScore implements Serializable{
 		this.datetime = datetime;
 	}
 	
+	public String toString(){
+		return this.name+": "+this.score;
+	}
+	
 }

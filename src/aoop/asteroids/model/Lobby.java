@@ -2,6 +2,7 @@ package aoop.asteroids.model;
 
 import java.util.List;
 
+import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
 import aoop.asteroids.udp.Server;
 
@@ -26,6 +27,12 @@ public class Lobby extends Game {
 					for(Spaceship w : winners){
 						if(!server.isSinglePlayerMode() || !w.isDestroyed()){
 							w.increaseScore();
+							
+							long highscore = HighScores.getInstance().getScore(w.getName());
+							if(w.getScore() > highscore){
+								HighScores.getInstance().saveScore(w.getName(), w.getScore());
+								this.server.sendMessagePacket(w.getName()+" has beat their high score!");
+							}
 						}
 						
 					}

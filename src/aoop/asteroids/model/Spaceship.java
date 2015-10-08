@@ -7,6 +7,8 @@ import java.util.Random;
 
 import org.json.simple.JSONArray;
 
+import aoop.asteroids.HighScores;
+
 /**
  *	This class represents the player in the Asteroids game. A spaceship is able 
  *	to shoot every 20 game ticks (twice per second). 
@@ -47,6 +49,8 @@ public class Spaceship extends GameObject
 	private int colour;
 	
 	private String name;
+	
+	
 	
 	/** Set when a ship is destroyed. Used to determine the winner after all ships have been destroyed.
 	 *  Obviously, for alive ships this is +Infinity.
@@ -239,6 +243,7 @@ public class Spaceship extends GameObject
 	public void increaseScore ()
 	{
 		this.score++;
+
 	}
 
 	/**

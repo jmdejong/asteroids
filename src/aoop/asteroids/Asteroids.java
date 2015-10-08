@@ -36,6 +36,8 @@ public class Asteroids {
 		HighScores h = HighScores.getInstance();
 		h.saveScore("test1", 100);
 		h.saveScore("test2", 50);
+		h.saveScore("test1", 50);
+		Logging.LOGGER.severe(h.getHighScores().toString());
 		
 		
 		if (args.length == 0){

@@ -22,13 +22,13 @@ public class HighScores {
 	
 	private static String filename = "highscores.json";
 	
-	private EntityManager em = null;
 	
 	private HighScores(){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
-        em = emf.createEntityManager();
+        
 		
 	}
+	
+
 	
 	public static HighScores getInstance(){
 		if(instance == null){
@@ -42,6 +42,8 @@ public class HighScores {
 		PlayerScore ps = getScoreObj(name);
 		
 		if(ps == null || score > ps.getScore()){
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
+			EntityManager em = emf.createEntityManager();
 			
 			em.getTransaction().begin();
 			if(ps == null){
@@ -50,6 +52,7 @@ public class HighScores {
 				ps.setScore(score);
 			}
 			em.getTransaction().commit();
+			emf.close();
 		}
 	}
 	
@@ -62,8 +65,11 @@ public class HighScores {
 	}
 	
 	private PlayerScore getScoreObj(String name){
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
+		EntityManager em = emf.createEntityManager();
 		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.name == '"+name+"'", PlayerScore.class);
 		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.getResultList();
+		emf.close();
 		if(list.isEmpty()){
 			return null;
 		}
@@ -75,10 +81,11 @@ public class HighScores {
 	}
 	
 	public ArrayList<PlayerScore> getHighScoresNewerThan(long datetime){
-		
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/points.odb");
+		EntityManager em = emf.createEntityManager();
 		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.datetime > :maxtime ORDER BY p.score DESC", PlayerScore.class);
 		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.setParameter("maxtime", datetime).setMaxResults(10).getResultList();
-		
+		emf.close();
 		return list;
 	}
 	

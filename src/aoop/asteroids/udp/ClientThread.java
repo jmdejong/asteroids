@@ -53,7 +53,7 @@ public class ClientThread extends BaseServerThread {
 				break;
 			case PLAYER_LOSE:
 				Logging.LOGGER.fine("C: Player Lose Packet Received");
-				this.client.game.hasLost = true; //TODO: better separation of concerns?
+				this.client.game.hasLost(); //TODO: better separation of concerns?
 				break;
 			case ROUND_END:
 				Logging.LOGGER.fine("C: Round End Packet Received");

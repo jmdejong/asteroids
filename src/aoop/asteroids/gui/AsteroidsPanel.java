@@ -197,10 +197,10 @@ public class AsteroidsPanel extends JPanel
 			double distanceX = x-spaceshipX;
 			double distanceY = y-spaceshipY;
 			double distanceSquared = distanceX * distanceX + distanceY * distanceY;
-			double maxDistance = 350;
+			double maxDistance = Math.min(GameObject.worldWidth, GameObject.worldHeight)/2;
 			int intensity = (int) Math.max(255*(1-(distanceSquared/(maxDistance*maxDistance))),0);
 			
-			Color c = new Color(s.getColour());
+			Color c = Color.LIGHT_GRAY;//new Color(s.getColour());
 			RadialGradientPaint playerLight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)spaceshipX, (int)spaceshipY, new float[]{0,1}, new Color[]{new Color(c.getRed(), c.getGreen(), c.getBlue(), intensity), new Color(c.getRed(),c.getGreen(),c.getBlue(),0)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
 		
 			g.setPaint(playerLight);

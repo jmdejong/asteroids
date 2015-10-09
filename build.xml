@@ -4,13 +4,29 @@
     </target>
     <target name="compile">
         <mkdir dir="bin"/>
-        <mkdir dir="bin/images"/>
+        <!--<mkdir dir="bin/images"/>
         <copy todir="bin/images">
             <fileset dir="images" />
-        </copy>
+        </copy>-->
         <javac srcdir="src/" destdir="bin" debug="on">
             <classpath path="lib/javax.persistence_2.0.0.jar"/>
             <classpath path="lib/objectdb.jar"/>
         </javac>
     </target>
+    <target name="dist" depends="compile" description="generate the distribution">
+		<!-- Create the distribution directory -->
+		<mkdir dir="dist/"/>
+		
+        <mkdir dir="dist/lib"/>
+        <copy todir="dist/lib">
+            <fileset dir="lib" />
+        </copy>
+		<!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+		<jar jarfile="dist/asteroids.jar" basedir="bin/">
+			<manifest>
+				<attribute name="Main-Class" value="aoop.asteroids.Asteroids"/>
+				<attribute name="Class-Path" value="lib/javax.persistence_2.0.0.jar lib/objectdb.jar"/>
+			</manifest>
+		</jar>
+  </target>
 </project>

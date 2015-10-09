@@ -53,7 +53,7 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private Client client;
 	
-	public BufferedImage bgimage;
+	private BufferedImage bgimage;
 	
 	public Point2D.Double bgPos = new Point2D.Double();
 	
@@ -182,9 +182,10 @@ public class ClientGame extends Observable implements Runnable{
 		this.messages.add(new GameMessage(message));
 	}
 	
-// 	public Spaceship getSpaceship(){
-// 		return ships.toArray(new Spaceship[1])[0];
-// 	}
+
+	public BufferedImage getBgImage(){
+		return bgimage;
+	}
 	
 	public Collection<Asteroid> getAsteroids() {
 		return asteroids;

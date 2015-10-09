@@ -86,9 +86,11 @@ public class AsteroidsPanel extends JPanel
 		g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.setBackground (Color.black);
 		
-		//g2.drawImage((Image)game.bgimage, 0,0, null);
 		
-		paintBackground(g2, game.bgimage, (int)game.bgPos.x,(int) game.bgPos.y);
+		BufferedImage bgimage = game.getBgImage();
+		if (bgimage != null){
+			paintBackground(g2, bgimage, (int)game.bgPos.x,(int) game.bgPos.y);
+		}
 		
 		
 		

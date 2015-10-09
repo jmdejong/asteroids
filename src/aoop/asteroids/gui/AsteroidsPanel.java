@@ -149,8 +149,10 @@ public class AsteroidsPanel extends JPanel
 	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius, double seed, double rotation){
 		//Ellipse2D.Double e = new Ellipse2D.Double ();
 		//e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
-		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0,1}, new Color[]{Color.LIGHT_GRAY, Color.DARK_GRAY}, CycleMethod.NO_CYCLE);
-		g.setPaint(roundGradientPaint);
+		
+		
+		RadialGradientPaint sunlight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0,1}, new Color[]{new Color(191,191,191,255), new Color(191,191,191,32)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
+		
 		
 		
 		GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
@@ -170,12 +172,53 @@ public class AsteroidsPanel extends JPanel
 			}
 			
 		}
-		
 		polygon.closePath();
+		
+		
+		g.setColor(Color.BLACK);
 		g.fill(polygon);
 		
-		//g.fill (e);
+		g.setPaint(sunlight);
+		g.fill(polygon);
+		
+		for(Spaceship s : this.game.getSpaceships()){
+			if(s==null || s.isDestroyed()){
+				continue;
+			}
+			
+			// get the closest spaceship location
+			double spaceshipX;
+			if (Math.abs(x-s.getLocation().getX()) < Math.abs(x-s.getMirrorLocation().getX())){
+				spaceshipX = s.getLocation().getX();
+			} else {
+				spaceshipX = s.getMirrorLocation().getX();
+			}
+			
+			double spaceshipY;
+			if (Math.abs(x-s.getLocation().getY()) < Math.abs(x-s.getMirrorLocation().getY())){
+				spaceshipY = s.getLocation().getY();
+			} else {
+				spaceshipY = s.getMirrorLocation().getY();
+			}
+			
+			
+			double distanceX = x-spaceshipX;
+			double distanceY = y-spaceshipY;
+			double distanceSquared = distanceX * distanceX + distanceY * distanceY;
+			int intensity = (int) Math.max(255-(distanceSquared/250),0);
+			
+			Color c = new Color(s.getColour());
+			RadialGradientPaint playerLight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)spaceshipX, (int)spaceshipY, new float[]{0,1}, new Color[]{new Color(c.getRed(), c.getGreen(), c.getBlue(), intensity), new Color(c.getRed(),c.getGreen(),c.getBlue(),0)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
+		
+			g.setPaint(playerLight);
+			g.fill(polygon);
+		}
 	}
+	
+// 	private void paintAsteroidShape(Graphics2D g, int x, int y, int radius, double seed, double rotation){
+// 	
+// 	
+// 	}
 	
 	private void paintSun(Graphics2D g){
 		Ellipse2D.Double e = new Ellipse2D.Double ();

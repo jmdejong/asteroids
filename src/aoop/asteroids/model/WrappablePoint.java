@@ -1,6 +1,8 @@
 package aoop.asteroids.model;
 
+
 import java.awt.geom.Point2D;
+import aoop.asteroids.Utils;
 
 /**
  * A WrappablePoint provides the same functionality as Point2d.Double,
@@ -23,6 +25,7 @@ public class WrappablePoint extends Point2D.Double {
 		this.setLocation(x,y);
 	}
 	
+	// doc needs updating. Took care of this in utils.
 	/**
 	 * Sets the location of the WrappablePoint to the new x and y.<br>
 	 * Note that these values are automatically wrapped to fit the range [0..domainWidth)<br>
@@ -42,9 +45,9 @@ public class WrappablePoint extends Point2D.Double {
 	}
 	
 	public void setX(double x){
-		this.x = (domainWidth + x) % domainWidth;
+		this.x = Utils.floorMod(x, domainWidth);//(domainWidth + x) % domainWidth;
 	}
 	public void setY(double y){
-		this.y = (domainHeight + y) % domainHeight;
+		this.y = Utils.floorMod(y, domainHeight);//(domainHeight + y) % domainHeight;
 	}
 }

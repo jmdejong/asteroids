@@ -1,6 +1,7 @@
 package aoop.asteroids.gui;
 
 import aoop.asteroids.Logging;
+import aoop.asteroids.Utils;
 import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.ClientGame;
@@ -178,8 +179,6 @@ public class AsteroidsPanel extends JPanel
 		g.setColor(Color.BLACK);
 		g.fill(polygon);
 		
-		g.setPaint(sunlight);
-		g.fill(polygon);
 		
 		for(Spaceship s : this.game.getSpaceships()){
 			if(s==null || s.isDestroyed()){
@@ -187,25 +186,17 @@ public class AsteroidsPanel extends JPanel
 			}
 			
 			// get the closest spaceship location
-			double spaceshipX;
-			if (Math.abs(x-s.getLocation().getX()) < Math.abs(x-s.getMirrorLocation().getX())){
-				spaceshipX = s.getLocation().getX();
-			} else {
-				spaceshipX = s.getMirrorLocation().getX();
-			}
-			
-			double spaceshipY;
-			if (Math.abs(x-s.getLocation().getY()) < Math.abs(x-s.getMirrorLocation().getY())){
-				spaceshipY = s.getLocation().getY();
-			} else {
-				spaceshipY = s.getMirrorLocation().getY();
-			}
+			double mx = x - GameObject.worldWidth/2;
+			double spaceshipX = Utils.floorMod(s.getLocation().getX()-mx, GameObject.worldWidth)+mx;
+			double my = y - GameObject.worldHeight/2;
+			double spaceshipY = Utils.floorMod(s.getLocation().getY()-my, GameObject.worldHeight)+my;
 			
 			
 			double distanceX = x-spaceshipX;
 			double distanceY = y-spaceshipY;
 			double distanceSquared = distanceX * distanceX + distanceY * distanceY;
-			int intensity = (int) Math.max(255-(distanceSquared/250),0);
+			double maxDistance = 350;
+			int intensity = (int) Math.max(255*(1-(distanceSquared/(maxDistance*maxDistance))),0);
 			
 			Color c = new Color(s.getColour());
 			RadialGradientPaint playerLight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)spaceshipX, (int)spaceshipY, new float[]{0,1}, new Color[]{new Color(c.getRed(), c.getGreen(), c.getBlue(), intensity), new Color(c.getRed(),c.getGreen(),c.getBlue(),0)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
@@ -213,6 +204,9 @@ public class AsteroidsPanel extends JPanel
 			g.setPaint(playerLight);
 			g.fill(polygon);
 		}
+		
+// 		g.setPaint(sunlight);
+// 		g.fill(polygon);
 	}
 	
 // 	private void paintAsteroidShape(Graphics2D g, int x, int y, int radius, double seed, double rotation){

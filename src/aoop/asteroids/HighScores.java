@@ -43,16 +43,18 @@ public class HighScores {
 		EntityManager em = emf.createEntityManager();
 		PlayerScore ps = getScoreObj(em, name);
 		
-		Logging.LOGGER.severe("name: "+name+ " score:"+score+" oldScore:"+ps);
+		// please don't use severe all the time
+		// or if you do, change it back afterwards
+		Logging.LOGGER.fine("name: "+name+ " score:"+score+" oldScore:"+ps);
 		
 		if(ps == null || score > ps.getScore()){
 			
 			em.getTransaction().begin();
 			if(ps == null){
-				Logging.LOGGER.severe("New PlayerScore created.");
+				Logging.LOGGER.fine("New PlayerScore created.");
 				em.persist(new PlayerScore(name,score,System.currentTimeMillis()));
 			}else{
-				Logging.LOGGER.severe("PS updated.");
+				Logging.LOGGER.fine("PS updated.");
 				ps.setScore(score);
 			}
 			em.getTransaction().commit();

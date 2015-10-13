@@ -33,6 +33,8 @@ public class Asteroids {
 	public static void main (String [] args)	{
 		
 		
+		Logging.LOGGER.setLevel(Logging.loggerLevel);
+		
 		HighScores h = HighScores.getInstance();
 		
 		

@@ -9,7 +9,7 @@ import aoop.asteroids.model.Game;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
+import java.awt.Dimension;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -79,12 +79,29 @@ public class AsteroidsFrame extends JFrame
 		
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		
+		
+		
+		
+		
+		
+		
+		JMenuBar mb = new JMenuBar ();
+		JMenu m = new JMenu ("Game");
+		mb.add (m);
+		m.add (new AbstractAction("Quit"){ public void actionPerformed(ActionEvent arg0){
+			System.exit(0);
+		}});
+		this.setJMenuBar (mb);
+		
+		
+		
+		
+		
+		
 		cards = new JPanel(cardLayout);
-		cards.setSize(800,700);
+		cards.setPreferredSize(new Dimension(800,700));
 		
-		
-		
-		this.setSize(cards.getSize());
+// 		this.setSize(new Dimension(800,700));//cards.getPreferredSize());
 		
 		
 		ap = new AsteroidsPanel ();
@@ -137,6 +154,7 @@ public class AsteroidsFrame extends JFrame
 	private void showMenu(){
 		
 		cardLayout.show(cards, "menu card");
+		this.pack();
 	}
 	
 	public void startGame(String address, Boolean isSpectator){
@@ -145,28 +163,33 @@ public class AsteroidsFrame extends JFrame
 		addKeyListener(client.game.spaceshipController);
 		
 		ap.observeGame(client.game);
+// 		Logging.LOGGER.info(ap.getSize().toString());
 		
+// 		cards.setSize(ap.getSize());
 		cardLayout.show(cards, "game card");
+// 		Logging.LOGGER.info(cards.getSize().toString());
+// 		Logging.LOGGER.info(ap.getSize().toString());
 		
-
+		
+// 		this.pack();
 		this.requestFocusInWindow();
 	}
 	
-	/** Quits the old game and starts a new one. */
-	private void restartGame ()
-	{
-		this.game.abort ();
-		try
-		{
-			Thread.sleep(50);
-		}
-		catch (InterruptedException e)
-		{
-			System.err.println ("Could not sleep before initializing a new game.");
-			e.printStackTrace ();
-		}
-		this.game.initGameData (0);
-	}
+// 	/** Quits the old game and starts a new one. */
+// 	private void restartGame ()
+// 	{
+// 		this.game.abort ();
+// 		try
+// 		{
+// 			Thread.sleep(50);
+// 		}
+// 		catch (InterruptedException e)
+// 		{
+// 			System.err.println ("Could not sleep before initializing a new game.");
+// 			e.printStackTrace ();
+// 		}
+// 		this.game.initGameData (0);
+// 	}
 	
 
 }

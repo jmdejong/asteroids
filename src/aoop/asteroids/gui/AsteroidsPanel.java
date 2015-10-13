@@ -70,6 +70,8 @@ public class AsteroidsPanel extends JPanel
 				AsteroidsPanel.this.repaint ();
 			}
 		});
+		this.setSize(game.getWidth(), game.getHeight());
+		Logging.LOGGER.info("Size in the Panel: "+this.getSize().toString());
 	}
 	
 	/**

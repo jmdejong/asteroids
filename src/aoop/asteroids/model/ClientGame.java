@@ -182,6 +182,14 @@ public class ClientGame extends Observable implements Runnable{
 		this.messages.add(new GameMessage(message));
 	}
 	
+	
+	public int getWidth(){
+		return (int)GameObject.worldWidth;
+	}
+	
+	public int getHeight(){
+		return (int)GameObject.worldHeight;
+	}
 
 	public BufferedImage getBgImage(){
 		return bgimage;

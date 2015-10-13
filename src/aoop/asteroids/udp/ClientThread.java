@@ -69,7 +69,7 @@ public class ClientThread extends BaseServerThread {
 				break;
 			case MESSAGE:
 				Logging.LOGGER.fine("C: Message Packet Received");
-				Logging.LOGGER.info(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
+				Logging.LOGGER.fine(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
 				client.game.addMessage(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
 				break;	
 			default:

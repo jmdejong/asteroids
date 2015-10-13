@@ -100,7 +100,7 @@ public class Game extends Observable implements Runnable
 		this.aborted = false;
 		this.numberOfSpawnedAsteroids = 0;
 		this.asteroidsLimit = roundNumber == 0 ? 0 : Math.max(1, roundNumber / 3);
-		Logging.LOGGER.warning("round number:"+roundNumber);
+		Logging.LOGGER.fine("round number:"+roundNumber);
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();
 		this.ships = new ArrayList<> ();
@@ -445,7 +445,7 @@ public class Game extends Observable implements Runnable
 				result.add(s);
 			}
 		}
-		Logging.LOGGER.warning("Winners:"+result);
+		Logging.LOGGER.fine("Winners:"+result);
 		return result;
 	}
 

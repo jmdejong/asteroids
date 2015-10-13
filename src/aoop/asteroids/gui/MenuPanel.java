@@ -22,12 +22,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.border.TitledBorder;
 import java.util.Random;
 import java.util.List;
 
 
 public class MenuPanel extends JPanel {
 	
+	// why are these capitalized? they're not classes. I would use either all caps or start with a lowercase letter
 	private static Color ButtonBorderColor = Color.GREEN;
 	private static Color TextColor = Color.GREEN;
 	private static Color BackColor = Color.BLACK;
@@ -62,31 +64,32 @@ public class MenuPanel extends JPanel {
 		
 		
 		
-		JPanel titlePanel = makeBox(new Dimension(800, 100), BoxLayout.Y_AXIS);
+		JPanel titlePanel = makeBox(null, BoxLayout.Y_AXIS);
 		this.addTitle(titlePanel, "ASTEROIDS");
 		this.add(titlePanel);
 		
-		JPanel namePanel = makeBox(new Dimension(800, 100), BoxLayout.Y_AXIS);
-		nameField = addInput(namePanel, generateName());
+		JPanel namePanel = makeBox(null , BoxLayout.Y_AXIS);
+		nameField = addInput(namePanel, generateName(), "Name:");
 		this.add(nameField);
 		
+		this.add(Box.createRigidArea(new Dimension(0,50)));
 		
-		JPanel body = makeBox(new Dimension(800, 500), BoxLayout.X_AXIS);
+		JPanel body = makeBox(null, BoxLayout.X_AXIS);
 		
 		body.add(Box.createRigidArea(new Dimension(50,0)));
 		
-		JPanel left = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+		JPanel left = makeBox(null, BoxLayout.Y_AXIS);
 		addHighScores(left, HighScores.getInstance().getHighScores());
 		body.add(left);
 		
 // 		body.add(Box.createRigidArea(new Dimension(50,0)));
 		
-		JPanel middle = new JPanel();
+		final JPanel middle = new JPanel();
 		middle.setBackground(BackColor);
-		CardLayout middleLayout = new CardLayout();
+		final CardLayout middleLayout = new CardLayout();
 		middle.setLayout(middleLayout);
 		
-		JPanel main = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+		JPanel main = makeBox(null, BoxLayout.Y_AXIS);
 		playButton = makeButton(main, "Singleplayer");
 		hostButton = makeButton(main, "Multiplayer");
 		JButton joinMenuButton = makeButton(main, "Join Multiplayer");
@@ -97,8 +100,8 @@ public class MenuPanel extends JPanel {
 		middle.add(main, "main panel");
 		
 		
-		JPanel addressPanel = makeBox(new Dimension(800, 300), BoxLayout.Y_AXIS);
-		addressField = addInput(addressPanel, "localhost");
+		JPanel addressPanel = makeBox(null, BoxLayout.Y_AXIS);
+		addressField = addInput(addressPanel, "localhost", "address:");
 		joinButton = makeButton(addressPanel, "Join");
 		spectateButton = makeButton(addressPanel, "Spectate");
 		JButton mainMenuButton = makeButton(addressPanel, "Back to menu");
@@ -115,7 +118,7 @@ public class MenuPanel extends JPanel {
 		
 		body.add(Box.createRigidArea(new Dimension(50,0)));
 		
-		JPanel right = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+		JPanel right = makeBox(null, BoxLayout.Y_AXIS);
 		addHighScores(right, HighScores.getInstance().getLastHourHighScores());
 		body.add(right);
 		
@@ -123,7 +126,7 @@ public class MenuPanel extends JPanel {
 		
 		this.add(body);
 		
-		JPanel footer = makeBox(new Dimension(800, 100), BoxLayout.Y_AXIS);
+		JPanel footer = makeBox(null, BoxLayout.Y_AXIS);
 		quitButton = makeButton(footer, "Quit");
 		this.add(footer);
 		
@@ -138,7 +141,7 @@ public class MenuPanel extends JPanel {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, axis));
 		if (size != null){
-			panel.setMaximumSize(size);
+			panel.setPreferredSize(size);
 		}
 		panel.setBackground(BackColor);
 		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -160,13 +163,19 @@ public class MenuPanel extends JPanel {
 		panel.add(Box.createRigidArea(new Dimension(0, 30)));
 	}
 	
-	private JTextField addInput(JPanel panel, String defaultText){
+	private JTextField addInput(JPanel panel, String defaultText, String title){
 		JTextField inputField = new JTextField();
 // 		inputField.setAlignmentY( Component.TOP_ALIGNMENT );
 		inputField.setMaximumSize( new Dimension(120,40) );
 		inputField.setBackground(this.BackColor);
 		inputField.setForeground(this.TextColor);
-		inputField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(this.ButtonBorderColor, MenuPanel.ButtonBorderWidth), new EmptyBorder(5, 5, 5, 5)));
+		inputField.setBorder(BorderFactory.createCompoundBorder(
+			new TitledBorder(new EmptyBorder(10,10,10,10), title, TitledBorder.CENTER, TitledBorder.TOP, panel.getFont(), TextColor),
+			BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(this.ButtonBorderColor, MenuPanel.ButtonBorderWidth),
+				new EmptyBorder(5, 5, 5, 5)
+			)
+		));
 		inputField.setText( defaultText);
 		inputField.setCaretColor(this.TextColor);
 		inputField.getCaret().setVisible(true);

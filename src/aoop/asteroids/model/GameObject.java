@@ -14,6 +14,8 @@ import org.json.simple.JSONArray;
  */
 public abstract class GameObject 
 {
+	
+	// I think we should not use these as public static variables, but pass them in somewhere
 	public static double worldWidth = 800;
 	public static double worldHeight = 700;
 

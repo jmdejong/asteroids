@@ -59,7 +59,8 @@ public class Client extends Base{
 		
 		
 		try {
-			new ClientThread(this).start();
+			this.responsesThread =  new ClientThread(this);
+			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -117,5 +118,8 @@ public class Client extends Base{
 		this.hasConnected = true;
 	}
 	
-
+	public void stopClient(){
+		this.game.abort();
+		this.responsesThread.stopServer();
+	}
 }

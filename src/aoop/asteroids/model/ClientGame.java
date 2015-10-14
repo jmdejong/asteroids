@@ -66,6 +66,8 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private long lastConnectionCheckTime = 0;
 	
+	private boolean aborted = false;
+	
 	
 	public ClientGame(Client client){
 		this.client = client;
@@ -142,7 +144,7 @@ public class ClientGame extends Observable implements Runnable{
 		
 		
 		
-		while (true)
+		while (!this.aborted)
 		{
 			if (true)
 			{
@@ -235,6 +237,12 @@ public class ClientGame extends Observable implements Runnable{
 		
 		this.explosions = explosions;
 	}
+	
+	public void abort(){
+		this.aborted = true;
+	}
+	
+	
 
 	private void playShootSound(Bullet b){
 		int index = new Random(b.hashCode()).nextInt(2);

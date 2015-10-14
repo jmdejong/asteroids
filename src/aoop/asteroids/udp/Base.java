@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Base {
+	BaseServerThread responsesThread = null;
+	
 	public Base(){
 		
 		
@@ -21,4 +23,6 @@ public class Base {
 		DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
 		socket.send(packet);
 	}
+	
+
 }

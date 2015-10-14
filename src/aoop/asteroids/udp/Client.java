@@ -27,6 +27,8 @@ public class Client extends Base{
 	
 	private String name;
 	
+	private boolean hasConnected = false;
+	
 	
 	
 	DatagramSocket sendSocket;
@@ -50,9 +52,11 @@ public class Client extends Base{
 		
 		this.game = new ClientGame(this);
 		
-		sendPlayerJoinPacket();
+		//sendPlayerJoinPacket();
 		Thread t = new Thread (game);
 		t.start();
+		
+		
 		
 		try {
 			new ClientThread(this).start();
@@ -78,7 +82,7 @@ public class Client extends Base{
 		super.sendPacket(packet_string,serverAddress.getAddress(), serverAddress.getPort(), sendSocket); 	
 	}
 	
-	private void sendPlayerJoinPacket(){
+	public void sendPlayerJoinPacket(){
 		Logging.LOGGER.fine("sending join packet...");
 		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket(this.name);
 		try {
@@ -103,6 +107,14 @@ public class Client extends Base{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean hasConnected() {
+		return hasConnected;
+	}
+
+	public void confirmConnectionExistance() {
+		this.hasConnected = true;
 	}
 	
 

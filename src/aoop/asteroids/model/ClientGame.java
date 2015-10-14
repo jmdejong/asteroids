@@ -64,6 +64,8 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public boolean bgmHasStarted = false;
 	
+	private long lastConnectionCheckTime = 0;
+	
 	
 	public ClientGame(Client client){
 		this.client = client;
@@ -145,6 +147,11 @@ public class ClientGame extends Observable implements Runnable{
 			if (true)
 			{
 				executionTime = System.currentTimeMillis ();
+				if(!this.client.hasConnected() && this.lastConnectionCheckTime + 3000 < executionTime){
+					this.client.sendPlayerJoinPacket();
+					this.lastConnectionCheckTime = executionTime;
+				}
+				
 				this.update ();
 				executionTime -= System.currentTimeMillis ();
 				sleepTime = 40 - executionTime;

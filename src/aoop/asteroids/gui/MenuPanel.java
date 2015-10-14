@@ -65,77 +65,75 @@ public class MenuPanel extends JPanel {
 		
 		
 		JPanel titlePanel = makeBox(null, BoxLayout.Y_AXIS);
-		this.addTitle(titlePanel, "ASTEROIDS");
+			addTitle(titlePanel, "ASTEROIDS");
 		this.add(titlePanel);
 		
 		JPanel namePanel = makeBox(null , BoxLayout.Y_AXIS);
-		nameField = addInput(namePanel, generateName(), "Name:");
-		this.add(nameField);
+			nameField = addInput(namePanel, generateName(), "Name:");
+		this.add(namePanel);
 		
 		this.add(Box.createRigidArea(new Dimension(0,50)));
 		
 		JPanel body = makeBox(null, BoxLayout.X_AXIS);
 		
-		body.add(Box.createRigidArea(new Dimension(50,0)));
-		
-		JPanel left = makeBox(null, BoxLayout.Y_AXIS);
-		addHighScores(left, HighScores.getInstance().getHighScores());
-		left.setAlignmentY(Component.TOP_ALIGNMENT);
-		body.add(left);
-		
-// 		body.add(Box.createRigidArea(new Dimension(50,0)));
-		
-		JPanel middle = makeBox(null, BoxLayout.Y_AXIS);
-		
-		final JPanel switchable = new JPanel();
-		switchable.setBackground(BackColor);
-		final CardLayout switchableLayout = new CardLayout();
-		switchable.setLayout(switchableLayout);
-		
-		JPanel main = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
-		playButton = makeButton(main, "Singleplayer");
-		hostButton = makeButton(main, "Multiplayer");
-		JButton joinMenuButton = makeButton(main, "Join Multiplayer");
-		joinMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-			switchableLayout.show(switchable, "address panel");
-		}});
-		
-		//main.setMaximumSize(new Dimension(main.getWidth(),50));
-		switchable.add(main, "main panel");
-		
-		
-		JPanel addressPanel = makeBox(null, BoxLayout.Y_AXIS);
-		addressField = addInput(addressPanel, "localhost", "address:");
-		
-// 		JPanel voidPanel = new JPanel();
-		joinButton = makeButton(addressPanel, "Join");
-		spectateButton = makeButton(addressPanel, "Spectate");
-		JButton mainMenuButton = makeButton(addressPanel, "Back to menu");
-		mainMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-			switchableLayout.show(switchable, "main panel");
-		}});
-		
-		switchable.add(addressPanel, "address panel");
-		
-		
-		switchableLayout.show(switchable, "main panel");
-		
-		middle.add(switchable);
-		
-		
-		JPanel footer = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
-		quitButton = makeButton(footer, "Quit");
-		middle.add(footer);
-		
-		body.add(middle);
-		
-		body.add(Box.createRigidArea(new Dimension(50,0)));
-		
-		JPanel right = makeBox(null, BoxLayout.Y_AXIS);
-		addHighScores(right, HighScores.getInstance().getLastHourHighScores());
-		body.add(right);
-		
-		body.add(Box.createRigidArea(new Dimension(50,0)));
+			body.add(Box.createRigidArea(new Dimension(50,0)));
+			
+			JPanel left = makeBox(null, BoxLayout.Y_AXIS);
+				addHighScores(left, HighScores.getInstance().getHighScores());
+				left.setAlignmentY(Component.TOP_ALIGNMENT);
+			body.add(left);
+			
+			// 		body.add(Box.createRigidArea(new Dimension(50,0)));
+			
+			JPanel middle = makeBox(null, BoxLayout.Y_AXIS);
+			
+				final JPanel switchable = new JPanel();
+					switchable.setBackground(BackColor);
+					final CardLayout switchableLayout = new CardLayout();
+					switchable.setLayout(switchableLayout);
+					
+					JPanel main = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+						playButton = makeButton(main, "Singleplayer");
+						hostButton = makeButton(main, "Multiplayer");
+						JButton joinMenuButton = makeButton(main, "Join Multiplayer");
+						joinMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+							switchableLayout.show(switchable, "address panel");
+						}});
+					
+					switchable.add(main, "main panel");
+					
+					
+					JPanel addressPanel = makeBox(null, BoxLayout.Y_AXIS);
+						addressField = addInput(addressPanel, "localhost", "address:");
+						
+						joinButton = makeButton(addressPanel, "Join");
+						spectateButton = makeButton(addressPanel, "Spectate");
+						JButton mainMenuButton = makeButton(addressPanel, "Back to menu");
+						mainMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+							switchableLayout.show(switchable, "main panel");
+						}});
+					
+					switchable.add(addressPanel, "address panel");
+					
+					
+					switchableLayout.show(switchable, "main panel");
+				
+				middle.add(switchable);
+				
+				
+				JPanel footer = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+					quitButton = makeButton(footer, "Quit");
+				middle.add(footer);
+				
+			body.add(middle);
+			
+			body.add(Box.createRigidArea(new Dimension(50,0)));
+			
+			JPanel right = makeBox(null, BoxLayout.Y_AXIS);
+				addHighScores(right, HighScores.getInstance().getLastHourHighScores());
+			body.add(right);
+			
+			body.add(Box.createRigidArea(new Dimension(50,0)));
 		
 		this.add(body);
 		

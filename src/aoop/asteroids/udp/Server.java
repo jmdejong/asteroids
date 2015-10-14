@@ -51,7 +51,8 @@ public class Server extends Base{
 		this.sendSocket = new DatagramSocket(Server.UDPPort);
 
 		try {
-			new ServerThread(this).start();
+			this.responsesThread =  new ServerThread(this);
+			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -59,10 +60,10 @@ public class Server extends Base{
 		if(this.isSinglePlayerMode()){
 			++roundNumber;
 		}
-		startNextGame();
+		startFirstGame();
 	}
 	
-	public void startNextGame(){
+	public void startFirstGame(){
 		this.game = new Lobby(this,roundNumber);
 		Thread t = new Thread (game);
 		t.start();
@@ -85,11 +86,11 @@ public class Server extends Base{
 		
 		this.game.addSpaceship(name, !isSinglePlayerMode());
 		
-		if(this.playerConnections.size() == 1){
+		if(this.playerConnections.size() - countDisconnectedPlayers() == 1){
 			if(isSinglePlayerMode()){
 				sendMessagePacket("Singleplayer Game Started");
 			}else{
-				sendMessagePacket("Multiplayer Game Started");
+				sendMessagePacket("Local Client⟷Server connection made.");
 				sendMessagePacket("Waiting for another Player");
 			}
 		}else{
@@ -214,9 +215,11 @@ public class Server extends Base{
 	 * Clients that did not say anything for longer than 5 seconds are considered to be `dead` and are to be removed from the game.
 	 * */
 	public void tagNonrespondingClients(){
+		int amountOfDisconnectedClients = 0;
 		
 		for(ClientConnection c : getPlayerConnections()){
 			if(c.isDisconnected()){
+				amountOfDisconnectedClients+=1;
 				continue;
 			}
 			c.tagAsDisconnectedIfNotResponding();
@@ -225,6 +228,52 @@ public class Server extends Base{
 				this.sendMessagePacket("Connection Lost with: "+c.getName());
 			}
 		}
+		
+		if(getPlayerConnections().size() > 1 &&  getPlayerConnections().size() - amountOfDisconnectedClients <= 1){
+			//Return to main menu.
+			this.sendMessagePacket("Connections with all other players lost. ");
+			this.sendMessagePacket("Waiting for new players... ");
+			
+			/*//Find the local connection
+			ClientConnection myLocalConnection = null;
+			for(ClientConnection c : getPlayerConnections()){
+				if(c.getAddress().toString() == "127.0.0.1"){
+					myLocalConnection = c;
+				}
+			}
+			
+			this.playerConnections = new ArrayList<ClientConnection>();
+			if(myLocalConnection != null){
+				this.playerConnections.add(myLocalConnection);
+			}
+			
+			this.roundNumber = 0;*/
+			List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
+			for(int i=this.playerConnections.size()-1;i>=0;i--){
+				ClientConnection c = playerConnections.get(i);
+				if(c.isDisconnected()){
+					playerConnections.remove(i);
+					spaceships.remove(i);
+				}
+			}
+			this.roundNumber = 0;
+			this.game = new Lobby(this,0);
+			this.game.addSpaceships(spaceships);
+			Thread t = new Thread (game);
+			t.start();
+			
+		}
+	}
+	
+	public int countDisconnectedPlayers(){
+	
+		int amountOfDisconnectedClients = 0;
+		for(ClientConnection c : getPlayerConnections()){
+			if(c.isDisconnected()){
+				amountOfDisconnectedClients+=1;
+			}
+		}
+		return amountOfDisconnectedClients;
 	}
 	
 	public void updateConnectionData(JSONObject packetData, DatagramPacket packet){
@@ -249,6 +298,11 @@ public class Server extends Base{
 
 	public boolean isSinglePlayerMode() {
 		return singlePlayerMode;
+	}
+	
+	public void stopServer(){
+		this.game.abort();
+		this.responsesThread.stopServer();
 	}
 
 

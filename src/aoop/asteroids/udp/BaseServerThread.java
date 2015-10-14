@@ -39,4 +39,9 @@ public abstract class BaseServerThread extends Thread {
 	}
 	
 	protected abstract void parsePacket(String packet_string, DatagramPacket packet);
+	
+	public void stopServer(){
+		stopServer = true;
+	}
+	
 }

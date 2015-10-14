@@ -255,9 +255,19 @@ public class AsteroidsPanel extends JPanel
 	
 	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating, Color c){
 		
-		// Spaceship accelerating -> continue, otherwise abort.
+		//Draw spaceship glow
+		Color startc = new Color(c.getRed(), c.getGreen(), c.getBlue(), 25);
+		Color endc = new Color(c.getRed(), c.getGreen(), c.getBlue(), 0);
+		int glowradius = 50;
+		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, glowradius, x, y, new float[]{0, 1}, new Color[]{startc, endc}, CycleMethod.NO_CYCLE);
+		g.setPaint(roundGradientPaint);
+		Ellipse2D.Double ell = new Ellipse2D.Double();
+		ell.setFrame (x - glowradius, y - glowradius, 2 * glowradius, 2 * glowradius);
+		g.fill(ell);
+		
+		
 		Polygon p;
-		if (isAccelerating){
+		if (isAccelerating){// Spaceship accelerating -> continue, otherwise abort.
 			// Draw flame at the exhaust
 			p = new Polygon ();
 			p.addPoint ((int)(x - Math.sin (direction			     ) * 25), (int)(y + Math.cos (direction			       ) * 25));
@@ -280,7 +290,6 @@ public class AsteroidsPanel extends JPanel
 		//g.setColor(new Color(255-c.getRed(),255-c.getGreen(),255-c.getBlue()));
 		g.draw (p);
 
-		
 
 
 	}

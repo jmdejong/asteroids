@@ -74,6 +74,8 @@ public class AsteroidsFrame extends JFrame
 		
 		
 		JMenuBar mb = new JMenuBar ();
+		mb.setBackground(Color.BLACK);
+		mb.setForeground(Color.GREEN);
 		JMenu m = new JMenu ("Game");
 		mb.add (m);
 		m.add (new AbstractAction("Quit"){ public void actionPerformed(ActionEvent arg0){

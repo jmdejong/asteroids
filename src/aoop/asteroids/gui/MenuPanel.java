@@ -33,6 +33,10 @@ import java.util.List;
 
 public class MenuPanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// why are these capitalized? they're not classes. I would use either all caps or start with a lowercase letter
 	private static Color ButtonBorderColor = Color.GREEN;
 	private static Color TextColor = Color.GREEN;
@@ -138,21 +142,12 @@ public class MenuPanel extends JPanel {
 		title.setMaximumSize(new Dimension(800,50));
 		title.setHorizontalAlignment( JLabel.CENTER );
 		title.setFont(new Font("sansserif", Font.PLAIN, 40));
-		title.setForeground(this.TextColor);
+		title.setForeground(MenuPanel.TextColor);
 		panel.add(title);
 		
 		panel.add(Box.createRigidArea(new Dimension(0, 30)));
 	}
-	
-	private JLabel addTitle(String titleText){
-		JLabel title = new JLabel(titleText);
-		title.setAlignmentX( Component.CENTER_ALIGNMENT );
-		title.setMaximumSize(new Dimension(800,50));
-		title.setHorizontalAlignment( JLabel.CENTER );
-		title.setFont(new Font("sansserif", Font.PLAIN, 40));
-		title.setForeground(this.TextColor);
-		return title;
-	}
+
 	
 	private JTextField addInput(JPanel panel, String defaultText, String title){
 		JTextField inputField = makeInput(defaultText, title, panel.getFont());
@@ -168,17 +163,17 @@ public class MenuPanel extends JPanel {
 		JTextField inputField = new JTextField();
 // 		inputField.setAlignmentY( Component.TOP_ALIGNMENT );
 		inputField.setMaximumSize( new Dimension(120,80) );
-		inputField.setBackground(this.BackColor);
-		inputField.setForeground(this.TextColor);
+		inputField.setBackground(MenuPanel.BackColor);
+		inputField.setForeground(MenuPanel.TextColor);
 		inputField.setBorder(BorderFactory.createCompoundBorder(
 			new TitledBorder(new EmptyBorder(10,10,10,10), title, TitledBorder.CENTER, TitledBorder.TOP, f, TextColor),
 			BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(this.ButtonBorderColor, MenuPanel.ButtonBorderWidth),
+				BorderFactory.createLineBorder(MenuPanel.ButtonBorderColor, MenuPanel.ButtonBorderWidth),
 				new EmptyBorder(5, 5, 5, 5)
 			)
 		));
 		inputField.setText( defaultText);
-		inputField.setCaretColor(this.TextColor);
+		inputField.setCaretColor(MenuPanel.TextColor);
 		inputField.getCaret().setVisible(true);
 		
 		return inputField;
@@ -203,9 +198,9 @@ public class MenuPanel extends JPanel {
 // 		button.setFont(Font.getFont("Courier"));
 		button.setAlignmentX( Component.CENTER_ALIGNMENT );
 		button.setMaximumSize( new Dimension(180,50) );
-		button.setBackground(this.BackColor);
-		button.setForeground(this.TextColor);
-		button.setBorder(BorderFactory.createLineBorder(this.ButtonBorderColor, this.ButtonBorderWidth));
+		button.setBackground(MenuPanel.BackColor);
+		button.setForeground(MenuPanel.TextColor);
+		button.setBorder(BorderFactory.createLineBorder(MenuPanel.ButtonBorderColor, MenuPanel.ButtonBorderWidth));
 		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
 		if(panel != null){
@@ -230,25 +225,6 @@ public class MenuPanel extends JPanel {
 		return this.makeButton(null,text,action);
 	}
 	
-	
-	private void addHighScores(JPanel panel, List<PlayerScore> scores){
-		
-		
-		Font scoreFont = new Font(Font.MONOSPACED, Font.PLAIN, 15);
-		for (PlayerScore score : scores){
-			JLabel scoreLabel = new JLabel();
-			scoreLabel.setHorizontalAlignment( JLabel.RIGHT );
-			scoreLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-			scoreLabel.setAlignmentY(Component.TOP_ALIGNMENT);
-			scoreLabel.setFont(scoreFont);
-			scoreLabel.setForeground(Color.WHITE);
-			scoreLabel.setText(score.toString());
-			panel.add(scoreLabel);
-		}
-		//return container;
-		
-		//panel.add(addHighScores(scores));
-	}
 	
 	private JPanel addHighScores(String scoreListName, List<PlayerScore> scores){
 		JPanel container = makeBox(null, BoxLayout.Y_AXIS);

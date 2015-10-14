@@ -155,7 +155,7 @@ public class MenuPanel extends JPanel {
 			panel.setPreferredSize(size);
 		}
 		
-		panel.setBorder(BorderFactory.createLineBorder(Color.WHITE, this.ButtonBorderWidth));
+// 		panel.setBorder(BorderFactory.createLineBorder(Color.WHITE, this.ButtonBorderWidth));
 		panel.setBackground(BackColor);
 		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.setAlignmentY(Component.CENTER_ALIGNMENT);

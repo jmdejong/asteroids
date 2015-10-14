@@ -56,7 +56,7 @@ public class Client extends Base{
 		Thread t = new Thread (game);
 		t.start();
 		
-		
+		this.game.addMessage("Connecting to Host...");
 		
 		try {
 			this.responsesThread =  new ClientThread(this);

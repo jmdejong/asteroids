@@ -291,7 +291,7 @@ public class AsteroidsPanel extends JPanel
 			p.addPoint ((int)(x - Math.sin (direction			     ) * 25), (int)(y + Math.cos (direction			       ) * 25));
 			p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
 			p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
-			g.setColor(new Color(255-c.getRed(),255-c.getGreen(),255-c.getBlue()));
+			g.setColor(new Color(255-c.getRed(),255-c.getGreen(),255-c.getBlue()).brighter().brighter());
 			//g.setColor(Color.YELLOW);
 			g.fill(p);
 		}

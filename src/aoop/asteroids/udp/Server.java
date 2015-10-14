@@ -90,7 +90,7 @@ public class Server extends Base{
 			if(isSinglePlayerMode()){
 				sendMessagePacket("Singleplayer Game Started");
 			}else{
-				sendMessagePacket("Multiplayer Game Started");
+				sendMessagePacket("Local Client⟷Server connection made.");
 				sendMessagePacket("Waiting for another Player");
 			}
 		}else{

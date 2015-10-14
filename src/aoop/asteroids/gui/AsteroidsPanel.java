@@ -267,6 +267,10 @@ public class AsteroidsPanel extends JPanel
 		
 	}
 	
+	private void addRotatedPoint(Polygon polygon, double centerX, double centerY, double dx, double dy, double rotationX, double rotationY){
+		polygon.addPoint((int)(centerX + Utils.imagMultI(dx,dy,rotationX,rotationY)), (int)(centerY + Utils.imagMultR(dx,dy,rotationX,rotationY)));
+	}
+	
 	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating, Color c){
 		
 		//Draw spaceship glow
@@ -292,11 +296,17 @@ public class AsteroidsPanel extends JPanel
 			g.fill(p);
 		}
 		
+		double directionY = Math.cos(direction);
+		double directionX = Math.sin(direction);
+		
 		// Draw body of the spaceship
 		p = new Polygon ();
-		p.addPoint ((int)(x + Math.sin (direction				 ) * 20), (int)(y - Math.cos (direction				   ) * 20));
-		p.addPoint ((int)(x + Math.sin (direction + 0.8 * Math.PI) * 20), (int)(y - Math.cos (direction + 0.8 * Math.PI) * 20));
-		p.addPoint ((int)(x + Math.sin (direction + 1.2 * Math.PI) * 20), (int)(y - Math.cos (direction + 1.2 * Math.PI) * 20));
+		addRotatedPoint(p, x,y, 0,20, directionX,directionY);
+		addRotatedPoint(p, x,y, 11,-16, directionX,directionY);
+		addRotatedPoint(p, x,y, -11,-16, directionX,directionY);
+		/*p.addPoint ((int)(x + Utils.imagMultI(0,20,direction_x,direction_y)), (int)(y + Utils.imagMultR(0,20,direction_x,direction_y)));
+		p.addPoint ((int)(x + Utils.imagMultI(11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(11,-16,direction_x,direction_y)));
+		p.addPoint ((int)(x + Utils.imagMultI(-11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(-11,-16,direction_x,direction_y)))*/;
 
 		g.setColor (c);
 		g.fill (p);

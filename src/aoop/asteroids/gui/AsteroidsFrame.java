@@ -46,43 +46,31 @@ public class AsteroidsFrame extends JFrame
 	/** serialVersionUID */
 	public static final long serialVersionUID = 1L;
 	
-	public static Color ButtonBorderColor = Color.GREEN;
-	public static Color TextColor = Color.GREEN;
-	public static Color ButtonBackColor = Color.BLACK;
-	public static int ButtonBorderWidth = 1;
 	
-
-	/** The game model. */
-	private Game game;
+	private Server server;
+	private Client client;
 	
+	/** The container vor the menu and the game view */
 	private JPanel cards;
 	private CardLayout cardLayout = new CardLayout();
-
+	
 	/** The panel in which the game is painted. */
 	private AsteroidsPanel ap;
 	
+	/** The panel that shows the menu */
 	private MenuPanel mp;
 	
-// 	private AddressInputPanel aip;
 	/** 
-	 *	Constructs a new Frame, requires a game model.
-	 *
-	 *	@param game game model.
-	 *	@param controller key listener that catches the users actions.
+	 *	Constructs a new Frame.
 	 */
 
 	public AsteroidsFrame (){
-
+		
 		
 		this.setTitle ("Asteroids");
 		this.setResizable(false);
 		
 		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		
-		
-		
-		
-		
 		
 		
 		JMenuBar mb = new JMenuBar ();
@@ -91,17 +79,13 @@ public class AsteroidsFrame extends JFrame
 		m.add (new AbstractAction("Quit"){ public void actionPerformed(ActionEvent arg0){
 			System.exit(0);
 		}});
+		m.add (new AbstractAction("Back to Menu"){ public void actionPerformed(ActionEvent arg0){
+			showMenu();
+		}});
 		this.setJMenuBar (mb);
-		
-		
-		
-		
-		
 		
 		cards = new JPanel(cardLayout);
 		cards.setPreferredSize(new Dimension(800,700));
-		
-// 		this.setSize(new Dimension(800,700));//cards.getPreferredSize());
 		
 		
 		ap = new AsteroidsPanel ();
@@ -157,39 +141,19 @@ public class AsteroidsFrame extends JFrame
 		this.pack();
 	}
 	
+	/** Starts a new game as a client. 
+	 * @param address the address of the server
+	 * @param isSpectator whether the player should be only a spectator
+	 */
 	public void startGame(String address, Boolean isSpectator){
 		
 		Client client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
 		addKeyListener(client.game.spaceshipController);
 		
 		ap.observeGame(client.game);
-// 		Logging.LOGGER.info(ap.getSize().toString());
-		
-// 		cards.setSize(ap.getSize());
 		cardLayout.show(cards, "game card");
-// 		Logging.LOGGER.info(cards.getSize().toString());
-// 		Logging.LOGGER.info(ap.getSize().toString());
-		
-		
-// 		this.pack();
 		this.requestFocusInWindow();
 	}
-	
-// 	/** Quits the old game and starts a new one. */
-// 	private void restartGame ()
-// 	{
-// 		this.game.abort ();
-// 		try
-// 		{
-// 			Thread.sleep(50);
-// 		}
-// 		catch (InterruptedException e)
-// 		{
-// 			System.err.println ("Could not sleep before initializing a new game.");
-// 			e.printStackTrace ();
-// 		}
-// 		this.game.initGameData (0);
-// 	}
 	
 
 }

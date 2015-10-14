@@ -92,7 +92,7 @@ public class MenuPanel extends JPanel {
 		final CardLayout switchableLayout = new CardLayout();
 		switchable.setLayout(switchableLayout);
 		
-		JPanel main = makeBox(null, BoxLayout.Y_AXIS);
+		JPanel main = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
 		playButton = makeButton(main, "Singleplayer");
 		hostButton = makeButton(main, "Multiplayer");
 		JButton joinMenuButton = makeButton(main, "Join Multiplayer");
@@ -106,6 +106,8 @@ public class MenuPanel extends JPanel {
 		
 		JPanel addressPanel = makeBox(null, BoxLayout.Y_AXIS);
 		addressField = addInput(addressPanel, "localhost", "address:");
+		
+// 		JPanel voidPanel = new JPanel();
 		joinButton = makeButton(addressPanel, "Join");
 		spectateButton = makeButton(addressPanel, "Spectate");
 		JButton mainMenuButton = makeButton(addressPanel, "Back to menu");
@@ -121,7 +123,7 @@ public class MenuPanel extends JPanel {
 		middle.add(switchable);
 		
 		
-		JPanel footer = makeBox(null, BoxLayout.Y_AXIS);
+		JPanel footer = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
 		quitButton = makeButton(footer, "Quit");
 		middle.add(footer);
 		
@@ -178,7 +180,7 @@ public class MenuPanel extends JPanel {
 	private JTextField addInput(JPanel panel, String defaultText, String title){
 		JTextField inputField = new JTextField();
 // 		inputField.setAlignmentY( Component.TOP_ALIGNMENT );
-		inputField.setMaximumSize( new Dimension(120,40) );
+		inputField.setMaximumSize( new Dimension(120,80) );
 		inputField.setBackground(this.BackColor);
 		inputField.setForeground(this.TextColor);
 		inputField.setBorder(BorderFactory.createCompoundBorder(

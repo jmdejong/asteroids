@@ -62,7 +62,7 @@ public class Spaceship extends GameObject
 	{
 		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, 0);
 		
-		this.colour = Color.getHSBColor(new Random().nextFloat(), 1, .9f).getRGB();
+		this.colour = Color.getHSBColor(new Random(name.hashCode()).nextFloat(), 1, .9f).getRGB();
 	}
 
 	/**

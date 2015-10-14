@@ -80,24 +80,27 @@ public class MenuPanel extends JPanel {
 		
 		JPanel left = makeBox(null, BoxLayout.Y_AXIS);
 		addHighScores(left, HighScores.getInstance().getHighScores());
+		left.setAlignmentY(Component.TOP_ALIGNMENT);
 		body.add(left);
 		
 // 		body.add(Box.createRigidArea(new Dimension(50,0)));
 		
-		final JPanel middle = new JPanel();
-		middle.setBackground(BackColor);
-		final CardLayout middleLayout = new CardLayout();
-		middle.setLayout(middleLayout);
+		JPanel middle = makeBox(null, BoxLayout.Y_AXIS);
+		
+		final JPanel switchable = new JPanel();
+		switchable.setBackground(BackColor);
+		final CardLayout switchableLayout = new CardLayout();
+		switchable.setLayout(switchableLayout);
 		
 		JPanel main = makeBox(null, BoxLayout.Y_AXIS);
 		playButton = makeButton(main, "Singleplayer");
 		hostButton = makeButton(main, "Multiplayer");
 		JButton joinMenuButton = makeButton(main, "Join Multiplayer");
 		joinMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-			middleLayout.show(middle, "address panel");
+			switchableLayout.show(switchable, "address panel");
 		}});
 		
-		middle.add(main, "main panel");
+		switchable.add(main, "main panel");
 		
 		
 		JPanel addressPanel = makeBox(null, BoxLayout.Y_AXIS);
@@ -106,13 +109,20 @@ public class MenuPanel extends JPanel {
 		spectateButton = makeButton(addressPanel, "Spectate");
 		JButton mainMenuButton = makeButton(addressPanel, "Back to menu");
 		mainMenuButton.addActionListener(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-			middleLayout.show(middle, "main panel");
+			switchableLayout.show(switchable, "main panel");
 		}});
 		
-		middle.add(addressPanel, "address panel");
+		switchable.add(addressPanel, "address panel");
 		
 		
-		middleLayout.show(middle, "main panel");
+		switchableLayout.show(switchable, "main panel");
+		
+		middle.add(switchable);
+		
+		
+		JPanel footer = makeBox(null, BoxLayout.Y_AXIS);
+		quitButton = makeButton(footer, "Quit");
+		middle.add(footer);
 		
 		body.add(middle);
 		
@@ -126,9 +136,7 @@ public class MenuPanel extends JPanel {
 		
 		this.add(body);
 		
-		JPanel footer = makeBox(null, BoxLayout.Y_AXIS);
-		quitButton = makeButton(footer, "Quit");
-		this.add(footer);
+		
 		
 		
 		
@@ -143,8 +151,11 @@ public class MenuPanel extends JPanel {
 		if (size != null){
 			panel.setPreferredSize(size);
 		}
+		
+		panel.setBorder(BorderFactory.createLineBorder(Color.WHITE, this.ButtonBorderWidth));
 		panel.setBackground(BackColor);
 		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		return panel;
 	}
 	
@@ -212,6 +223,7 @@ public class MenuPanel extends JPanel {
 			JLabel scoreLabel = new JLabel();
 			scoreLabel.setHorizontalAlignment( JLabel.RIGHT );
 			scoreLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+			scoreLabel.setAlignmentY(Component.TOP_ALIGNMENT);
 			scoreLabel.setFont(scoreFont);
 			scoreLabel.setForeground(Color.WHITE);
 			scoreLabel.setText(score.toString());

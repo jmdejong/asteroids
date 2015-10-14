@@ -102,6 +102,8 @@ public class Server extends Base{
 	public void addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
 		long packetId = ((Long) packetData.get("r"));
 		
+		
+		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
 		c.setName(PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d")));
 		c.setLastPingTime(System.currentTimeMillis());

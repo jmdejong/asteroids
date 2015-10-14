@@ -100,6 +100,7 @@ public class MenuPanel extends JPanel {
 			switchableLayout.show(switchable, "address panel");
 		}});
 		
+		//main.setMaximumSize(new Dimension(main.getWidth(),50));
 		switchable.add(main, "main panel");
 		
 		

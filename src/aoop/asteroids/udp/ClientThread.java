@@ -33,8 +33,10 @@ public class ClientThread extends BaseServerThread {
 			case GAMESTATE:
 				Logging.LOGGER.fine("C: Gamestate Packet Received");
 				Logging.LOGGER.fine(packet_data.toString());
+				this.client.confirmConnectionExistance();
 				this.client.game.unFreeze();
 				GameStatePacket.decodePacket((JSONArray) packet_data.get("d"), client.game);
+				
 				if(!client.game.bgmHasStarted){
 					client.game.bgmHasStarted = true;
 					client.game.playSound("background_music_the_cosmos.wav",0/* ((Long) packet_data.get("r")).intValue() % 3600*/);

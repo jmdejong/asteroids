@@ -66,103 +66,52 @@ public class MenuPanel extends JPanel {
 		
 		
 		
-		JPanel titlePanel = makeBox(null, BoxLayout.Y_AXIS);
-		this.addTitle(titlePanel, "ASTEROIDS");
-		this.add(titlePanel);
 		
-		JPanel namePanel = makeBox(null , BoxLayout.Y_AXIS);
-		nameField = addInput(namePanel, generateName(), "Name:");
-		this.add(nameField);
+		addTitle(this, "ASTEROIDS");
+		
+		nameField = addInput(this, generateName(), "Name:");
 		
 		this.add(Box.createRigidArea(new Dimension(0,50)));
 		
-		JPanel body = makeBox(null, BoxLayout.X_AXIS);
 		
-		//body.add(Box.createRigidArea(new Dimension(50,0)));
-		
-		//JPanel left = makeBox(null, BoxLayout.Y_AXIS);
-		//addHighScores(left, HighScores.getInstance().getHighScores());
-		//left.setAlignmentY(Component.TOP_ALIGNMENT);
-		//body.add(left);
-		
-		body.add(
-				addHighScores(HighScores.getInstance().getHighScores())
-			);
-		
-		
-// 		body.add(Box.createRigidArea(new Dimension(50,0)));
-		
-		JPanel middle = makeBox(null, BoxLayout.Y_AXIS);
 		
 		final JPanel switchable = new JPanel();
 		switchable.setBackground(BackColor);
 		final CardLayout switchableLayout = new CardLayout();
 		switchable.setLayout(switchableLayout);
-		middle.add(switchable);
 		
-		//JPanel main = makeBox(new Dimension(200, 300), BoxLayout.Y_AXIS);
+		switchable.add(makeCompositePanel(new Dimension(200, 300), BoxLayout.Y_AXIS,
+				makeButton("Singleplayer"),
+				makeButton("Host Multiplayer"),
+				makeButton("Join Multiplayer", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+					switchableLayout.show(switchable, "address panel");
+				}})
+			), "main panel");
 		
-		JPanel main = makeCompositePanel(new Dimension(200, 300), BoxLayout.Y_AXIS,
-			makeButton("Singleplayer"),
-			makeButton("Host Multiplayer"),
-			makeButton("Join Multiplayer", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
-				switchableLayout.show(switchable, "address panel");
-			}})
-		);
-		
-		//main.setMaximumSize(new Dimension(main.getWidth(),50));
-		switchable.add(main, "main panel");
-		
-		
-		//JPanel addressPanel = makeBox(null, BoxLayout.Y_AXIS);
-		//addressField = addInput(addressPanel, "localhost", "address:");
-		
-// 		JPanel voidPanel = new JPanel();
-		JPanel addressPanel = makeCompositePanel(null, BoxLayout.Y_AXIS,
-			makeInput("localhost", "address:" ),
+		switchable.add(makeCompositePanel(null, BoxLayout.Y_AXIS,
+			addressField = makeInput("localhost", "address:" ),
 			makeButton("Join"),
 			makeButton("Spectate"),
 			makeButton("Back to menu", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 				switchableLayout.show(switchable, "main panel");
 			}})
-		);
-		
-		switchable.add(addressPanel, "address panel");
-		
-		
+		),"address panel");
 		switchableLayout.show(switchable, "main panel");
 		
-		
-		
-		
-		JPanel footer = makeCompositePanel(new Dimension(200, 300), BoxLayout.Y_AXIS, 
-				makeButton("Quit")
-		);
-		middle.add(footer);
-		
-		
-		body.add(middle);
-		
-		body.add(Box.createRigidArea(new Dimension(50,0)));
-		
-		
-		//JPanel right = makeBox(null, BoxLayout.Y_AXIS);
-		//addHighScores(right, HighScores.getInstance().getLastHourHighScores());
-
-		body.add(
-			addHighScores(HighScores.getInstance().getLastHourHighScores())
+		this.add(
+			makeCompositePanel(null, BoxLayout.X_AXIS,
+				addHighScores("All Time High Scores",HighScores.getInstance().getHighScores()),
+				makeCompositePanel(null, BoxLayout.Y_AXIS,
+					switchable,
+					makeCompositePanel(new Dimension(200, 300), BoxLayout.Y_AXIS, 
+							makeButton("Quit")
+					)
+				),
+				addHighScores("Last Hour High Scores",HighScores.getInstance().getLastHourHighScores())
+			)
 		);
 		
-		body.add(Box.createRigidArea(new Dimension(50,0)));
 		
-		this.add(body);
-		
-		
-		
-		
-		
-		
-// 		this.add(Box.createRigidArea(new Dimension(0, 10)));
 	}
 	
 	
@@ -173,7 +122,7 @@ public class MenuPanel extends JPanel {
 			panel.setPreferredSize(size);
 		}
 		
-		panel.setBorder(BorderFactory.createLineBorder(Color.WHITE, this.ButtonBorderWidth));
+		//panel.setBorder(BorderFactory.createLineBorder(Color.WHITE, this.ButtonBorderWidth));
 		panel.setBackground(BackColor);
 		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -193,6 +142,16 @@ public class MenuPanel extends JPanel {
 		panel.add(title);
 		
 		panel.add(Box.createRigidArea(new Dimension(0, 30)));
+	}
+	
+	private JLabel addTitle(String titleText){
+		JLabel title = new JLabel(titleText);
+		title.setAlignmentX( Component.CENTER_ALIGNMENT );
+		title.setMaximumSize(new Dimension(800,50));
+		title.setHorizontalAlignment( JLabel.CENTER );
+		title.setFont(new Font("sansserif", Font.PLAIN, 40));
+		title.setForeground(this.TextColor);
+		return title;
 	}
 	
 	private JTextField addInput(JPanel panel, String defaultText, String title){
@@ -291,17 +250,26 @@ public class MenuPanel extends JPanel {
 		//panel.add(addHighScores(scores));
 	}
 	
-	private JPanel addHighScores(List<PlayerScore> scores){
+	private JPanel addHighScores(String scoreListName, List<PlayerScore> scores){
 		JPanel container = makeBox(null, BoxLayout.Y_AXIS);
 		Font scoreFont = new Font(Font.MONOSPACED, Font.PLAIN, 15);
-		for (PlayerScore score : scores){
+		for (int i=0;i<10;i++){
+			
 			JLabel scoreLabel = new JLabel();
+			if(i==0){
+				scoreLabel.setText(scoreListName+":");
+			}else if(i > scores.size()){
+				scoreLabel.setText("         -     ");
+			}else{
+				scoreLabel.setText(scores.get(i-1).toString());
+			}
 			scoreLabel.setHorizontalAlignment( JLabel.RIGHT );
 			scoreLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 			scoreLabel.setAlignmentY(Component.TOP_ALIGNMENT);
 			scoreLabel.setFont(scoreFont);
 			scoreLabel.setForeground(Color.WHITE);
-			scoreLabel.setText(score.toString());
+			
+			
 			container.add(scoreLabel);
 		}
 		return container;
@@ -321,31 +289,13 @@ public class MenuPanel extends JPanel {
 			panel.add(c);
 			if(c instanceof JButton){
 				panel.add(Box.createRigidArea(new Dimension(0, 20)));
+			}else if (c instanceof JLabel){
+				panel.add(Box.createRigidArea(new Dimension(0, 30)));
 			}
 		}
 		return panel;
 	}
 	
-	/*
-	public void setPlayAction(ActionListener action){
-		playButton.addActionListener(action);
-	}
-	
-	public void setHostAction(ActionListener action){
-		hostButton.addActionListener(action);
-	}
-	
-	public void setJoinAction(ActionListener action){
-		joinButton.addActionListener(action);
-	}
-	
-	public void setSpectateAction(ActionListener action){
-		spectateButton.addActionListener(action);
-	}
-	
-	public void setQuitAction(ActionListener action){
-		quitButton.addActionListener(action);
-	}*/
 	
 	public String getPlayerName(){
 		return this.nameField.getText();

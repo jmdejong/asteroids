@@ -93,7 +93,7 @@ public class AsteroidsFrame extends JFrame
 		
 		mp = new MenuPanel();
 		
-		mp.setPlayAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+		mp.setButtonAction("Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
 				new Server(true);
 				startGame("localhost", false);
@@ -104,7 +104,7 @@ public class AsteroidsFrame extends JFrame
 			
 		}});
 		
-		mp.setHostAction(new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
+		mp.setButtonAction("Host Multiplayer",new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
 				new Server(false);
 				startGame("localhost", false);
@@ -112,16 +112,16 @@ public class AsteroidsFrame extends JFrame
 				e.printStackTrace();
 			}
 		}});
-		mp.setJoinAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+		mp.setButtonAction("Join", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			Logging.LOGGER.fine(mp.getAddress());
 			startGame(mp.getAddress(), false);
 		}});
-		mp.setSpectateAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+		mp.setButtonAction("Spectate",new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			Logging.LOGGER.fine(mp.getAddress());
 			startGame(mp.getAddress(), true);
 		}});
 		
-		mp.setQuitAction(new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
+		mp.setButtonAction("Quit", new AbstractAction(){ public void actionPerformed(ActionEvent arg0){
 			System.exit(0);
 		}});
 		

@@ -60,10 +60,10 @@ public class Server extends Base{
 		if(this.isSinglePlayerMode()){
 			++roundNumber;
 		}
-		startNextGame();
+		startFirstGame();
 	}
 	
-	public void startNextGame(){
+	public void startFirstGame(){
 		this.game = new Lobby(this,roundNumber);
 		Thread t = new Thread (game);
 		t.start();
@@ -232,8 +232,9 @@ public class Server extends Base{
 		if(getPlayerConnections().size() > 1 &&  getPlayerConnections().size() - amountOfDisconnectedClients <= 1){
 			//Return to main menu.
 			this.sendMessagePacket("Connections with all other players lost. ");
+			this.sendMessagePacket("Waiting for new players... ");
 			
-			//Find the local connection
+			/*//Find the local connection
 			ClientConnection myLocalConnection = null;
 			for(ClientConnection c : getPlayerConnections()){
 				if(c.getAddress().toString() == "127.0.0.1"){
@@ -246,7 +247,20 @@ public class Server extends Base{
 				this.playerConnections.add(myLocalConnection);
 			}
 			
-			//this.roundNumber = 0;
+			this.roundNumber = 0;*/
+			List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
+			for(int i=this.playerConnections.size()-1;i>=0;i--){
+				ClientConnection c = playerConnections.get(i);
+				if(c.isDisconnected()){
+					playerConnections.remove(i);
+					spaceships.remove(i);
+				}
+			}
+			this.roundNumber = 0;
+			this.game = new Lobby(this,0);
+			this.game.addSpaceships(spaceships);
+			Thread t = new Thread (game);
+			t.start();
 			
 		}
 	}

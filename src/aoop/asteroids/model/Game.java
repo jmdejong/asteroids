@@ -62,6 +62,9 @@ public class Game extends Observable implements Runnable
 	
 	/** List of explosions. */
 	private List <Explosion> explosions;
+	
+	/** List of all messages */
+// 	private List <Message> messages;
 
 	/** Random number generator. */
 	private static Random rng;
@@ -381,29 +384,8 @@ public class Game extends Observable implements Runnable
 	
 	protected boolean areAllAsteroidsDestroyed(){
 		
-		/*if(this.asteroids.isEmpty()){
-			if(!this.areAllShipsDestroyed()){
-				for(Spaceship s: ships){
-					if(!s.isDestroyed()){
-						s.increaseScore();
-						s.destroy();
-					}
-				}
-				server.sendMessagePacket("Congradulations! Level Cleared.");
-			}
-			return true;
-		}else{
-			return false;
-		}*/
 		return this.asteroids.isEmpty();
 		
-		
-		/*for(Asteroid a : this.asteroids){
-			if (!a.isDestroyed()){
-				return false;
-			}
-		}
-		return true;*/
 		
 	}
 	
@@ -430,7 +412,7 @@ public class Game extends Observable implements Runnable
 	 * That is:<br>
 	 * -> If all ships have died, the ship(s) that died the last.<br>
 	 * -> If there are still some ships alive, then return those.<br>
-	 * @return
+	 * @return the winners or the round
 	 */
 	protected List<Spaceship> getWinners(){
 		double latestDestroyTime = 0;

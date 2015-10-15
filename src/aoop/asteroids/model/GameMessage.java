@@ -3,7 +3,7 @@ package aoop.asteroids.model;
 public class GameMessage {
 	private long creationTime;
 	
-	public static long visibleTime = 5000;
+	private long visibleTime = 5000;
 	
 	private String message;
 	
@@ -13,7 +13,7 @@ public class GameMessage {
 	}
 	
 	public boolean isDestroyed(){
-		return System.currentTimeMillis() > creationTime + GameMessage.visibleTime ;
+		return System.currentTimeMillis() > creationTime + this.visibleTime ;
 	}
 	
 	@Override

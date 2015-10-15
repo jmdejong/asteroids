@@ -34,15 +34,15 @@ public class Server extends Base{
 	 */
 	public static int MaxNonRespondTime = 5000; 
 	
-	List<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
-	private List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
+	private List<ClientConnection> spectatorConnections = new ArrayList<ClientConnection>();
+	private List<ClientConnection> playerConnections = new ArrayList<ClientConnection>();
 	
 	private boolean singlePlayerMode = false;
 	private int roundNumber = 0;
 	
-	Game game;
+	private Game game;
 	
-	DatagramSocket sendSocket;
+	private DatagramSocket sendSocket;
 	
 	
 	public Server(boolean isSinglePlayer) throws SocketException{
@@ -51,7 +51,7 @@ public class Server extends Base{
 		this.sendSocket = new DatagramSocket(Server.UDPPort);
 
 		try {
-			this.responsesThread =  new ServerThread(this);
+			this.responsesThread = new ServerThread(this, Server.UDPPort, this.sendSocket);
 			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();

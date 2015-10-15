@@ -10,6 +10,8 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Observer;
+import java.util.Observable;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,7 +27,7 @@ import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 import aoop.asteroids.udp.packets.RoundEndPacket;
 
 
-public class Server extends Base{
+public class Server extends Base implements Observer{
 	
 	public static int UDPPort = 8090;
 	
@@ -34,15 +36,15 @@ public class Server extends Base{
 	 */
 	public static int MaxNonRespondTime = 5000; 
 	
-	List<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
-	private List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
+	private List<ClientConnection> spectatorConnections = new ArrayList<ClientConnection>();
+	private List<ClientConnection> playerConnections = new ArrayList<ClientConnection>();
 	
 	private boolean singlePlayerMode = false;
 	private int roundNumber = 0;
 	
-	Game game;
+	private Game game;
 	
-	DatagramSocket sendSocket;
+	private DatagramSocket sendSocket;
 	
 	
 	public Server(boolean isSinglePlayer) throws SocketException{
@@ -51,7 +53,7 @@ public class Server extends Base{
 		this.sendSocket = new DatagramSocket(Server.UDPPort);
 
 		try {
-			this.responsesThread =  new ServerThread(this);
+			this.responsesThread = new ServerThread(this, Server.UDPPort, this.sendSocket);
 			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -65,8 +67,14 @@ public class Server extends Base{
 	
 	public void startFirstGame(){
 		this.game = new Lobby(this,roundNumber);
+		game.addObserver(this);
 		Thread t = new Thread (game);
 		t.start();
+	}
+	
+	
+	public void update(Observable o, Object arg){
+		this.sendGameStatePacket();
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
@@ -120,7 +128,8 @@ public class Server extends Base{
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids(),
-				game.getExplosions());
+				game.getExplosions(),
+				game.getMessages());
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString());
@@ -195,7 +204,9 @@ public class Server extends Base{
 		++roundNumber;
 		sendRoundOverPacket();
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
+		this.game.deleteObserver(this);
 		this.game = new Lobby(this, roundNumber); //TODO: Rename Lobby
+		this.game.addObserver(this);
 		for(int i=this.playerConnections.size()-1;i>=0;i--){
 			ClientConnection c = playerConnections.get(i);
 			if(c.isDisconnected()){

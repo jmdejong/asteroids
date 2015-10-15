@@ -362,28 +362,28 @@ public class AsteroidsPanel extends JPanel
 		float time = e.getTime();
 		Ellipse2D.Double ell = new Ellipse2D.Double ();
 
-	    for(float i=1;i<=Explosion.particleAmount;i++){
-	        double d=r.nextDouble()*Math.PI*2;
-	        double fade=(i/128.0)*time;
-	        fade /= 1 - (time/(Explosion.maxTimeUntilFadeout));
-	        int x,y,radius, finalx, finaly;
-	        x =(int)  (Math.sin(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
-	        y =(int)  (Math.cos(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
-	        radius = (int) (e.getRadius() + (time *.02));
-	        
-	        int alpha = Math.max(0,255-(int)fade);
-	        if(alpha > 255){
-	        	alpha = 0;
-	        }
-	        Color oc = new Color(e.getColor());
-	        Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
-	        Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
+		for(float i=1;i<=Explosion.particleAmount;i++){
+			double d=r.nextDouble()*Math.PI*2;
+			double fade=(i/128.0)*time;
+			fade /= 1 - (time/(Explosion.maxTimeUntilFadeout));
+			int x,y,radius, finalx, finaly;
+			x =(int)  (Math.sin(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
+			y =(int)  (Math.cos(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
+			radius = (int) (e.getRadius() + (time *.02));
+			
+			int alpha = Math.max(0,255-(int)fade);
+			if(alpha > 255){
+				alpha = 0;
+			}
+			Color oc = new Color(e.getColor());
+			Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
+			Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
 
-	        finalx = (int) e.getLocation().x + x;
-	        finaly = (int)e.getLocation().y + y;
-	        
-	        
-	        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, endc}, CycleMethod.NO_CYCLE);
+			finalx = (int) e.getLocation().x + x;
+			finaly = (int)e.getLocation().y + y;
+			
+			
+			RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, endc}, CycleMethod.NO_CYCLE);
 			g.setPaint(roundGradientPaint);
 			
 			

@@ -214,7 +214,7 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	public void unFreeze(){
 		if(this.isFrozen){
-			playSound("NextLevel.wav");
+			playSound("NextLevelNew0.wav");
 			++roundNumber;
 			setBackgroundImage(this.roundNumber);
 		}
@@ -246,12 +246,14 @@ public class ClientGame extends Observable implements Runnable{
 
 	private void playShootSound(Bullet b){
 		int index = new Random(b.hashCode()).nextInt(2);
-		playSound("Shoot"+index+".wav");
+		//playSound("Shoot"+index+".wav");
+		playSound("ShootNew0.wav");
 	}
 	
 	private void playExplosionSound(Explosion explosion){
-		int index = new Random(explosion.hashCode()).nextInt(5);
-		playSound("Explosion"+index+".wav");
+		int index = new Random(explosion.hashCode()).nextInt(4);
+		//playSound("Explosion"+index+".wav");
+		playSound("ExplosionNew"+index+".wav");
 	}
 	
 	public void playSound(String filename){
@@ -332,6 +334,6 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public void hasLost(){
 		this.hasLost = true;
-		playSound("ShipExplosion.wav");
+		playSound("PlayerDeathNew0.wav");
 	}
 }

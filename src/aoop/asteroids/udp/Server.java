@@ -136,6 +136,7 @@ public class Server extends Base implements Observer{
 	public void sendGameStatePacket(){
 		
 		GameStatePacket gameStatePacket = new GameStatePacket(
+				this.roundNumber,
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids(),

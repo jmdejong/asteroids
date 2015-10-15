@@ -12,6 +12,7 @@ import aoop.asteroids.model.*;
 
 public class GameStatePacket extends Packet {
 	public GameStatePacket(
+			int roundNumber,
 			List<Spaceship> spaceships, 
 			List<Bullet> bullets, 
 			List<Asteroid> asteroids,
@@ -19,6 +20,8 @@ public class GameStatePacket extends Packet {
 			List<GameMessage> messages
 			){
 		super(Packet.PacketType.GAMESTATE);
+		
+		this.data.add(roundNumber);
 		
 		JSONArray jsonSpaceships = new JSONArray();
 		for(Spaceship spaceship : spaceships) jsonSpaceships.add(spaceship.toJSON());
@@ -45,6 +48,9 @@ public class GameStatePacket extends Packet {
 	}
 	
 	public static void decodePacket(JSONArray data, ClientGame currentGameState){
+		
+		int roundNumber =((Long)( data.get(0))).intValue();
+		currentGameState.checkIfRoundHasEndedAndUpdateRoundnumber(roundNumber);
 		
 		JSONArray jsonSpaceships = (JSONArray) data.get(0);
 		JSONArray jsonBullets = (JSONArray) data.get(1);

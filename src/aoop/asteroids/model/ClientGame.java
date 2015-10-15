@@ -343,6 +343,14 @@ public class ClientGame extends Observable implements Runnable{
 		
 	}
 	
+	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
+		if(this.roundNumber < roundnumber){
+			playSound("NextLevelNew0.wav");
+			this.roundNumber = roundnumber;
+			setBackgroundImage(this.roundNumber);
+		}
+	}
+	
 	
 	public void hasLost(){
 		this.hasLost = true;

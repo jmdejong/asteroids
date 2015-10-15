@@ -204,7 +204,9 @@ public class Server extends Base implements Observer{
 		++roundNumber;
 		sendRoundOverPacket();
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
+		this.game.deleteObserver(this);
 		this.game = new Lobby(this, roundNumber); //TODO: Rename Lobby
+		this.game.addObserver(this);
 		for(int i=this.playerConnections.size()-1;i>=0;i--){
 			ClientConnection c = playerConnections.get(i);
 			if(c.isDisconnected()){

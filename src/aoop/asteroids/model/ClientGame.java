@@ -128,7 +128,6 @@ public class ClientGame extends Observable implements Runnable{
 		if(!this.hasLost){
 			for(Spaceship s : ships){
 				if(s.getName().equals(this.playerName) && s.destroyed){
-					Logging.LOGGER.severe(this.playerName);
 					this.hasLost();
 				}
 			}

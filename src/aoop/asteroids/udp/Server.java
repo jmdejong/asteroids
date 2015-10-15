@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,8 +38,8 @@ public class Server extends Base implements Observer{
 	 */
 	 
 	
-	private List<ClientConnection> spectatorConnections = new ArrayList<ClientConnection>();
-	private List<ClientConnection> playerConnections = new ArrayList<ClientConnection>();
+	private CopyOnWriteArrayList<ClientConnection> spectatorConnections = new CopyOnWriteArrayList<ClientConnection>();
+	private CopyOnWriteArrayList<ClientConnection> playerConnections = new CopyOnWriteArrayList<ClientConnection>();
 	
 	private boolean singlePlayerMode = false;
 	private int roundNumber = 0;
@@ -86,17 +87,17 @@ public class Server extends Base implements Observer{
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
 		//In single-player mode, reject more than one connection, and also all connections that are not from the current computer.
-		if(this.isSinglePlayerMode() && (playerConnections.size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
+		if(this.isSinglePlayerMode() && (getPlayerConnections().size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
 			return;
 		}
 		
-		addConnection(playerConnections, packetData, packet);
+		addConnection(getPlayerConnections(), packetData, packet);
 		
 		String name = PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d"));
 		
 		this.game.addSpaceship(name, !isSinglePlayerMode());
 		
-		if(this.playerConnections.size() - countDisconnectedPlayers() == 1){
+		if(getPlayerConnections().size() - countDisconnectedPlayers() == 1){
 			if(isSinglePlayerMode()){
 				sendMessagePacket("Singleplayer Game Started");
 			}else{
@@ -230,7 +231,7 @@ public class Server extends Base implements Observer{
 	public void tagNonrespondingClients(){
 		int amountOfDisconnectedClients = 0;
 		
-		for(ClientConnection c : this.playerConnections){
+		for(ClientConnection c : getPlayerConnections()){
 			if(c.isDisconnected()){
 				amountOfDisconnectedClients+=1;
 				continue;
@@ -262,10 +263,11 @@ public class Server extends Base implements Observer{
 			
 			this.roundNumber = 0;*/
 			List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
-			for(int i=this.playerConnections.size()-1;i>=0;i--){
-				ClientConnection c = playerConnections.get(i);
+			List<ClientConnection> pcs = this.getPlayerConnections();
+			for(int i=pcs.size()-1;i>=0;i--){
+				ClientConnection c = pcs.get(i);
 				if(c.isDisconnected()){
-					playerConnections.remove(i);
+					pcs.remove(i);
 					spaceships.remove(i);
 				}
 			}
@@ -306,19 +308,21 @@ public class Server extends Base implements Observer{
 	}
 
 	public List<ClientConnection> getPlayerConnections() {
-		List <ClientConnection> pcs = new ArrayList <> ();
+		/*List <ClientConnection> pcs = new ArrayList <> ();
 		for (ClientConnection pc : this.playerConnections) {
 			pcs.add (pc.clone ());
 		}
-		return pcs;
+		return pcs;*/
+		return this.playerConnections;
 	}
 	
 	public List<ClientConnection> getSpectatorConnections() {
-		List <ClientConnection> pcs = new ArrayList <> ();
+		/*List <ClientConnection> pcs = new ArrayList <> ();
 		for (ClientConnection pc : this.spectatorConnections) {
 			pcs.add (pc.clone ());
 		}
-		return pcs;
+		return pcs;*/
+		return this.spectatorConnections;
 	}
 	
 

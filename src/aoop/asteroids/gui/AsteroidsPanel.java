@@ -72,7 +72,7 @@ public class AsteroidsPanel extends JPanel
 			}
 		});
 		this.setSize(game.getWidth(), game.getHeight());
-		Logging.LOGGER.info("Size in the Panel: "+this.getSize().toString());
+		Logging.LOGGER.fine("Size in the Panel: "+this.getSize().toString());
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class AsteroidsPanel extends JPanel
 	}
 
 	/**
-	 *	Draws all asteroids in the GUI as a filled gray circle.
+	 *	Draws all asteroids in the GUI as a filled polygon.
 	 *
 	 *	@param g graphics instance to use.
 	 */
@@ -144,14 +144,15 @@ public class AsteroidsPanel extends JPanel
 
 		for (Asteroid a : this.game.getAsteroids ())
 		{
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getLocation().getY()		,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getLocation().getY()		,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getMirrorLocation().getY()	,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getMirrorLocation().getY()	,a.getRadius(), 3*a.getVelocityX()+5*a.getVelocityY(), a.getRotation());
+			int seed = (int)(3*a.getVelocityX()+5*a.getVelocityY());
+			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getLocation().getY()		,a.getRadius(), seed, a.getRotation());
+			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getLocation().getY()		,a.getRadius(), seed, a.getRotation());
+			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getMirrorLocation().getY()	,a.getRadius(), seed, a.getRotation());
+			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getMirrorLocation().getY()	,a.getRadius(), seed, a.getRotation());
 		}
 	}
 	
-	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius, double seed, double rotation){
+	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius, int seed, double rotation){
 		//Ellipse2D.Double e = new Ellipse2D.Double ();
 		//e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
 		
@@ -161,7 +162,7 @@ public class AsteroidsPanel extends JPanel
 		
 		
 		GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-		Random r = new Random((int)seed);
+		Random r = new Random(seed);
 		
 		int orthagonalJitter = (int)(radius * .6);
 		int amountOfPoints = 6 + r.nextInt(4);

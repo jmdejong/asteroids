@@ -53,7 +53,7 @@ public class ClientGame extends Observable implements Runnable{
 	private String playerName;
 	
 	
-	private Client client;
+	//private Client client;
 	
 	private BufferedImage bgimage;
 	
@@ -66,17 +66,17 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public boolean bgmHasStarted = false;
 	
-	private long lastConnectionCheckTime = 0;
+
 	
 	private boolean aborted = false;
 	
 	
-	public ClientGame(Client client, String playerName){
-		this.client = client;
+	public ClientGame(String playerName, boolean isSpectator){
+		//this.client = client;
 		
 		this.playerName = playerName;
 		
-		if(!this.client.isSpectator){
+		if(!isSpectator){
 			this.spaceshipController = new SpaceshipController();
 		}
 		
@@ -94,10 +94,7 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private void update(){
 		
-		if(!this.client.isConnected() && !this.isFrozen){
-			this.addMessage("Connection with Host has been lost.");
-			this.freeze();
-		}
+		
 		
 		for(int i = messages.size()-1; i>=0; i--){
 			if(messages.get(i).isDestroyed()){
@@ -106,12 +103,7 @@ public class ClientGame extends Observable implements Runnable{
 		}
 		
 
-		//TODO: send player packet depending on player input.
-		if(!this.client.isSpectator && !this.hasLost){
-			this.client.sendPlayerUpdatePacket(this.spaceshipController);
-		}else{
-			this.client.sendSpectatorPingPacket();
-		}
+		
 		
 		
 		
@@ -120,10 +112,7 @@ public class ClientGame extends Observable implements Runnable{
 			for (Bullet b : this.bullets) b.nextStep ();
 			for (Spaceship s : this.ships) s.nextStep();
 			
-			
-			
-			
-					
+
 			Random r = new Random(113*this.roundNumber);
 			double xVelocity = 3 * (r.nextDouble() - .5);
 			double yVelocity = 3 * (r.nextDouble() - .5);
@@ -172,10 +161,7 @@ public class ClientGame extends Observable implements Runnable{
 			if (true)
 			{
 				executionTime = System.currentTimeMillis ();
-				if(!this.client.hasConnected() && this.lastConnectionCheckTime + 3000 < executionTime){
-					this.client.sendPlayerJoinPacket();
-					this.lastConnectionCheckTime = executionTime;
-				}
+				
 				
 				this.update ();
 				executionTime -= System.currentTimeMillis ();
@@ -249,7 +235,6 @@ public class ClientGame extends Observable implements Runnable{
 	public void unFreeze(){
 		if(this.isFrozen){
 			playSound("NextLevelNew0.wav");
-			++roundNumber;
 			setBackgroundImage(this.roundNumber);
 		}
 		this.isFrozen = false;
@@ -333,12 +318,14 @@ public class ClientGame extends Observable implements Runnable{
 						Clip clip;// = AudioSystem.getClip();
 										
 						clip = (Clip) AudioSystem.getLine(info);
-						clip.addLineListener(listener);
-						clip.open(inputStream);
+						
 						
 						if(startOffset != 0){
 							clip.setFramePosition(startOffset);
 						}
+						
+						clip.addLineListener(listener);
+						clip.open(inputStream);
 						
 						try {
 						clip.start();
@@ -367,7 +354,7 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
-		if(this.roundNumber < roundnumber){
+		if(this.roundNumber != roundnumber){
 			playSound("NextLevelNew0.wav");
 			this.roundNumber = roundnumber;
 			this.hasLost = false;

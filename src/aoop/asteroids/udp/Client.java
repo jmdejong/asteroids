@@ -7,6 +7,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
@@ -17,7 +19,7 @@ import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 import aoop.asteroids.udp.packets.SpectatorPingPacket;
 
-public class Client extends Base{
+public class Client extends Base implements Observer{
 	
 	public InetSocketAddress serverAddress;
 	public ClientGame game;
@@ -33,7 +35,7 @@ public class Client extends Base{
 	
 	private long lastPingTime = 0;
 	private long lastPacketId = 0;
-	
+	private long lastConnectionCheckTime = 0;
 	
 	
 	DatagramSocket sendSocket;
@@ -55,7 +57,8 @@ public class Client extends Base{
 		//	e1.printStackTrace();
 		//}
 		
-		this.game = new ClientGame(this, playerName);
+		this.game = new ClientGame(playerName, isSpectator);
+		game.addObserver(this);
 		
 		//sendPlayerJoinPacket();
 		Thread t = new Thread (game);
@@ -168,5 +171,31 @@ public class Client extends Base{
 
 	private void setLastPingTime(long lastPingTime) {
 		this.lastPingTime = lastPingTime;
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		
+		//Re-send join packets until joining succeeds.
+		long executionTime = System.currentTimeMillis();
+		if(!this.hasConnected() && this.lastConnectionCheckTime + 3000 < executionTime){
+			this.sendPlayerJoinPacket();
+			this.lastConnectionCheckTime = executionTime;
+		}
+		
+		//When no longer connected, freeze the game, and display message.
+		if(!this.isConnected() && !this.game.isFrozen){
+			this.game.addMessage("Connection with Host has been lost.");
+			this.game.freeze();
+			return;
+		}
+		
+		//Otherwise, send update to server.
+		if(!this.isSpectator && !this.game.hasLost){
+			this.sendPlayerUpdatePacket(this.game.spaceshipController);
+		}else{
+			this.sendSpectatorPingPacket();
+		}
+		
 	}
 }

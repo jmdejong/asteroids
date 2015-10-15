@@ -206,7 +206,7 @@ public class AsteroidsPanel extends JPanel
 			int intensity = (int) Math.max(255*(1-(distanceSquared/(maxDistance*maxDistance))),0);
 			
 			Color c = new Color(s.getColour());
-			RadialGradientPaint playerLight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)spaceshipX, (int)spaceshipY, new float[]{0,1}, new Color[]{new Color(c.getRed(), c.getGreen(), c.getBlue(), intensity), new Color(c.getRed(),c.getGreen(),c.getBlue(),0)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
+			RadialGradientPaint playerLight = new RadialGradientPaint(x, y, (int) (radius*1.4), (int)spaceshipX, (int)spaceshipY, new float[]{0,1}, new Color[]{new Color(c.getRed(), c.getGreen(), c.getBlue(), intensity), new Color(c.getRed(),c.getGreen(),c.getBlue(),0)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
 		
 			g.setPaint(playerLight);
 			g.fill(polygon);
@@ -339,7 +339,7 @@ public class AsteroidsPanel extends JPanel
 			GameMessage m = messages.get(i);
 			String str = m.toString();
 			Logging.LOGGER.fine("opacity:"+m.getOpacity());
-			g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 20));
+			g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 18));
 			g.setColor(new Color(1,1,1,m.getOpacity()));
 			FontMetrics fm = g.getFontMetrics();
 			int stringWidth = fm.stringWidth(str);

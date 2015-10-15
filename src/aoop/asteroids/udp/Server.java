@@ -95,12 +95,26 @@ public class Server extends Base implements Observer{
 			return;
 		}
 		
-		addConnection(getPlayerConnections(), packetData, packet);
+		
 		
 		String name = PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d"));
 		
-		this.game.addSpaceship(name, !isSinglePlayerMode());
+		boolean nameExists = false;
+		for(ClientConnection c : this.getPlayerConnections()){
+			if(c.getName().equals(name)){
+				nameExists = true;
+				break;
+			}
+		}
 		
+		if(nameExists){
+			this.game.addMessage("Duplicate Player `"+name+"` was added as Spectator instead.");
+			this.addSpectatorConnection(packetData, packet);
+		}else{
+			addConnection(getPlayerConnections(), packetData, packet);
+			this.game.addSpaceship(name, !isSinglePlayerMode());
+		}
+			
 		if(getPlayerConnections().size() - countDisconnectedPlayers() == 1){
 			if(isSinglePlayerMode()){
 				//sendMessagePacket("Singleplayer Game Started");
@@ -216,7 +230,7 @@ public class Server extends Base implements Observer{
 	
 	public void restartGame(){
 		++roundNumber;
-		sendRoundOverPacket();
+		//sendRoundOverPacket();
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
 		this.game.deleteObserver(this);
 		this.game = new Lobby(this, roundNumber); //TODO: Rename Lobby

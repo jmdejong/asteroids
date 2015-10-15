@@ -23,7 +23,6 @@ import aoop.asteroids.model.Lobby;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
-import aoop.asteroids.udp.packets.MessagePacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;

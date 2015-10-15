@@ -19,7 +19,7 @@ public abstract class BaseServerThread extends Thread {
 	
 	public void run(){
 		
-		while(stopServer == false){
+		while(true){
 			try {
 				byte[] buf = new byte[65507];
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -31,17 +31,20 @@ public abstract class BaseServerThread extends Thread {
 				
 				parsePacket(packet_string, packet);
 				
+			} catch (SocketException e){
+				break;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+// 		socket.close();
 	}
 	
 	protected abstract void parsePacket(String packet_string, DatagramPacket packet);
 	
 	public void stopServer(){
-		stopServer = true;
+		socket.close();
 	}
 	
 }

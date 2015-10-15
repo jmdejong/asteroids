@@ -93,13 +93,11 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	private void update(){
-		if(isFrozen){
-			return;
-		}
-		for (Asteroid a : this.asteroids) a.nextStep ();
-		for (Bullet b : this.bullets) b.nextStep ();
-		for (Spaceship s : this.ships) s.nextStep();
 		
+		if(!this.client.isConnected() && !this.isFrozen){
+			this.addMessage("Connection with Host has been lost.");
+			this.freeze();
+		}
 		
 		for(int i = messages.size()-1; i>=0; i--){
 			if(messages.get(i).isDestroyed()){
@@ -107,6 +105,7 @@ public class ClientGame extends Observable implements Runnable{
 			}
 		}
 		
+
 		//TODO: send player packet depending on player input.
 		if(!this.client.isSpectator && !this.hasLost){
 			this.client.sendPlayerUpdatePacket(this.spaceshipController);
@@ -114,18 +113,31 @@ public class ClientGame extends Observable implements Runnable{
 			this.client.sendSpectatorPingPacket();
 		}
 		
+		
+		
+		if(!isFrozen){
+			for (Asteroid a : this.asteroids) a.nextStep ();
+			for (Bullet b : this.bullets) b.nextStep ();
+			for (Spaceship s : this.ships) s.nextStep();
+			
+			
+			
+			
+					
+			Random r = new Random(113*this.roundNumber);
+			double xVelocity = 3 * (r.nextDouble() - .5);
+			double yVelocity = 3 * (r.nextDouble() - .5);
+			this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
+		}
+		
 		this.setChanged ();
 		this.notifyObservers ();
-				
-		Random r = new Random(113*this.roundNumber);
-		double xVelocity = 3 * (r.nextDouble() - .5);
-		double yVelocity = 3 * (r.nextDouble() - .5);
-		this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
+		
 	}
 	
 	public void setSpaceships(List<Spaceship> ships){
 		this.ships = ships;
-		if(!this.hasLost){
+		if(!this.hasLost && this.roundNumber != 0){
 			for(Spaceship s : ships){
 				if(s.getName().equals(this.playerName) && s.destroyed){
 					this.hasLost();
@@ -360,6 +372,7 @@ public class ClientGame extends Observable implements Runnable{
 			this.roundNumber = roundnumber;
 			this.hasLost = false;
 			setBackgroundImage(this.roundNumber);
+			this.bgPos = new Point2D.Double(0,0);
 		}
 	}
 	

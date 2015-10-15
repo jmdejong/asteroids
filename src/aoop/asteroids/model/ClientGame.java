@@ -250,7 +250,7 @@ public class ClientGame extends Observable implements Runnable{
 	private void playShootSound(){
 		//int index = new Random(b.hashCode()).nextInt(2);
 		//playSound("Shoot"+index+".wav");
-		playSound("ShootNew0.wav");
+		playSound("ShootNew2.wav");
 
 	}
 	

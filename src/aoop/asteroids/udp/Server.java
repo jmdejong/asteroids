@@ -16,6 +16,7 @@ import java.util.Observable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Lobby;
 import aoop.asteroids.model.Spaceship;
@@ -304,8 +305,21 @@ public class Server extends Base implements Observer{
 	}
 
 	public List<ClientConnection> getPlayerConnections() {
-		return playerConnections;
+		List <ClientConnection> pcs = new ArrayList <> ();
+		for (ClientConnection pc : this.playerConnections) {
+			pcs.add (pc.clone ());
+		}
+		return pcs;
 	}
+	
+	public List<ClientConnection> getSpectatorConnections() {
+		List <ClientConnection> pcs = new ArrayList <> ();
+		for (ClientConnection pc : this.spectatorConnections) {
+			pcs.add (pc.clone ());
+		}
+		return pcs;
+	}
+	
 
 	public boolean isSinglePlayerMode() {
 		return singlePlayerMode;

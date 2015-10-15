@@ -314,23 +314,26 @@ public class Game extends Observable implements Runnable
 	 */
 	private void removeDestroyedObjects ()
 	{
-		//TODO: Rewrite this to look nicer!
 		
 		List <Asteroid> newAsts = new ArrayList <> ();
 		for (Asteroid a : this.asteroids)
 		{
 			if (a.isDestroyed ())
 			{
-				//this.increaseScore ();
-				Collection <Asteroid> successors = a.getSuccessors ();
-				newAsts.addAll (successors);
+				newAsts.addAll (a.getSuccessors ());
 			}
-			else newAsts.add (a);
+			else {
+				newAsts.add (a);
+			}
 		}
 		this.asteroids = newAsts;
 
 		List <Bullet> newBuls = new ArrayList <> ();
-		for (Bullet b : this.bullets) if (!b.isDestroyed ()) newBuls.add (b);
+		for (Bullet b : this.bullets) {
+			if (!b.isDestroyed ()){
+				newBuls.add (b);
+			}
+		}
 		this.bullets = newBuls;
 		
 		for(int i=explosions.size()-1;i >= 0;i--){

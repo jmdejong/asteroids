@@ -1,5 +1,6 @@
 package aoop.asteroids.model;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
@@ -22,6 +23,7 @@ public class Bullet extends GameObject
 	 */
 	private int stepsLeft;
 	private Spaceship shooter;
+	private int colour = Color.YELLOW.getRGB();
 	
 	/**
 	 *	Constructs a new bullet using the given location and velocity parame-
@@ -53,6 +55,14 @@ public class Bullet extends GameObject
 		super (location, velocityX, velocityY, 0);
 		this.stepsLeft = stepsLeft;
 		this.shooter = shooter;
+		this.colour = shooter.getColour();
+	}
+	
+	private Bullet (WrappablePoint location, double velocityX, double velocityY, int colour)
+	{
+		super (location, velocityX, velocityY, 0);
+		this.stepsLeft = stepsLeft;
+		this.setColour(colour);
 	}
 
 	/**
@@ -79,15 +89,31 @@ public class Bullet extends GameObject
 		return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.stepsLeft, this.shooter);
 	}
 	
+	public JSONArray toJSON(){
+		JSONArray result = super.toJSON();
+		result.add(this.getColour());
+		return result;
+	
+	}
+	
 	public static Bullet fromJSON(JSONArray json){
 		double x = (double) json.get(0);
 		double y = (double) json.get(1);
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
-		return new Bullet(new WrappablePoint(x,y),velocityX, velocityY, null); //Client is not interested in the shooter.
+		int colour = ((Long) json.get(4)).intValue();
+		return new Bullet(new WrappablePoint(x,y),velocityX, velocityY, colour); //Client is not interested in the shooter.
 	}
 	
 	public Spaceship getShooter(){
 		return this.shooter;
+	}
+
+	public int getColour() {
+		return colour;
+	}
+
+	public void setColour(int colour) {
+		this.colour = colour;
 	}
 }

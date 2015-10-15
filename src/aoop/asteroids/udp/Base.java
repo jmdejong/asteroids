@@ -23,7 +23,7 @@ public class Base {
 	protected void sendPacket(String packet_string, InetAddress address, int port, DatagramSocket socket) throws IOException{
 		byte[] buf = packet_string.getBytes();
 		
-		Logging.LOGGER.severe(packet_string);
+		Logging.LOGGER.fine(packet_string);
 		DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
 		socket.send(packet);
 	}

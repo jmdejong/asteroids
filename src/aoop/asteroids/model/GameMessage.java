@@ -10,19 +10,23 @@ public class GameMessage {
 	
 	private String message;
 	
+	private long id;
+	
 	public GameMessage(String message, long visibleTime){
 		this.message = message;
 		this.creationTime = System.currentTimeMillis();
 		this.visibleTime = visibleTime;
+		this.id = this.hashCode();
 	}
 	
 	public GameMessage(String message){
 		this(message, 5000);
 	}
 	
-	private GameMessage(String message, long visibleTime, long creationTime){
+	private GameMessage(String message, long visibleTime, long creationTime, long id){
 		this(message, visibleTime);
 		this.creationTime = creationTime;
+		this.id = id;
 	}
 	
 	public boolean isDestroyed(){
@@ -63,6 +67,7 @@ public class GameMessage {
 		result.add(this.message);
 		result.add(this.creationTime);
 		result.add(this.visibleTime);
+		result.add(this.id);
 		
 		return result;
 	}
@@ -72,8 +77,9 @@ public class GameMessage {
 		String message = (String) json.get(0);
 		long creationTime = (long) json.get(1);
 		long visibleTime = (long) json.get(2);
+		long id = (long) json.get(3);
 		
-		return new GameMessage(message, visibleTime, creationTime);
+		return new GameMessage(message, visibleTime, creationTime, id);
 	}
 	
 	

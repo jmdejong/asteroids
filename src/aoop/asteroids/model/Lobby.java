@@ -31,7 +31,8 @@ public class Lobby extends Game {
 							long highscore = HighScores.getInstance().getScore(w.getName());
 							if(w.getScore() > highscore){
 								HighScores.getInstance().saveScore(w.getName(), w.getScore());
-								this.server.sendMessagePacket(w.getName()+" has beat their high score!");
+								//this.server.sendMessagePacket(w.getName()+" has beat their high score!");
+								this.addMessage(w.getName()+" has beat their high score!");
 							}
 						}
 						
@@ -39,9 +40,11 @@ public class Lobby extends Game {
 				}
 				
 				if(this.areAllAsteroidsDestroyed() && this.asteroidsLimit != 0){
-					server.sendMessagePacket("Congradulations! Level Cleared.");
+					//server.sendMessagePacket("Congradulations! Level Cleared.");
+					this.addMessage("Congradulations! Level Cleared.");
 				}
-				server.sendMessagePacket("Starting Next Round in "+(waitingTime/1000)+" seconds");
+				//server.sendMessagePacket("Starting Next Round in "+(waitingTime/1000)+" seconds");
+				this.addMessage("Starting Next Round in "+(waitingTime/1000)+" seconds");
 			}
 			double time = System.currentTimeMillis() - this.startCountdownTime;
 			return Lobby.waitingTime - time;

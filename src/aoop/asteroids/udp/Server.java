@@ -22,6 +22,7 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Lobby;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
+import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.MessagePacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
@@ -40,6 +41,8 @@ public class Server extends Base implements Observer{
 	
 	private CopyOnWriteArrayList<ClientConnection> spectatorConnections = new CopyOnWriteArrayList<ClientConnection>();
 	private CopyOnWriteArrayList<ClientConnection> playerConnections = new CopyOnWriteArrayList<ClientConnection>();
+	
+	
 	
 	private boolean singlePlayerMode = false;
 	private int roundNumber = 0;
@@ -77,12 +80,14 @@ public class Server extends Base implements Observer{
 	
 	public void update(Observable o, Object arg){
 		this.sendGameStatePacket();
+		this.sendMessageListPacket();
 		this.tagNonrespondingClients();
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		addConnection(spectatorConnections, packetData, packet);
-		sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
+		//sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
+		this.game.addMessage("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
 	}
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
@@ -99,13 +104,17 @@ public class Server extends Base implements Observer{
 		
 		if(getPlayerConnections().size() - countDisconnectedPlayers() == 1){
 			if(isSinglePlayerMode()){
-				sendMessagePacket("Singleplayer Game Started");
+				//sendMessagePacket("Singleplayer Game Started");
+				this.game.addMessage("Singleplayer Game Started");
 			}else{
-				sendMessagePacket("Local Client⟷Server connection made.");
-				sendMessagePacket("Waiting for another Player");
+				//sendMessagePacket("Local Client⟷Server connection made.");
+				this.game.addMessage("Local Client⟷Server connection made.");
+				//sendMessagePacket("Waiting for another Player");
+				this.game.addMessage("Waiting for another Player");
 			}
 		}else{
-			sendMessagePacket("New Player Connected: "+name);
+			//sendMessagePacket("New Player Connected: "+name);
+			this.game.addMessage("New Player Connected: "+name);
 		}
 		
 
@@ -196,8 +205,17 @@ public class Server extends Base implements Observer{
 	}
 	
 	public void sendMessagePacket(String message){
-		try {
+		/*try {
 			this.sendPacketToAll(new MessagePacket(message).toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+		throw new UnsupportedOperationException();
+	}
+	
+	public void sendMessageListPacket(){
+		try {
+			this.sendPacketToAll(new MessageListPacket(this.game.getMessages()).toJsonString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -239,14 +257,14 @@ public class Server extends Base implements Observer{
 			c.tagAsDisconnectedIfNotResponding();
 			Logging.LOGGER.fine(c.toDebugString());
 			if(c.isDisconnected()){
-				this.sendMessagePacket("Connection Lost with: "+c.getName());
+				this.game.addMessage("Connection Lost with: "+c.getName());
 			}
 		}
 		
 		if(getPlayerConnections().size() > 1 &&  getPlayerConnections().size() - amountOfDisconnectedClients <= 1){
 			//Return to main menu.
-			this.sendMessagePacket("Connections with all other players lost. ");
-			this.sendMessagePacket("Waiting for new players... ");
+			this.game.addMessage("Connections with all other players lost. ");
+			this.game.addMessage("Waiting for new players... ");
 			
 			/*//Find the local connection
 			ClientConnection myLocalConnection = null;

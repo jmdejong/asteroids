@@ -191,6 +191,14 @@ public class ClientGame extends Observable implements Runnable{
 		this.messages.add(new GameMessage(message));
 	}
 	
+	public void addPossiblyNewMessages(List<GameMessage> newMessages){
+		for(GameMessage m : newMessages){
+			if(!this.messages.contains(m)){
+				this.messages.add(m);
+			}
+		}
+	}
+	
 	public void setMessages(List<GameMessage> messages){
 		this.messages = messages;
 	}

@@ -13,7 +13,7 @@ import aoop.asteroids.model.Spaceship;
 public class MessageListPacket extends Packet {
 
 	public MessageListPacket(List<GameMessage> messages){
-		super(Packet.PacketType.MESSAGE, new JSONArray());
+		super(Packet.PacketType.MESSAGE_LIST, new JSONArray());
 		
 		JSONArray jsonMessages = new JSONArray();
 		for(GameMessage m : messages) jsonMessages.add(m.toJSON());

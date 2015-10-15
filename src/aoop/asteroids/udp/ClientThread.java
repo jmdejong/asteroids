@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import aoop.asteroids.udp.packets.GameStatePacket;
+import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.MessagePacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
 
@@ -46,7 +47,7 @@ public class ClientThread extends BaseServerThread {
 				
 				if(!client.game.bgmHasStarted){
 					client.game.bgmHasStarted = true;
-					client.game.playSound("background_music_bassline.wav",0/* ((Long) packet_data.get("r")).intValue() % 3600*/);
+					//client.game.playSound("background_music_bassline.wav",0/* ((Long) packet_data.get("r")).intValue() % 3600*/);
 				}
 				break;
 			case SPECTATE_JOIN:
@@ -77,10 +78,14 @@ public class ClientThread extends BaseServerThread {
 				//TODO: More sophisticated round restart logic?
 				break;
 			case MESSAGE:
-				Logging.LOGGER.fine("C: Message Packet Received");
+				Logging.LOGGER.severe("C: Message Packet Received (DEPRECATED!)");
 				Logging.LOGGER.fine(MessagePacket.decodePacket((JSONArray) packetData.get("d")));
 				client.game.addMessage(MessagePacket.decodePacket((JSONArray) packetData.get("d")));
 				break;	
+			case MESSAGE_LIST:
+				Logging.LOGGER.severe("C: Message List Packet Received");
+				client.game.addPossiblyNewMessages(MessageListPacket.decodePacket((JSONArray) packetData.get("d")));
+				break;
 			default:
 				Logging.LOGGER.fine("C: Unknown packet type!");
 				break;

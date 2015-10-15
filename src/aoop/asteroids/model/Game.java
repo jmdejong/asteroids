@@ -62,7 +62,7 @@ public class Game extends Observable implements Runnable
 	
 	/** List of explosions. */
 	private List <Explosion> explosions;
-	
+	 
 	/** List of all messages */
 	private List <GameMessage> messages;
 
@@ -269,7 +269,7 @@ public class Game extends Observable implements Runnable
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
 					if(/*b.getShooter() != null && */b.getShooter() != s){
 						//b.getShooter().increaseScore();
-						server.sendMessagePacket(s.getName() + " was shot by " + b.getShooter().getName());
+						//server.sendMessagePacket(s.getName() + " was shot by " + b.getShooter().getName());
 						messages.add(new GameMessage(s.getName() + " was shot by " + b.getShooter().getName()));
 					}
 					
@@ -296,14 +296,18 @@ public class Game extends Observable implements Runnable
 					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*a.hashCode(), s.getRadius(), s.getColour()));
 
 					
-					server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
-					messages.add(new GameMessage(s.getName() + " was smashed by an Asteroid"));
+					//server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
+					addMessage(s.getName() + " was smashed by an Asteroid");
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 			
 		}
 		
+	}
+	
+	public void addMessage(String message){
+		messages.add(new GameMessage(message));
 	}
 
 	/**

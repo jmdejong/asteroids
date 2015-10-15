@@ -38,6 +38,15 @@ public class GameMessage {
 		return this.message;
 	}
 	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof GameMessage){
+			return ((GameMessage) o).id == this.id;
+		}else{
+			return false;
+		}
+	}
+	
 	public float getOpacity(){
 		if(this.isDestroyed()){
 			return 0;

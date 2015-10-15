@@ -204,14 +204,7 @@ public class Server extends Base implements Observer{
 		return this.playerConnections.get(index);
 	}
 	
-	public void sendMessagePacket(String message){
-		/*try {
-			this.sendPacketToAll(new MessagePacket(message).toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-		throw new UnsupportedOperationException();
-	}
+
 	
 	public void sendMessageListPacket(){
 		try {

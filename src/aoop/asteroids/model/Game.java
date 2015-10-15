@@ -246,8 +246,8 @@ public class Game extends Observable implements Runnable
 	private boolean pointDoesNotOverlapAnySpaceships(WrappablePoint p, int radius){
 		for(Spaceship s : this.getSpaceships()){
 			double x,y;
-			x = p.getX() - s.location.getX();
-			y = p.getY() - s.location.getY();
+			x = p.getX() - s.getLocation().getX();
+			y = p.getY() - s.getLocation().getY();
 			
 			if((x*x+y*y) < radius*radius){
 				return false;

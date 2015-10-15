@@ -82,6 +82,12 @@ public class AsteroidsFrame extends JFrame
 			System.exit(0);
 		}});
 		m.add (new AbstractAction("Back to Menu"){ public void actionPerformed(ActionEvent arg0){
+			if (AsteroidsFrame.this.server != null){
+				AsteroidsFrame.this.server.stopServer();
+			}
+			if (AsteroidsFrame.this.client != null){
+				AsteroidsFrame.this.client.stopClient();
+			}
 			showMenu();
 		}});
 		this.setJMenuBar (mb);
@@ -97,7 +103,7 @@ public class AsteroidsFrame extends JFrame
 		
 		mp.setButtonAction("Singleplayer", new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
-				new Server(true);
+				AsteroidsFrame.this.server = new Server(true);
 				startGame("localhost", false);
 				
 			} catch (SocketException e) {
@@ -108,7 +114,7 @@ public class AsteroidsFrame extends JFrame
 		
 		mp.setButtonAction("Host Multiplayer",new AbstractAction (){ public void actionPerformed(ActionEvent arg0){
 			try {
-				new Server(false);
+				AsteroidsFrame.this.server = new Server(false);
 				startGame("localhost", false);
 			} catch (SocketException e) {
 				e.printStackTrace();
@@ -149,7 +155,7 @@ public class AsteroidsFrame extends JFrame
 	 */
 	public void startGame(String address, Boolean isSpectator){
 		
-		Client client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
+		this.client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
 		addKeyListener(client.game.spaceshipController);
 		
 		ap.observeGame(client.game);

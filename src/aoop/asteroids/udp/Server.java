@@ -303,6 +303,7 @@ public class Server extends Base{
 	public void stopServer(){
 		this.game.abort();
 		this.responsesThread.stopServer();
+// 		this.sendSocket.close();
 	}
 
 

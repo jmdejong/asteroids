@@ -19,7 +19,6 @@ import org.json.simple.JSONObject;
 
 import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Game;
-import aoop.asteroids.model.Lobby;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
@@ -70,7 +69,7 @@ public class Server extends Base implements Observer{
 	}
 	
 	public void startFirstGame(){
-		this.game = new Lobby(this,roundNumber);
+		this.game = new Game(this,roundNumber);
 		game.addObserver(this);
 		Thread t = new Thread (game);
 		t.start();
@@ -117,16 +116,13 @@ public class Server extends Base implements Observer{
 			
 		if(getPlayerConnections().size() - countDisconnectedPlayers() == 1){
 			if(isSinglePlayerMode()){
-				//sendMessagePacket("Singleplayer Game Started");
 				this.game.addMessage("Singleplayer Game Started");
 			}else{
-				//sendMessagePacket("Local Client⟷Server connection made.");
-				this.game.addMessage("Local Client⟷Server connection made.");
-				//sendMessagePacket("Waiting for another Player");
-				this.game.addMessage("Waiting for another Player");
+				this.game.addMessage("Local Client⟷Host connection made.");
+
+				this.game.addMessage("Waiting for at least one more Player");
 			}
 		}else{
-			//sendMessagePacket("New Player Connected: "+name);
 			this.game.addMessage("New Player Connected: "+name);
 		}
 		
@@ -233,7 +229,7 @@ public class Server extends Base implements Observer{
 		//sendRoundOverPacket();
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
 		this.game.deleteObserver(this);
-		this.game = new Lobby(this, roundNumber); //TODO: Rename Lobby
+		this.game = new Game(this, roundNumber); //TODO: Rename Lobby
 		this.game.addObserver(this);
 		for(int i=this.playerConnections.size()-1;i>=0;i--){
 			ClientConnection c = playerConnections.get(i);
@@ -297,7 +293,7 @@ public class Server extends Base implements Observer{
 				}
 			}
 			this.roundNumber = 0;
-			this.game = new Lobby(this,0);
+			this.game = new Game(this,0);
 			this.game.addSpaceships(spaceships);
 			Thread t = new Thread (game);
 			t.start();

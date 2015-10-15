@@ -1,5 +1,6 @@
 package aoop.asteroids.model;
 
+import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
 import aoop.asteroids.udp.ClientConnection;
 import aoop.asteroids.udp.Server;
@@ -69,6 +70,8 @@ public class Game extends Observable implements Runnable
 	/** Random number generator. */
 	private static Random rng;
 
+	public static long waitingTime = 3000;
+
 	/** Game tick counter for spawning random asteroids. */
 	private int numberOfSpawnedAsteroids;
 
@@ -86,6 +89,8 @@ public class Game extends Observable implements Runnable
 	 *	@see #run()
 	 */
 	private boolean aborted;
+
+	public long startCountdownTime = 0;
 
 	/** Initializes a new game from scratch. */
 	public Game (Server server, int roundNumber)
@@ -386,9 +391,9 @@ public class Game extends Observable implements Runnable
 		return amount == 1;
 	}
 	
-	protected boolean isGameOver(){
+/*	protected boolean isGameOver(){
 		return this.isThereOnlyOneShipLeft() || this.areAllAsteroidsDestroyed();
-	}
+	}*/
 	
 	/**
 	 * Returns the list of one or multiple winners of the current game round.<br>
@@ -543,6 +548,50 @@ public class Game extends Observable implements Runnable
 				messages.remove(i);
 			}
 		}
+	}
+
+	public double timeUntilOver() {
+	
+		if(    ( server.isSinglePlayerMode() && ((!this.getSpaceships().isEmpty() && this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed()))
+			|| (!server.isSinglePlayerMode() && (this.getSpaceships().size() > 1) && ((this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed() || this.isThereOnlyOneShipLeft() ))){
+			
+			if(this.startCountdownTime==0){
+				startCountdownTime = System.currentTimeMillis();
+				if(this.asteroidsLimit != 0){
+					List<Spaceship> winners = getWinners();
+					for(Spaceship w : winners){
+						if(!server.isSinglePlayerMode() || !w.isDestroyed()){
+							w.increaseScore();
+							
+							long highscore = HighScores.getInstance().getScore(w.getName());
+							if(w.getScore() > highscore){
+								HighScores.getInstance().saveScore(w.getName(), w.getScore());
+								//this.server.sendMessagePacket(w.getName()+" has beat their high score!");
+								this.addMessage(w.getName()+" has beat their high score!");
+							}
+						}
+						
+					}
+				}
+				
+				if(this.areAllAsteroidsDestroyed() && this.asteroidsLimit != 0){
+					//server.sendMessagePacket("Congradulations! Level Cleared.");
+					this.addMessage("Congradulations! Level Cleared.");
+				}
+				//server.sendMessagePacket("Starting Next Round in "+(waitingTime/1000)+" seconds");
+				this.addMessage("Starting Next Round in "+(waitingTime/1000)+" seconds");
+			}
+			double time = System.currentTimeMillis() - this.startCountdownTime;
+			return Game.waitingTime - time;
+		}else{
+			return Double.POSITIVE_INFINITY;
+		}
+		
+	}
+
+	protected boolean isGameOver() {
+		Logging.LOGGER.fine("Time until next level:"+this.timeUntilOver());
+		return this.timeUntilOver() <= 0;
 	}
     
 	

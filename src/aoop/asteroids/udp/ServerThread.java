@@ -90,7 +90,7 @@ public class ServerThread extends BaseServerThread{
 				break;
 		}
 		//System.out.println(server.getPlayerConnections());
-		server.tagNonrespondingClients();
+		//server.tagNonrespondingClients();
 	}
 	
 	

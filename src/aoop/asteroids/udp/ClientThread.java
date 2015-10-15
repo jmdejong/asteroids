@@ -22,20 +22,27 @@ public class ClientThread extends BaseServerThread {
 	}
 
 	@Override
-	protected void parsePacket(String packet_string, DatagramPacket packet) {
-		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
-		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
-		if(PacketType.values().length < raw_packet_type){
+	protected void parsePacket(String packetString, DatagramPacket packet) {
+		JSONObject packetData = (JSONObject) JSONValue.parse(packetString);
+		int rawPacketType = ((Long) packetData.get("t")).intValue();
+		if(PacketType.values().length < rawPacketType){
 			return;
 		}
-		PacketType packet_type = PacketType.values()[raw_packet_type];
+		PacketType packet_type = PacketType.values()[rawPacketType];
+		
+		if(!this.client.checkIfLatestPacket(packetData, packet)){
+			return;
+		}else{
+			this.client.updateConnectionData(packetData, packet);
+		}
+		
 		switch(packet_type){
 			case GAMESTATE:
 				Logging.LOGGER.fine("C: Gamestate Packet Received");
-				Logging.LOGGER.fine(packet_data.toString());
+				Logging.LOGGER.fine(packetData.toString());
 				this.client.confirmConnectionExistance();
 				this.client.game.unFreeze();
-				GameStatePacket.decodePacket((JSONArray) packet_data.get("d"), client.game);
+				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), client.game);
 				
 				if(!client.game.bgmHasStarted){
 					client.game.bgmHasStarted = true;
@@ -71,8 +78,8 @@ public class ClientThread extends BaseServerThread {
 				break;
 			case MESSAGE:
 				Logging.LOGGER.fine("C: Message Packet Received");
-				Logging.LOGGER.fine(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
-				client.game.addMessage(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
+				Logging.LOGGER.fine(MessagePacket.decodePacket((JSONArray) packetData.get("d")));
+				client.game.addMessage(MessagePacket.decodePacket((JSONArray) packetData.get("d")));
 				break;	
 			default:
 				Logging.LOGGER.fine("C: Unknown packet type!");

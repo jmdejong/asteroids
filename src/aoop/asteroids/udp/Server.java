@@ -35,7 +35,7 @@ public class Server extends Base implements Observer{
 	/**
 	 * If a client takes longer than this to send a packet, the connection to that client will be considered disconnected.
 	 */
-	public static int MaxNonRespondTime = 5000; 
+	 
 	
 	private List<ClientConnection> spectatorConnections = new ArrayList<ClientConnection>();
 	private List<ClientConnection> playerConnections = new ArrayList<ClientConnection>();
@@ -76,6 +76,7 @@ public class Server extends Base implements Observer{
 	
 	public void update(Observable o, Object arg){
 		this.sendGameStatePacket();
+		this.tagNonrespondingClients();
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
@@ -186,11 +187,11 @@ public class Server extends Base implements Observer{
 	}
 	
 	public ClientConnection findClientConnection(SocketAddress socketAddress){
-		int index = getPlayerConnections().indexOf(new ClientConnection((InetSocketAddress)socketAddress));
+		int index = this.playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
 		if(index == -1){
 			return null;
 		}
-		return getPlayerConnections().get(index);
+		return this.playerConnections.get(index);
 	}
 	
 	public void sendMessagePacket(String message){
@@ -229,7 +230,7 @@ public class Server extends Base implements Observer{
 	public void tagNonrespondingClients(){
 		int amountOfDisconnectedClients = 0;
 		
-		for(ClientConnection c : getPlayerConnections()){
+		for(ClientConnection c : this.playerConnections){
 			if(c.isDisconnected()){
 				amountOfDisconnectedClients+=1;
 				continue;

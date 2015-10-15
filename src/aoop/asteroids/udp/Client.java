@@ -9,6 +9,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.logging.Logger;
 
+import org.json.simple.JSONObject;
+
 import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.model.*;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
@@ -28,6 +30,9 @@ public class Client extends Base{
 	private String name;
 	
 	private boolean hasConnected = false;
+	
+	private long lastPingTime = 0;
+	private long lastPacketId = 0;
 	
 	
 	
@@ -109,6 +114,10 @@ public class Client extends Base{
 			e.printStackTrace();
 		}
 	}
+	
+	public void checkIfStillConnected(){
+		
+	}
 
 	public boolean hasConnected() {
 		return hasConnected;
@@ -121,5 +130,43 @@ public class Client extends Base{
 	public void stopClient(){
 		this.game.abort();
 		this.responsesThread.stopServer();
+	}
+	
+	
+	public boolean checkIfLatestPacket(JSONObject packetData, DatagramPacket packet){
+		long packetId = ((Long) packetData.get("r"));
+		
+		
+		return this.getLastPacketId() < packetId;
+	}
+	
+	public void updateConnectionData(JSONObject packetData, DatagramPacket packet){
+		
+		long packetId = ((Long) packetData.get("r"));
+		
+		this.setLastPingTime(System.currentTimeMillis());
+		this.setLastPacketId(packetId);
+	}
+	
+	
+	public boolean isConnected(){
+		return this.lastPingTime > System.currentTimeMillis() - Client.MaxNonRespondTime;
+	}
+	
+
+	private long getLastPacketId() {
+		return lastPacketId;
+	}
+
+	private void setLastPacketId(long lastPacketId) {
+		this.lastPacketId = lastPacketId;
+	}
+
+	private long getLastPingTime() {
+		return lastPingTime;
+	}
+
+	private void setLastPingTime(long lastPingTime) {
+		this.lastPingTime = lastPingTime;
 	}
 }

@@ -50,6 +50,8 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private int roundNumber = 1;
 	
+	private String playerName;
+	
 	
 	private Client client;
 	
@@ -69,8 +71,10 @@ public class ClientGame extends Observable implements Runnable{
 	private boolean aborted = false;
 	
 	
-	public ClientGame(Client client){
+	public ClientGame(Client client, String playerName){
 		this.client = client;
+		
+		this.playerName = playerName;
 		
 		if(!this.client.isSpectator){
 			this.spaceshipController = new SpaceshipController();
@@ -121,6 +125,14 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public void setSpaceships(List<Spaceship> ships){
 		this.ships = ships;
+		if(!this.hasLost){
+			for(Spaceship s : ships){
+				if(s.getName().equals(this.playerName) && s.destroyed){
+					Logging.LOGGER.severe(this.playerName);
+					this.hasLost();
+				}
+			}
+		}
 	}
 	
 	public void setBullets(Collection<Bullet> bullets){
@@ -347,6 +359,7 @@ public class ClientGame extends Observable implements Runnable{
 		if(this.roundNumber < roundnumber){
 			playSound("NextLevelNew0.wav");
 			this.roundNumber = roundnumber;
+			this.hasLost = false;
 			setBackgroundImage(this.roundNumber);
 		}
 	}

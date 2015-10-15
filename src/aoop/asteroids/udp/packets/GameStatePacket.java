@@ -52,11 +52,11 @@ public class GameStatePacket extends Packet {
 		int roundNumber =((Long)( data.get(0))).intValue();
 		currentGameState.checkIfRoundHasEndedAndUpdateRoundnumber(roundNumber);
 		
-		JSONArray jsonSpaceships = (JSONArray) data.get(0);
-		JSONArray jsonBullets = (JSONArray) data.get(1);
-		JSONArray jsonAsteroids = (JSONArray) data.get(2);
-		JSONArray jsonExplosions = (JSONArray) data.get(3);
-		JSONArray jsonMessages = (JSONArray) data.get(4);
+		JSONArray jsonSpaceships = (JSONArray) data.get(1);
+		JSONArray jsonBullets = (JSONArray) data.get(2);
+		JSONArray jsonAsteroids = (JSONArray) data.get(3);
+		JSONArray jsonExplosions = (JSONArray) data.get(4);
+		JSONArray jsonMessages = (JSONArray) data.get(5);
 		
 		List <Spaceship> spaceships = new ArrayList<Spaceship>();
 		for(Object s : jsonSpaceships) spaceships.add(Spaceship.fromJSON(((JSONArray) s)));

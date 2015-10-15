@@ -291,8 +291,9 @@ public class AsteroidsPanel extends JPanel
 		if (isAccelerating){// Spaceship accelerating -> continue, otherwise abort.
 			// Draw flame at the exhaust
 			p = new Polygon ();
-			p.addPoint ((int)(x - Math.sin (direction			     ) * 25), (int)(y + Math.cos (direction			       ) * 25));
-			p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
+			double exhaustLength = 10*(Math.random()*Math.random());
+			p.addPoint ((int)(x - Math.sin (direction			     ) * (25+exhaustLength)), (int)(y + Math.cos (direction			       ) * (25+exhaustLength)));
+			p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15 ), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
 			p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
 			g.setColor(getComplement(c));
 			//g.setColor(Color.YELLOW);
@@ -303,16 +304,28 @@ public class AsteroidsPanel extends JPanel
 		double directionX = Math.sin(direction);
 		
 		// Draw body of the spaceship
-		p = new Polygon ();
-		addRotatedPoint(p, x,y, 0,20, directionX,directionY);
-		addRotatedPoint(p, x,y, 11,-16, directionX,directionY);
-		addRotatedPoint(p, x,y, -11,-16, directionX,directionY);
-		/*p.addPoint ((int)(x + Utils.imagMultI(0,20,direction_x,direction_y)), (int)(y + Utils.imagMultR(0,20,direction_x,direction_y)));
-		p.addPoint ((int)(x + Utils.imagMultI(11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(11,-16,direction_x,direction_y)));
-		p.addPoint ((int)(x + Utils.imagMultI(-11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(-11,-16,direction_x,direction_y)))*/;
-
-		g.setColor (c);
-		g.fill (p);
+		for(int i=11;i>0;i--){
+			p = new Polygon ();
+			addRotatedPoint(p, x,y, 0,20, directionX,directionY);
+			addRotatedPoint(p, x,y, i,-16, directionX,directionY);
+			addRotatedPoint(p, x,y, -i,-16, directionX,directionY);
+			/*p.addPoint ((int)(x + Utils.imagMultI(0,20,direction_x,direction_y)), (int)(y + Utils.imagMultR(0,20,direction_x,direction_y)));
+			p.addPoint ((int)(x + Utils.imagMultI(11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(11,-16,direction_x,direction_y)));
+			p.addPoint ((int)(x + Utils.imagMultI(-11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(-11,-16,direction_x,direction_y)))*/;
+			float ratio =.1f+.9f*(1-((float)i/11));
+			float ratio2 =.2f+1f*(1-((float)i/11));
+			Color pc = c;//.brighter().brighter();
+			int red,blue,green;
+			//red = Math.min(pc.getRed()/2, (int)(pc.getRed()*ratio));
+			//green = Math.min(pc.getGreen()/2, (int)(pc.getGreen()*ratio));
+			//blue = Math.min(pc.getBlue()/2, (int)(pc.getBlue()*ratio));
+			red = Math.max(0,Math.min(255,(int)(pc.getRed()*ratio2)));
+			green = Math.max(0,Math.min(255,(int)(pc.getGreen()*ratio2)));
+			blue = Math.max(0,Math.min(255,(int)(pc.getBlue()*ratio2)));
+			
+			g.setColor (new Color(red,green,blue));
+			g.fill (p);
+		}
 		//g.setColor (Color.GREEN);
 		//g.setColor(new Color(255-c.getRed(),255-c.getGreen(),255-c.getBlue()));
 

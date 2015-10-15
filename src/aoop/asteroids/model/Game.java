@@ -64,7 +64,7 @@ public class Game extends Observable implements Runnable
 	private List <Explosion> explosions;
 	
 	/** List of all messages */
-// 	private List <Message> messages;
+	private List <GameMessage> messages;
 
 	/** Random number generator. */
 	private static Random rng;
@@ -108,30 +108,22 @@ public class Game extends Observable implements Runnable
 		this.asteroids = new ArrayList <> ();
 		this.ships = new ArrayList<> ();
 		this.explosions = new ArrayList<> ();
+		this.messages = new ArrayList<>();
 		//this.ship.reinit ();
 		
 		while(asteroids.size() < asteroidsLimit){
 			this.addRandomAsteroid ();
 		}
 	}
-
-// 	/** 
-// 	 *	Returns a clone of the spaceship, preserving encapsulation. 
-// 	 *
-// 	 *	@return a clone the spaceship.
-// 	 */
-// 	public Spaceship getSpaceship ()
-// 	{
-// 		return this.ships.toArray(new Spaceship[1])[0].clone ();
-// 	}
+	
 	/** 
 	 *	Returns a clone of the ships set, preserving encapsulation.
 	 *
 	 *	@return a clone of the asteroid set.
 	 */
-	public Collection <Spaceship> getSpaceships(){
+	public List <Spaceship> getSpaceships(){
 		
-		Collection <Spaceship> c = new ArrayList <> ();
+		List <Spaceship> c = new ArrayList <> ();
 		for (Spaceship s : this.ships) c.add (s.clone ());
 		return c;
 	}
@@ -191,30 +183,15 @@ public class Game extends Observable implements Runnable
 				s.setFired ();
 			}
 		}
-
 		
-
+		
+		
 		this.checkCollisions ();
 		this.removeDestroyedObjects ();
 		
 		this.destroyAllShipsOfDisconnectedPlayers();
-
-		/*if (	   this.numberOfSpawnedAsteroids == 0 
-				&& this.numberOfSpawnedAsteroids < this.asteroidsLimit 
-				&& !this.ships.isEmpty() 
-				&& !this.areAllShipsDestroyed() ) {
-			this.addRandomAsteroid ();
-			this.numberOfSpawnedAsteroids++;
-		}*/
 		
-		//this.cycleCounter %= 200;
 		
-		server.sendGameStatePacket();
-		
-		//ClientGame cg = new ClientGame();
-		//JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
-		//GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
-
 		this.setChanged ();
 		this.notifyObservers ();
 	}
@@ -227,16 +204,22 @@ public class Game extends Observable implements Runnable
 	{
 		int prob = Game.rng.nextInt (3000);
 		WrappablePoint loc;
-		int x, y;
 		do
 		{
 			loc = new WrappablePoint (Game.rng.nextInt ((int)GameObject.worldWidth), Game.rng.nextInt ((int)GameObject.worldHeight));
 		}
 		while (pointOverlapsCenterCircle(loc));
-
-		if (prob < 1000)		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 40, Game.rng.nextDouble()*2*Math.PI- Math.PI));
-		else if (prob < 2000)	this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 20, Game.rng.nextDouble()*2*Math.PI- Math.PI));
-		else					this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 10, Game.rng.nextDouble()*2*Math.PI- Math.PI));
+		
+		int size;
+		if (prob < 1000){
+			size = 40;
+		} else if (prob < 2000){
+			size = 20;
+		} else {
+			size = 10;
+		}
+		
+		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, size, Game.rng.nextDouble()*2*Math.PI- Math.PI));
 	}
 	
 	private boolean pointOverlapsCenterCircle(WrappablePoint p){
@@ -287,6 +270,7 @@ public class Game extends Observable implements Runnable
 					if(/*b.getShooter() != null && */b.getShooter() != s){
 						//b.getShooter().increaseScore();
 						server.sendMessagePacket(s.getName() + " was shot by " + b.getShooter().getName());
+						messages.add(new GameMessage(s.getName() + " was shot by " + b.getShooter().getName()));
 					}
 					
 					b.destroy ();
@@ -313,23 +297,13 @@ public class Game extends Observable implements Runnable
 
 					
 					server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
+					messages.add(new GameMessage(s.getName() + " was smashed by an Asteroid"));
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 			
 		}
 		
-	}
-
-	/**
-	 * 	Increases the score of the player by one and updates asteroid limit 
-	 *	when required.
-	 */
-	private void increaseScore ()
-	{
-		//this.ship.increaseScore ();
-		//if (this.ship.getScore () % 5 == 0) this.asteroidsLimit++;
-		//TODO: re-enable for multiple players.
 	}
 
 	/**
@@ -544,9 +518,22 @@ public class Game extends Observable implements Runnable
 	public List <Explosion> getExplosions() {
 		return explosions;
 	}
-
-	public void setExplosions(List <Explosion> explosions) {
-		this.explosions = explosions;
+	
+	public List<GameMessage> getMessages(){
+		checkMessages();
+		// TODO: only return a copy of the messages
+		return messages;
+	}
+	
+	/** check whether the messages should still be shown
+	 * removes the messages that are no longer relevant
+	 */
+	public void checkMessages(){
+		for(int i=messages.size()-1;i >= 0;i--){
+			if(messages.get(i).isOver()){
+				messages.remove(i);
+			}
+		}
 	}
     
 	

@@ -10,6 +10,8 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Observer;
+import java.util.Observable;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,7 +27,7 @@ import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 import aoop.asteroids.udp.packets.RoundEndPacket;
 
 
-public class Server extends Base{
+public class Server extends Base implements Observer{
 	
 	public static int UDPPort = 8090;
 	
@@ -65,8 +67,14 @@ public class Server extends Base{
 	
 	public void startFirstGame(){
 		this.game = new Lobby(this,roundNumber);
+		game.addObserver(this);
 		Thread t = new Thread (game);
 		t.start();
+	}
+	
+	
+	public void update(Observable o, Object arg){
+		this.sendGameStatePacket();
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
@@ -120,7 +128,8 @@ public class Server extends Base{
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids(),
-				game.getExplosions());
+				game.getExplosions(),
+				game.getMessages());
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString());

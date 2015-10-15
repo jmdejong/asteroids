@@ -1,15 +1,28 @@
 package aoop.asteroids.model;
 
+
+import org.json.simple.JSONArray;
+
 public class GameMessage {
 	private long creationTime;
 	
-	private long visibleTime = 5000;
+	private long visibleTime;
 	
 	private String message;
 	
-	public GameMessage(String message){
+	public GameMessage(String message, long visibleTime){
 		this.message = message;
 		this.creationTime = System.currentTimeMillis();
+		this.visibleTime = visibleTime;
+	}
+	
+	public GameMessage(String message){
+		this(message, 5000);
+	}
+	
+	private GameMessage(String message, long visibleTime, long creationTime){
+		this(message, visibleTime);
+		this.creationTime = creationTime;
 	}
 	
 	public boolean isDestroyed(){
@@ -37,6 +50,33 @@ public class GameMessage {
 			return 1;
 		}
 	}
+	
+	/** return when the message is over and shoult not be shown anymore 
+	 * @return whether the message should be removed
+	 */
+	public Boolean isOver(){
+		return System.currentTimeMillis() > creationTime + visibleTime;
+	}
+	
+	public JSONArray toJSON(){
+		JSONArray result = new JSONArray();
+		result.add(this.message);
+		result.add(this.creationTime);
+		result.add(this.visibleTime);
+		
+		return result;
+	}
+	
+	public static GameMessage fromJSON(JSONArray json){
+		
+		String message = (String) json.get(0);
+		long creationTime = (long) json.get(1);
+		long visibleTime = (long) json.get(2);
+		
+		return new GameMessage(message, visibleTime, creationTime);
+	}
+	
+	
 	
 	public float easingInOut(float t, float b, float c, float d){
 		float ts=(t/=d)*t;

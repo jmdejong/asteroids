@@ -2,6 +2,7 @@ package aoop.asteroids.udp.packets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 
@@ -11,10 +12,11 @@ import aoop.asteroids.model.*;
 
 public class GameStatePacket extends Packet {
 	public GameStatePacket(
-			Collection<Spaceship> spaceships, 
+			List<Spaceship> spaceships, 
 			Collection<Bullet> bullets, 
 			Collection<Asteroid> asteroids,
-			Collection<Explosion> explosions
+			Collection<Explosion> explosions,
+			List<GameMessage> messages
 			){
 		super(Packet.PacketType.GAMESTATE);
 		
@@ -35,33 +37,41 @@ public class GameStatePacket extends Packet {
 		this.data.add(jsonExplosions);
 		
 		
+		JSONArray jsonMessages = new JSONArray();
+		for(GameMessage e : messages) jsonMessages.add(e.toJSON());
+		this.data.add(jsonMessages);
 		
 		
 	}
 	
-	public static ClientGame decodePacket(JSONArray data, ClientGame currentGameState){
+	public static void decodePacket(JSONArray data, ClientGame currentGameState){
 		
 		JSONArray jsonSpaceships = (JSONArray) data.get(0);
 		JSONArray jsonBullets = (JSONArray) data.get(1);
 		JSONArray jsonAsteroids = (JSONArray) data.get(2);
 		JSONArray jsonExplosions = (JSONArray) data.get(3);
+		JSONArray jsonMessages = (JSONArray) data.get(4);
 		
-		Collection <Spaceship> spaceships = new ArrayList<Spaceship>();
+		List <Spaceship> spaceships = new ArrayList<Spaceship>();
 		for(Object s : jsonSpaceships) spaceships.add(Spaceship.fromJSON(((JSONArray) s)));
 		currentGameState.setSpaceships(spaceships);
 		
-		ArrayList <Bullet> bullets = new ArrayList<Bullet>();
+		Collection <Bullet> bullets = new ArrayList<Bullet>();
 		for(Object b : jsonBullets) bullets.add(Bullet.fromJSON(((JSONArray) b)));
 		currentGameState.setBullets(bullets);
 		
-		ArrayList <Asteroid> asteroids = new ArrayList<Asteroid>();
+		Collection <Asteroid> asteroids = new ArrayList<Asteroid>();
 		for(Object a : jsonAsteroids) asteroids.add(Asteroid.fromJSON(((JSONArray) a)));
 		currentGameState.setAsteroids(asteroids);
-
-		ArrayList <Explosion> explosions = new ArrayList<Explosion>();
+		
+		Collection <Explosion> explosions = new ArrayList<Explosion>();
 		for(Object a : jsonExplosions) explosions.add(Explosion.fromJSON(((JSONArray) a)));
 		currentGameState.setExplosions(explosions);
 		
-		return currentGameState;
+		List <GameMessage> messages = new ArrayList<>();
+		for(Object a : jsonMessages) messages.add(GameMessage.fromJSON(((JSONArray) a)));
+		currentGameState.setMessages(messages);
+		
+		
 	}
 }

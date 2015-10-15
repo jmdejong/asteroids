@@ -32,7 +32,7 @@ import aoop.asteroids.udp.Client;
 
 public class ClientGame extends Observable implements Runnable{
 	
-	private Collection <Spaceship> ships = new ArrayList<Spaceship>();
+	private List <Spaceship> ships = new ArrayList<Spaceship>();
 	/** List of bullets. */
 	private Collection <Bullet> bullets = new ArrayList<Bullet>();
 
@@ -119,16 +119,16 @@ public class ClientGame extends Observable implements Runnable{
 		this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
 	}
 	
-	public void setSpaceships(Collection<Spaceship> ships){
+	public void setSpaceships(List<Spaceship> ships){
 		this.ships = ships;
 	}
 	
-	public void setBullets(List<Bullet> bullets){
+	public void setBullets(Collection<Bullet> bullets){
 		int bulletsSize = this.bullets.size();
 		
 		//Play `fire` sound whenever a new bullet appears.
 		if(bullets.size() > bulletsSize){
-			playShootSound(bullets.get(bullets.size()-1));
+			playShootSound();
 		}
 		
 		this.bullets = bullets;
@@ -180,7 +180,7 @@ public class ClientGame extends Observable implements Runnable{
 	public Collection<Bullet> getBullets() {
 		return bullets;
 	}
-	public Collection<Spaceship> getSpaceships() {
+	public List<Spaceship> getSpaceships() {
 		return ships;
 	}
 	public List<GameMessage> getMessages() {
@@ -191,6 +191,9 @@ public class ClientGame extends Observable implements Runnable{
 		this.messages.add(new GameMessage(message));
 	}
 	
+	public void setMessages(List<GameMessage> messages){
+		this.messages = messages;
+	}
 	
 	public int getWidth(){
 		return (int)GameObject.worldWidth;
@@ -225,13 +228,13 @@ public class ClientGame extends Observable implements Runnable{
 		return explosions;
 	}
 
-	public void setExplosions(List <Explosion> explosions) {
+	public void setExplosions(Collection<Explosion> explosions) {
 		
 		int explosionsSize = this.explosions.size();
 		
 		//Play `fire` sound whenever a new bullet appears.
 		if(explosions.size() > explosionsSize){
-			playExplosionSound(explosions.get(explosions.size()-1));
+			playExplosionSound();
 		}
 		
 		
@@ -244,13 +247,13 @@ public class ClientGame extends Observable implements Runnable{
 	
 	
 
-	private void playShootSound(Bullet b){
-		int index = new Random(b.hashCode()).nextInt(2);
+	private void playShootSound(){
+		int index = new Random().nextInt(2);
 		playSound("Shoot"+index+".wav");
 	}
 	
-	private void playExplosionSound(Explosion explosion){
-		int index = new Random(explosion.hashCode()).nextInt(5);
+	private void playExplosionSound(){
+		int index = new Random().nextInt(5);
 		playSound("Explosion"+index+".wav");
 	}
 	
@@ -268,19 +271,19 @@ public class ClientGame extends Observable implements Runnable{
 			public void run() {
 				
 				class AudioListener implements LineListener {
-		            private boolean done = false;
-		            @Override public synchronized void update(LineEvent event) {
-		              LineEvent.Type eventType = event.getType();
-		              if (eventType == LineEvent.Type.STOP || eventType == LineEvent.Type.CLOSE) {
-		                done = true;
-		                notifyAll();
-		              }
-		            }
-		            public synchronized void waitUntilDone() throws InterruptedException {
-		              while (!done) { wait(); }
-		            }
-		          }
-	        
+					private boolean done = false;
+					@Override public synchronized void update(LineEvent event) {
+					LineEvent.Type eventType = event.getType();
+					if (eventType == LineEvent.Type.STOP || eventType == LineEvent.Type.CLOSE) {
+						done = true;
+						notifyAll();
+					}
+					}
+					public synchronized void waitUntilDone() throws InterruptedException {
+					while (!done) { wait(); }
+					}
+				}
+			
 				try {
 					
 					InputStream stream = new BufferedInputStream(new FileInputStream("sounds/"+filename));
@@ -291,30 +294,30 @@ public class ClientGame extends Observable implements Runnable{
 					DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
 					
 					AudioListener listener = new AudioListener();
-			        
-			        try {
-			            Clip clip;// = AudioSystem.getClip();
-			            	            
-			            clip = (Clip) AudioSystem.getLine(info);
-			            clip.addLineListener(listener);
-				        clip.open(inputStream);
-				        
-				        if(startOffset != 0){
-				        	clip.setFramePosition(startOffset);
-				        }
-				        
-			            try {
-			              clip.start();
-			              listener.waitUntilDone();
-			            } catch (InterruptedException e) {
+					
+					try {
+						Clip clip;// = AudioSystem.getClip();
+										
+						clip = (Clip) AudioSystem.getLine(info);
+						clip.addLineListener(listener);
+						clip.open(inputStream);
+						
+						if(startOffset != 0){
+							clip.setFramePosition(startOffset);
+						}
+						
+						try {
+						clip.start();
+						listener.waitUntilDone();
+						} catch (InterruptedException e) {
 		
 						} finally {
-			              clip.close();
-			            }
-			          } finally {
-			        	  inputStream.close();
-			          }
-			        
+						clip.close();
+						}
+					} finally {
+						inputStream.close();
+					}
+					
 				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 					//This happens when a file is unavailable or the sound device is busy.
 					//Just don't play any sound when that happens.
@@ -326,7 +329,7 @@ public class ClientGame extends Observable implements Runnable{
 			
 		
 		}).start();
-        
+		
 	}
 	
 	

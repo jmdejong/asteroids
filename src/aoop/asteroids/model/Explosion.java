@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import org.json.simple.JSONArray;
+import java.awt.geom.Point2D;
 
 public class Explosion extends GameObject {
 	
@@ -14,11 +15,11 @@ public class Explosion extends GameObject {
 	private long creationTime;
 	
 	
-	public Explosion(WrappablePoint location, int seed, int radius, int color){
+	public Explosion(Point2D location, int seed, int radius, int color){
 		this(location, seed, radius, color, System.currentTimeMillis());
 	}
 	
-	public Explosion(WrappablePoint location, int seed, int radius, int color, long creationTime){
+	public Explosion(Point2D location, int seed, int radius, int color, long creationTime){
 		super(location, 0,0,radius);
 		this.setSeed(seed);
 		this.setColor(color);

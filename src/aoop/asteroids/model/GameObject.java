@@ -1,5 +1,8 @@
 package aoop.asteroids.model;
 
+
+import aoop.asteroids.Logging;
+
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
@@ -10,7 +13,6 @@ import org.json.simple.JSONArray;
  *	asteroids and spaceships. This class provides some of the basic mechanics, 
  *	such as collision detection, and the desctruction mechanism.
  *
- *	@author Yannick Stoffers
  */
 public abstract class GameObject 
 {
@@ -19,11 +21,10 @@ public abstract class GameObject
 	public static double worldWidth = 800;
 	public static double worldHeight = 700;
 
-	/** Location on the X axis. */
-	protected double locationX;
-
-	/** Location on the Y axis. */
-	protected double locationY;
+	
+	private WrappablePoint location;
+	
+	private Point2D domain = new Point((int)GameObject.worldWidth, (int)GameObject.worldHeight);
 
 	/** Velocity in X direction. */
 	protected double velocityX;
@@ -52,10 +53,9 @@ public abstract class GameObject
 	 *	@param velocityY velocity in Y direction.
 	 *	@param radius radius of the object.
 	 */
-	protected GameObject (WrappablePoint location, double velocityX, double velocityY, int radius)
+	protected GameObject (Point2D location, double velocityX, double velocityY, int radius)
 	{
-		this.locationX = location.getX();
-		this.locationY = location.getY();
+		this.location = new WrappablePoint(location.getX(), location.getY(), domain.getX(), domain.getY());
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;
 		this.radius = radius;
@@ -64,7 +64,7 @@ public abstract class GameObject
 
 	/** Subclasses need to specify their own behaviour. */
 	public void nextStep (){
-		this.setLocation(new WrappablePoint(this.locationX+this.velocityX,this.locationY+this.velocityY));
+		this.location.setLocation(this.location.getX()+this.velocityX,this.location.getY()+this.velocityY);
 	}
 
 	/** Destroys the object by setting the destroyed value to true. */
@@ -84,20 +84,16 @@ public abstract class GameObject
 	}
 
 	/**
-	 *	This method combines both location fields in a java.awt.Point object by 
-	 *	casting them to integers. The point object is returned.
 	 *
-	 *	@return the location of the object.
+	 *  @return the location of the object.
 	 */
-	public WrappablePoint getLocation ()
+	public Point2D getLocation ()
 	{
-		return new WrappablePoint (this.locationX, this.locationY, GameObject.worldWidth, GameObject.worldHeight);
+		return (WrappablePoint)this.location.clone();
 	}
 	
-	public void setLocation(WrappablePoint location){
-		location.setDomain(GameObject.worldWidth, GameObject.worldHeight);
-		this.locationX = location.getX();
-		this.locationY = location.getY();
+	public void setLocation(Point2D location){
+		this.location.setLocation(location);
 	}
 
 	/** 
@@ -142,8 +138,8 @@ public abstract class GameObject
 	 */
 	public boolean collides (GameObject other) 
 	{
-		double distX = this.locationX - other.getLocation ().x;
-		double distY = this.locationY - other.getLocation ().y;
+		double distX = this.location.getX() - other.getLocation ().getX();
+		double distY = this.location.getY() - other.getLocation ().getY();
 		double distance = Math.sqrt(distX * distX + distY * distY);
 		
 		return distance < this.getRadius() + other.getRadius() && this.stepsTilCollide () == 0 && other.stepsTilCollide () == 0;
@@ -163,16 +159,17 @@ public abstract class GameObject
 
 	public JSONArray toJSON(){
 		JSONArray result = new JSONArray();
-		result.add((double)this.locationX);
-		result.add((double)this.locationY);
+		result.add(this.location.getX());
+		result.add(this.location.getY());
 		result.add(this.velocityX);
 		result.add(this.velocityY);
+		
 		
 		return result;
 	}
 	
 	public String toString(){
-		return this.getClass().toString() + "destroyed?"+this.isDestroyed()+";x="+this.locationX+";y="+this.locationY+";vX="+this.velocityX+";vY="+this.velocityY;
+		return this.getClass().toString() + "destroyed?"+this.isDestroyed()+";x="+this.location.getX()+";y="+this.location.getY()+";vX="+this.velocityX+";vY="+this.velocityY;
 	}
 	
 	public boolean isCloseToEdge(){
@@ -180,32 +177,32 @@ public abstract class GameObject
 	}
 	
 	public boolean isCloseToXEdge(){
-		return this.locationX < (this.radius*2) || this.locationX > GameObject.worldWidth - (this.radius*2);
+		return this.location.getX() < (this.radius*2) || this.location.getX() > this.domain.getX() - (this.radius*2);
 	}
 	
 	public boolean isCloseToYEdge(){
-		return this.locationY < (this.radius*2) || this.locationY > GameObject.worldHeight - (this.radius*2);
+		return this.location.getY() < (this.radius*2) || this.location.getY() > this.domain.getY() - (this.radius*2);
 	}
 	
 	public Point2D getMirrorLocation(){
 		double x, y = 0;
-		Point2D mirrorLoc = (WrappablePoint) this.getLocation().clone();
-		x = this.getLocation().x;
-		y = this.getLocation().y;
+		Point2D mirrorLoc = this.getLocation();
+		x = this.location.getX();
+		y = this.location.getY();
 		
 		if(isCloseToXEdge()){
-			if (this.locationX < GameObject.worldWidth/2){
-				x = this.locationX + GameObject.worldWidth;
+			if (this.location.getX() < this.domain.getX()/2){
+				x = this.location.getX() + this.domain.getX();
 			}else{
-				x = this.locationX - GameObject.worldWidth;
+				x = this.location.getX() - this.domain.getX();
 			}
 		}
 		
 		if(isCloseToYEdge()){
-			if (this.locationY < GameObject.worldHeight/2){
-				y = this.locationY + GameObject.worldHeight;
+			if (this.location.getX() < this.domain.getY()/2){
+				y = this.location.getY() + this.domain.getY();
 			}else{
-				y = this.locationY - GameObject.worldHeight;
+				y = this.location.getY() - this.domain.getY();
 			}
 		}
 		

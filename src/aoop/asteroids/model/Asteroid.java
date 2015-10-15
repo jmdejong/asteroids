@@ -31,7 +31,7 @@ public class Asteroid extends GameObject
      *	@param velocityY the velocity in Y direction.
      *	@param radius radius of the asteroid.
      */
-	public Asteroid (WrappablePoint location, double velocityX, double velocityY, int radius, double rotation)
+	public Asteroid (Point2D location, double velocityX, double velocityY, int radius, double rotation)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.setRotation(rotation);
@@ -98,7 +98,7 @@ public class Asteroid extends GameObject
 		double velocityY = (double) json.get(3);
 		int radius = ((Long) json.get(4)).intValue();
 		double rotation = (double) json.get(5);
-		return new Asteroid(new WrappablePoint(x,y),velocityX, velocityY, radius, rotation);
+		return new Asteroid((Point2D)new WrappablePoint(x,y),velocityX, velocityY, radius, rotation);
 	}
 
 	public double getRotation() {

@@ -8,6 +8,7 @@ import java.util.Random;
 import org.json.simple.JSONArray;
 
 import aoop.asteroids.HighScores;
+import aoop.asteroids.Logging;
 
 /**
  *	This class represents the player in the Asteroids game. A spaceship is able 
@@ -79,18 +80,18 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (WrappablePoint location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, String name, int colour)
+	private Spaceship (Point2D location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, String name, int colour)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.setDirection(direction);
-		this.up 			= up;
-		this.isFiring 		= false;
-		this.left 			= false;
-		this.right 			= false;
-		this.stepsTilFire 	= 0;
-		this.score			= score;
-		this.destroyed 		= destroyed;
-		this.destroyTime 	= destroyTime;
+		this.up             = up;
+		this.isFiring       = false;
+		this.left           = false;
+		this.right          = false;
+		this.stepsTilFire   = 0;
+		this.score          = score;
+		this.destroyed      = destroyed;
+		this.destroyTime    = destroyTime;
 		this.name           = name;
 		this.setColour(colour);
 	}
@@ -102,18 +103,17 @@ public class Spaceship extends GameObject
 	 */
 	public void reinit ()
 	{
-		this.locationX 		= 400;
-		this.locationY 		= 400;
-		this.velocityX 		= 0;
-		this.velocityY 		= 0;
+		this.setLocation(new Point(400,400));
+		this.velocityX      = 0;
+		this.velocityY      = 0;
 		this.setDirection(0);
-		this.up 			= false;
-		this.isFiring 		= false;
-		this.left 			= false;
-		this.right 			= false;
-		this.destroyed		= false;
-		this.stepsTilFire 	= 0;
-		this.destroyTime 	= Double.POSITIVE_INFINITY;
+		this.up             = false;
+		this.isFiring       = false;
+		this.left           = false;
+		this.right          = false;
+		this.destroyed      = false;
+		this.stepsTilFire   = 0;
+		this.destroyTime    = Double.POSITIVE_INFINITY;
 	}
 
 	/**
@@ -169,6 +169,7 @@ public class Spaceship extends GameObject
 	public void nextStep () 
 	{
 		super.nextStep();
+// 		Logging.LOGGER.info(this.getLocation().toString());
 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		// Update direction if turning.
@@ -258,6 +259,7 @@ public class Spaceship extends GameObject
 	
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
+// 		Logging.LOGGER.info(result.toString());
 		result.add(this.getDirection());
 		result.add(this.isAccelerating() ? 1 : 0);
 		result.add(this.getScore());

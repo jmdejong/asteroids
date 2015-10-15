@@ -31,7 +31,7 @@ public class Bullet extends GameObject
 	 *	@param velocityX velocity of the bullet as projected on the X-axis.
 	 *	@param velocityY velocity of the bullet as projected on the Y-axis.
 	 */
-	public Bullet (WrappablePoint location, double velocityX, double velocityY, Spaceship shooter)
+	public Bullet (Point2D location, double velocityX, double velocityY, Spaceship shooter)
 	{
 		this (location, velocityX, velocityY, 40, shooter);
 	}
@@ -48,7 +48,7 @@ public class Bullet extends GameObject
      *
      *	@see #clone()
      */
-	private Bullet (WrappablePoint location, double velocityX, double velocityY, int stepsLeft, Spaceship shooter)
+	private Bullet (Point2D location, double velocityX, double velocityY, int stepsLeft, Spaceship shooter)
 	{
 		super (location, velocityX, velocityY, 0);
 		this.stepsLeft = stepsLeft;

@@ -7,6 +7,7 @@ import aoop.asteroids.udp.packets.GameStatePacket;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.lang.Runnable;
 import java.util.List;
 import java.util.ArrayList;
@@ -74,6 +75,9 @@ public class Game extends Observable implements Runnable
 	
 	protected Server server;
 	
+	private double width;
+	private double height;
+	
 	
 	//private ClientGame cg;
 
@@ -87,11 +91,15 @@ public class Game extends Observable implements Runnable
 	/** Initializes a new game from scratch. */
 	public Game (Server server, int roundNumber)
 	{
+		this.width = GameObject.worldWidth;
+		this.height = GameObject.worldHeight;
+		
 		Game.rng = new Random ();
-		//this.ship = new Spaceship ();
+		
 		this.initGameData (roundNumber);
-		//this.cg = cg;
+		
 		this.server = server;
+		
 	}
 
 	/** Sets all game data to hold the values of a new game. */
@@ -111,16 +119,7 @@ public class Game extends Observable implements Runnable
 			this.addRandomAsteroid ();
 		}
 	}
-
-// 	/** 
-// 	 *	Returns a clone of the spaceship, preserving encapsulation. 
-// 	 *
-// 	 *	@return a clone the spaceship.
-// 	 */
-// 	public Spaceship getSpaceship ()
-// 	{
-// 		return this.ships.toArray(new Spaceship[1])[0].clone ();
-// 	}
+	
 	/** 
 	 *	Returns a clone of the ships set, preserving encapsulation.
 	 *
@@ -223,11 +222,11 @@ public class Game extends Observable implements Runnable
 	private void addRandomAsteroid ()
 	{
 		int prob = Game.rng.nextInt (3000);
-		WrappablePoint loc;
+		Point2D loc;
 		int x, y;
 		do
 		{
-			loc = new WrappablePoint (Game.rng.nextInt ((int)GameObject.worldWidth), Game.rng.nextInt ((int)GameObject.worldHeight));
+			loc = new WrappablePoint (Game.rng.nextInt ((int)this.width), Game.rng.nextInt ((int)this.height));
 		}
 		while (pointOverlapsCenterCircle(loc));
 
@@ -236,19 +235,19 @@ public class Game extends Observable implements Runnable
 		else					this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 10, Game.rng.nextDouble()*2*Math.PI- Math.PI));
 	}
 	
-	private boolean pointOverlapsCenterCircle(WrappablePoint p){
+	private boolean pointOverlapsCenterCircle(Point2D p){
 		int radius = 100;
 		double x,y;
-		x = p.getX() - GameObject.worldWidth/2;
-		y = p.getY() - GameObject.worldHeight/2;
+		x = p.getX() - this.width/2;
+		y = p.getY() - this.height/2;
 		return (x*x+y*y) < radius * radius;
 	}
 	
 	private boolean pointDoesNotOverlapAnySpaceships(WrappablePoint p, int radius){
 		for(Spaceship s : this.getSpaceships()){
 			double x,y;
-			x = p.getX() - s.locationX;
-			y = p.getY() - s.locationY;
+			x = p.getX() - s.location.getX();
+			y = p.getY() - s.location.getY();
 			
 			if((x*x+y*y) < radius*radius){
 				return false;
@@ -273,7 +272,7 @@ public class Game extends Observable implements Runnable
 				{ // Collision -> destroy both objects.
 					b.destroy ();
 					a.destroy ();
-					this.explosions.add(new Explosion(new WrappablePoint(a.locationX, a.locationY), 3*a.hashCode()+5*b.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
+					this.explosions.add(new Explosion(a.getLocation(), 3*a.hashCode()+5*b.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
 				}
 			}
 			for(Spaceship s : this.ships){
@@ -288,7 +287,7 @@ public class Game extends Observable implements Runnable
 					
 					b.destroy ();
 					s.destroy ();
-					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*b.hashCode(), s.getRadius(), s.getColour()));
+					this.explosions.add(new Explosion(s.getLocation(), 3*s.hashCode()+5*b.hashCode(), s.getRadius(), s.getColour()));
 
 					
 					server.sendPlayerLosePacket(this.ships.indexOf(s));
@@ -305,8 +304,8 @@ public class Game extends Observable implements Runnable
 				{ // Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();
-					this.explosions.add(new Explosion(new WrappablePoint(a.locationX, a.locationY), 3*a.hashCode()+5*s.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
-					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*a.hashCode(), s.getRadius(), s.getColour()));
+					this.explosions.add(new Explosion(a.getLocation(), 3*a.hashCode()+5*s.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
+					this.explosions.add(new Explosion(s.getLocation(), 3*s.hashCode()+5*a.hashCode(), s.getRadius(), s.getColour()));
 
 					
 					server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
@@ -448,6 +447,15 @@ public class Game extends Observable implements Runnable
 		Logging.LOGGER.fine("Winners:"+result);
 		return result;
 	}
+	
+	
+	public double getWidth(){
+		return this.width;
+	}
+	
+	public double getHeight(){
+		return this.height;
+	}
 
 	/** 
 	 *	Aborts the game. 
@@ -544,14 +552,14 @@ public class Game extends Observable implements Runnable
 			Spaceship s = spaceships.get(i);
 			s.reinit();
 			if(spaceships.size()==1){
-				s.setLocation(new WrappablePoint(GameObject.worldWidth/2, GameObject.worldHeight/2));
+				s.setLocation(new WrappablePoint(this.width/2, this.height/2));
 			}else{
 				int amount = spaceships.size();
 				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
 				int radius = 50;
 				int dx = 0;
 				int dy = 0;
-				s.setLocation(new WrappablePoint((GameObject.worldWidth/2) + radius*Math.sin(rotation), (GameObject.worldHeight/2) + radius*Math.cos(rotation)));
+				s.setLocation(new WrappablePoint(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
 				s.setDirection(Math.PI-rotation);
 			}
 			

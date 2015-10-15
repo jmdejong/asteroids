@@ -72,7 +72,7 @@ public class AsteroidsPanel extends JPanel
 			}
 		});
 		this.setSize(game.getWidth(), game.getHeight());
-		Logging.LOGGER.info("Size in the Panel: "+this.getSize().toString());
+		Logging.LOGGER.fine("Size in the Panel: "+this.getSize().toString());
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class AsteroidsPanel extends JPanel
 		
 		BufferedImage bgimage = game.getBgImage();
 		if (bgimage != null){
-			paintBackground(g2, bgimage, (int)game.bgPos.x,(int) game.bgPos.y);
+			paintBackground(g2, bgimage, (int)game.bgPos.getX(),(int) game.bgPos.getY());
 		}
 		
 		
@@ -129,7 +129,7 @@ public class AsteroidsPanel extends JPanel
 		g.setColor(Color.YELLOW);
 
 		for (Bullet b : this.game.getBullets ()){
-		    g.fillOval (((int)b.getLocation ().x) - 2, ((int)b.getLocation ().y) - 2, 5, 5);
+		    g.fillOval (((int)b.getLocation ().getX()) - 2, ((int)b.getLocation ().getY()) - 2, 5, 5);
 		}
 	}
 
@@ -244,8 +244,8 @@ public class AsteroidsPanel extends JPanel
 			}
 			Color c = new Color(s.getColour());
 			int xa,xb,ya,yb;
-			xa = (int)s.getLocation().getX();
-			xb = (int)s.getMirrorLocation().getX();
+			xa = (int) s.getLocation().getX();
+			xb = (int) s.getMirrorLocation().getX();
 			ya = (int) s.getLocation().getY();
 			yb = (int) s.getMirrorLocation().getY();
 
@@ -306,7 +306,7 @@ public class AsteroidsPanel extends JPanel
 		addRotatedPoint(p, x,y, -11,-16, directionX,directionY);
 		/*p.addPoint ((int)(x + Utils.imagMultI(0,20,direction_x,direction_y)), (int)(y + Utils.imagMultR(0,20,direction_x,direction_y)));
 		p.addPoint ((int)(x + Utils.imagMultI(11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(11,-16,direction_x,direction_y)));
-		p.addPoint ((int)(x + Utils.imagMultI(-11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(-11,-16,direction_x,direction_y)))*/;
+		p.addPoint ((int)(x + Utils.imagMultI(-11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(-11,-16,direction_x,direction_y)));*/
 
 		g.setColor (c);
 		g.fill (p);
@@ -378,8 +378,8 @@ public class AsteroidsPanel extends JPanel
 	        Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
 	        Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
 
-	        finalx = (int) e.getLocation().x + x;
-	        finaly = (int)e.getLocation().y + y;
+	        finalx = (int) e.getLocation().getX() + x;
+	        finaly = (int)e.getLocation().getY() + y;
 	        
 	        
 	        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, endc}, CycleMethod.NO_CYCLE);

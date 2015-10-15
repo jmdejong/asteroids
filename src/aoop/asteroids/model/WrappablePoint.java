@@ -8,12 +8,13 @@ import aoop.asteroids.Utils;
  * A WrappablePoint provides the same functionality as Point2d.Double,
  * but when giving WrappablePoint a domainWidth and domainHeight, values will automatically be converted to fit in the domain;<br>
  * e.g. WrappablePoint.x == Point2D.Double.x (mod) WrappablePoint.domainWidth
- * @author qqwy
+ * @author qqwy, troido
  *
  */
 public class WrappablePoint extends Point2D.Double {
 	private static final long serialVersionUID = 1L;
-	private double domainWidth, domainHeight = java.lang.Double.POSITIVE_INFINITY;
+	private double domainWidth = java.lang.Double.POSITIVE_INFINITY;
+	private double domainHeight = java.lang.Double.POSITIVE_INFINITY;
 	
 	public WrappablePoint(double x, double y){
 		super(x,y);
@@ -25,17 +26,21 @@ public class WrappablePoint extends Point2D.Double {
 		this.setLocation(x,y);
 	}
 	
-	// doc needs updating. Took care of this in utils.
 	/**
 	 * Sets the location of the WrappablePoint to the new x and y.<br>
 	 * Note that these values are automatically wrapped to fit the range [0..domainWidth)<br>
 	 * As in Java, the `%` operator rounds towards 0 (-3 % 26 == -3 and not 23), we have to add the domain ourselves when working with negative coordinates.<br>
-	 * In Java 8, the Math.floorMod function could be used instead of %, but we assume usage of Java 7.
+	 * In Java 8, the Math.floorMod function could be used instead of %, but we assume usage of Java 7.<br>
+	 * In Utils.java we made a floorMod function that does this.
 	 */
 	@Override
 	public void setLocation(double x, double y){
-		setX(x);
-		setY(y);
+		super.setLocation(Utils.floorMod(x, domainWidth), Utils.floorMod(y, domainHeight));
+	}
+	
+	@Override
+	public void setLocation(Point2D p){
+		setLocation(p.getX(), p.getY());
 	}
 	
 	public void setDomain(double domainWidth, double domainHeight){
@@ -44,10 +49,4 @@ public class WrappablePoint extends Point2D.Double {
 		this.setLocation(this.getX(),this.getY());
 	}
 	
-	public void setX(double x){
-		this.x = Utils.floorMod(x, domainWidth);//(domainWidth + x) % domainWidth;
-	}
-	public void setY(double y){
-		this.y = Utils.floorMod(y, domainHeight);//(domainHeight + y) % domainHeight;
-	}
 }

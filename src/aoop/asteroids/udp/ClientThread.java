@@ -45,10 +45,7 @@ public class ClientThread extends BaseServerThread {
 				this.client.game.unFreeze();
 				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), client.game);
 				
-				Sound sound = Sound.getInstance();
-				if(!sound.hasBgmStarted()){
-					sound.playSound("background_music_bassline.wav", true);
-				}
+				this.client.game.playBGMIfNotAlreadyStarted();
 				break;
 			case ROUND_END:
 				Logging.LOGGER.fine("C: Round End Packet Received");

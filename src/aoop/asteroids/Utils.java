@@ -1,5 +1,6 @@
 package aoop.asteroids;
 
+import java.awt.Color;
 import java.util.Random;
 
 public class Utils {
@@ -50,4 +51,8 @@ public class Utils {
 		}
 		return name;
 	}
+	
+    public static Color getComplementColor(Color c){
+    	return new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue()).brighter().brighter();
+    }
 }

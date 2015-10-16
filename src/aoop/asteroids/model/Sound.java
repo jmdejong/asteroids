@@ -28,8 +28,8 @@ public class Sound {
 	 * I made this a singleton class. I don't know if this is the best idea.
 	 * 
 	 * TODO:
+	 * - Fix sound error when loading multiple games on same computer
 	 * - find something better than singleton
-	 * - fill in empty catch block
 	 * 
 	 */
 	

@@ -136,7 +136,7 @@ public class AsteroidsPanel extends JPanel
 		
 		for (Bullet b : this.game.getBullets ()){
 			Color c = new Color(b.getColour());
-			g.setColor(getComplement(c));
+			g.setColor(Utils.getComplementColor(c));
 		    g.fillOval (((int)b.getLocation ().x) - 2, ((int)b.getLocation ().y) - 2, 5, 5);
 		}
 	}
@@ -301,7 +301,7 @@ public class AsteroidsPanel extends JPanel
 			p.addPoint ((int)(x - Math.sin (direction			     ) * (25+exhaustLength)), (int)(y + Math.cos (direction			       ) * (25+exhaustLength)));
 			p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15 ), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
 			p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
-			g.setColor(getComplement(c));
+			g.setColor(Utils.getComplementColor(c));
 			//g.setColor(Color.YELLOW);
 			g.fill(p);
 		}
@@ -427,7 +427,5 @@ public class AsteroidsPanel extends JPanel
 	    g.fillRect(0, 0, (int) GameObject.worldWidth, (int) GameObject.worldHeight);
 	}
     
-    public Color getComplement(Color c){
-    	return new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue()).brighter().brighter();
-    }
+
 }

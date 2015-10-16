@@ -150,13 +150,12 @@ public class AsteroidsPanel extends JPanel
 	{
 		g.setColor (Color.GRAY);
 
-		for (Asteroid a : this.game.getAsteroids ())
-		{
+		for (Asteroid a : this.game.getAsteroids ()) {
+			
 			int seed = (int)(3*a.getVelocityX()+5*a.getVelocityY());
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getLocation().getY()		,a.getRadius(), seed, a.getRotation());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getLocation().getY()		,a.getRadius(), seed, a.getRotation());
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getMirrorLocation().getY()	,a.getRadius(), seed, a.getRotation());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getMirrorLocation().getY()	,a.getRadius(), seed, a.getRotation());
+			for (Point2D location : a.getMirrorLocations(GameObject.worldWidth, GameObject.worldHeight)){
+				paintAsteroidPart(g, (int)location.getX(), (int)location.getY(), a.getRadius(), seed, a.getRotation());
+			}
 		}
 	}
 	
@@ -222,10 +221,6 @@ public class AsteroidsPanel extends JPanel
 // 		g.fill(polygon);
 	}
 	
-// 	private void paintAsteroidShape(Graphics2D g, int x, int y, int radius, double seed, double rotation){
-// 	
-// 	
-// 	}
 	
 	private void paintSun(Graphics2D g){
 		Ellipse2D.Double e = new Ellipse2D.Double ();
@@ -252,25 +247,10 @@ public class AsteroidsPanel extends JPanel
 				continue;
 			}
 			Color c = new Color(s.getColour());
-			int xa,xb,ya,yb;
-			xa = (int)s.getLocation().getX();
-			xb = (int)s.getMirrorLocation().getX();
-			ya = (int) s.getLocation().getY();
-			yb = (int) s.getMirrorLocation().getY();
-
-			paintSpaceshipPart(g,xa,ya,s.getDirection(),s.isAccelerating(), c);
-			if(yb != ya){
-				paintSpaceshipPart(g,xa,yb,s.getDirection(),s.isAccelerating(), c);
-			}
-			if(xb != xa){
-				paintSpaceshipPart(g,xb,ya,s.getDirection(),s.isAccelerating(), c);
-				if(yb != ya){
-					paintSpaceshipPart(g,xb,yb,s.getDirection(),s.isAccelerating(), c);
-				}
-				
-			}
 			
-			
+			for (Point2D location : s.getMirrorLocations(GameObject.worldWidth, GameObject.worldHeight)){
+				paintSpaceshipPart(g, (int)location.getX(), (int)location.getY(), s.getDirection(), s.isAccelerating(), c);
+			}
 			
 		}
 		

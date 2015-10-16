@@ -26,9 +26,10 @@ public class ClientGame extends Observable implements Runnable{
 	/* TODO:
 	 * - Fix sound error when loading multiple games on same computer
 	 * - Is this the right place for storing the spaceshipController? -> Yes, definitely.
-	 * - Didn't we want to make all collections of gameObjects lists?
+
 	 * - Make this class more readable
 	 * Done:
+	 * - All collections of GameObjects are now lists.
 	 * - Maybe do the sound stuff somewhere else.
 	 *   This is the model part and the sound would be the view part
 	 *   Even if this class is responsible for calling the playSound commands 
@@ -38,13 +39,13 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
 	/** List of bullets. */
-	private Collection <Bullet> bullets = new ArrayList<Bullet>();
+	private List <Bullet> bullets = new ArrayList<Bullet>();
 
 	/** List of asteroids. */
-	private Collection <Asteroid> asteroids = new ArrayList<Asteroid>();
+	private List <Asteroid> asteroids = new ArrayList<Asteroid>();
 	
 	/** List of explosions. */
-	private Collection <Explosion> explosions = new ArrayList<Explosion>();
+	private List <Explosion> explosions = new ArrayList<Explosion>();
 	
 	/** List of game messages. */
 	private List <GameMessage> messages = new ArrayList<GameMessage>();
@@ -139,7 +140,7 @@ public class ClientGame extends Observable implements Runnable{
 		}
 	}
 	
-	public void setBullets(Collection<Bullet> bullets){
+	public void setBullets(List<Bullet> bullets){
 		int bulletsSize = this.bullets.size();
 		
 		//Play `fire` sound whenever a new bullet appears.
@@ -150,7 +151,7 @@ public class ClientGame extends Observable implements Runnable{
 		this.bullets = bullets;
 	}
 	
-	public void setAsteroids(Collection<Asteroid> asteroids){
+	public void setAsteroids(List<Asteroid> asteroids){
 		this.asteroids = asteroids;
 	}
 

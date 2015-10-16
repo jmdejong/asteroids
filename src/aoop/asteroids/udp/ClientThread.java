@@ -12,6 +12,7 @@ import org.json.simple.JSONValue;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
+import aoop.asteroids.model.Sound;
 
 public class ClientThread extends BaseServerThread {
 	Client client;
@@ -44,9 +45,9 @@ public class ClientThread extends BaseServerThread {
 				this.client.game.unFreeze();
 				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), client.game);
 				
-				if(!client.game.bgmHasStarted){
-					client.game.bgmHasStarted = true;
-					client.game.playSound("background_music_bassline.wav", true);
+				Sound sound = Sound.getInstance();
+				if(!sound.hasBgmStarted()){
+					sound.playSound("background_music_bassline.wav", true);
 				}
 				break;
 			case ROUND_END:

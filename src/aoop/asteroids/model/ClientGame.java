@@ -15,15 +15,6 @@ import java.util.Observable;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioFileFormat.Type;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import aoop.asteroids.Asteroids;
 import aoop.asteroids.Logging;
@@ -37,12 +28,12 @@ public class ClientGame extends Observable implements Runnable{
 	 * - Is this the right place for storing the spaceshipController?
 	 * - Didn't we want to make all collections of gameObjects lists?
 	 * - Make this class more readable
+	 * Done:
 	 * - Maybe do the sound stuff somewhere else.
 	 *   This is the model part and the sound would be the view part
 	 *   Even if this class is responsible for calling the playSound commands 
 	 *   (which I don't like but don't know how to solve), the code to play
 	 *   sounds could better have its own class
-	 * - fill in empty catch block
 	 */
 	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
@@ -77,7 +68,7 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public boolean isFrozen = false;
 	
-	public boolean bgmHasStarted = false;
+	private Sound sound = Sound.getInstance();
 	
 
 	
@@ -153,7 +144,7 @@ public class ClientGame extends Observable implements Runnable{
 		
 		//Play `fire` sound whenever a new bullet appears.
 		if(bullets.size() > bulletsSize){
-			playShootSound();
+			sound.playSound("ShootNew2.wav");
 		}
 		
 		this.bullets = bullets;
@@ -243,7 +234,7 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	public void unFreeze(){
 		if(this.isFrozen){
-			playSound("NextLevelNew0.wav");
+			sound.playSound("NextLevelNew0.wav");
 			setBackgroundImage(this.roundNumber);
 		}
 		this.isFrozen = false;
@@ -259,7 +250,7 @@ public class ClientGame extends Observable implements Runnable{
 		
 		//Play `fire` sound whenever a new bullet appears.
 		if(explosions.size() > explosionsSize){
-			playExplosionSound(explosions.get(explosions.size()-1));
+			sound.playExplosionSound(explosions.get(explosions.size()-1));
 		}
 		
 		
@@ -276,7 +267,7 @@ public class ClientGame extends Observable implements Runnable{
 	// Wow! Such name!
 	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
 		if(this.roundNumber != roundnumber){
-			playSound("NextLevelNew0.wav");
+			sound.playSound("NextLevelNew0.wav");
 			this.roundNumber = roundnumber;
 			this.hasLost = false;
 			setBackgroundImage(this.roundNumber);
@@ -287,109 +278,7 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public void hasLost(){
 		this.hasLost = true;
-		playSound("PlayerDeathNew0.wav");
-	}
-	
-	
-	
-	// everything below this should not belong in ClientGame and I think it does not use any field of ClientGame
-	
-	
-	private void playShootSound(){
-		//int index = new Random(b.hashCode()).nextInt(2);
-		//playSound("Shoot"+index+".wav");
-		playSound("ShootNew2.wav");
-
-	}
-	
-	private void playExplosionSound(Explosion explosion){
-		int index = new Random(explosion.hashCode()).nextInt(4);
-		//playSound("Explosion"+index+".wav");
-		playSound("ExplosionNew"+index+".wav");
-	}
-	
-	public void playSound(String filename){
-		playSound(filename, false);
-	}
-	
-	
-	public void playSound(final String filename, /*final int startOffset,*/ final boolean isBGM){
-		
-		
-		
-		new Thread(new Runnable() {
-		
-			@Override
-			public void run() {
-				
-				class AudioListener implements LineListener {
-					private boolean done = false;
-					@Override
-					public synchronized void update(LineEvent event) {
-						LineEvent.Type eventType = event.getType();
-						if (eventType == LineEvent.Type.STOP || eventType == LineEvent.Type.CLOSE) {
-							done = true;
-							notifyAll();
-						}
-					}
-					public synchronized void waitUntilDone() throws InterruptedException {
-						while (!done) {
-							wait();
-						}
-					}
-				}
-			
-				try {
-					
-					InputStream stream = new BufferedInputStream(new FileInputStream("sounds/"+filename));
-					AudioInputStream inputStream = AudioSystem.getAudioInputStream(stream);
-					
-					
-					
-					DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
-					
-					AudioListener listener = new AudioListener();
-					
-					try {
-						Clip clip;// = AudioSystem.getClip();
-										
-						clip = (Clip) AudioSystem.getLine(info);
-						
-						
-						/*if(startOffset != 0){
-							clip.setFramePosition(startOffset);
-						}*/
-						
-						clip.addLineListener(listener);
-						clip.open(inputStream);
-						
-						try {
-							clip.start();
-							listener.waitUntilDone();
-						} catch (InterruptedException e) {
-							// TODO: something. The teachers don't like empty catch blocks (and neither do I)
-							// won't doing something help in finding out why the background music stops?
-						} finally {
-							clip.drain();
-							clip.close();
-						}
-					} finally {
-						inputStream.close();
-						if(isBGM){
-							bgmHasStarted=false;
-						}
-					}
-					
-				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-					//This happens when a file is unavailable or the sound device is busy.
-					//Just don't play any sound when that happens.
-					Logging.LOGGER.info("Sound in '"+filename+"' could not be played");
-				}
-			}
-			
-		
-		}).start();
-		
+		sound.playSound("PlayerDeathNew0.wav");
 	}
 	
 }

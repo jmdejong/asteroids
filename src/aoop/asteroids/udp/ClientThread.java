@@ -46,7 +46,7 @@ public class ClientThread extends BaseServerThread {
 				
 				if(!client.game.bgmHasStarted){
 					client.game.bgmHasStarted = true;
-					//client.game.playSound("background_music_bassline.wav",0/* ((Long) packet_data.get("r")).intValue() % 3600*/);
+					client.game.playSound("background_music_bassline.wav", true);
 				}
 				break;
 			case ROUND_END:

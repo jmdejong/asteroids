@@ -277,10 +277,11 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	public void playSound(String filename){
-		playSound(filename,0);
+		playSound(filename, false);
 	}
 	
-	public void playSound(final String filename, final int startOffset){
+	
+	public void playSound(final String filename, /*final int startOffset,*/ final boolean isBGM){
 		
 		
 		
@@ -320,23 +321,27 @@ public class ClientGame extends Observable implements Runnable{
 						clip = (Clip) AudioSystem.getLine(info);
 						
 						
-						if(startOffset != 0){
+						/*if(startOffset != 0){
 							clip.setFramePosition(startOffset);
-						}
+						}*/
 						
 						clip.addLineListener(listener);
 						clip.open(inputStream);
 						
 						try {
-						clip.start();
-						listener.waitUntilDone();
+							clip.start();
+							listener.waitUntilDone();
 						} catch (InterruptedException e) {
 		
 						} finally {
-						clip.close();
+							clip.drain();
+							clip.close();
 						}
 					} finally {
 						inputStream.close();
+						if(isBGM){
+							bgmHasStarted=false;
+						}
 					}
 					
 				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {

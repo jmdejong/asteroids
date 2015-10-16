@@ -26,6 +26,10 @@ public class Client extends Base implements Observer{
 	 */
 	
 	public InetSocketAddress serverAddress;
+	
+	
+	private SpaceshipController spaceshipController;
+	
 	public ClientGame game;
 	
 	public static int UDPPort = 8091;
@@ -61,8 +65,15 @@ public class Client extends Base implements Observer{
 		//	e1.printStackTrace();
 		//}
 		
-		this.game = new ClientGame(playerName, isSpectator);
+		this.game = new ClientGame(playerName);
 		game.addObserver(this);
+		
+		
+		
+		if(!isSpectator){
+			this.spaceshipController = new SpaceshipController();
+		}
+		
 		
 		//sendPlayerJoinPacket();
 		Thread t = new Thread (game);
@@ -196,10 +207,14 @@ public class Client extends Base implements Observer{
 		
 		//Otherwise, send update to server.
 		if(!this.isSpectator && !this.game.hasLost){
-			this.sendPlayerUpdatePacket(this.game.spaceshipController);
+			this.sendPlayerUpdatePacket(this.spaceshipController);
 		}else{
 			this.sendSpectatorPingPacket();
 		}
 		
+	}
+	
+	public SpaceshipController getController(){
+		return this.spaceshipController;
 	}
 }

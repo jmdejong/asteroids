@@ -25,7 +25,6 @@ public class ClientGame extends Observable implements Runnable{
 	
 	/* TODO:
 	 * - Fix sound error when loading multiple games on same computer
-	 * - Is this the right place for storing the spaceshipController? -> Yes, definitely.
 	 * - Didn't we want to make all collections of gameObjects lists?
 	 * - Make this class more readable
 	 * Done:
@@ -34,6 +33,7 @@ public class ClientGame extends Observable implements Runnable{
 	 *   Even if this class is responsible for calling the playSound commands 
 	 *   (which I don't like but don't know how to solve), the code to play
 	 *   sounds could better have its own class
+	 * - Is this the right place for storing the spaceshipController? -> Yes, definitely -> No, it's not.
 	 */
 	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
@@ -49,8 +49,6 @@ public class ClientGame extends Observable implements Runnable{
 	/** List of game messages. */
 	private List <GameMessage> messages = new ArrayList<GameMessage>();
 	
-	
-	public SpaceshipController spaceshipController;
 	
 	private int roundNumber = 1;
 	
@@ -75,16 +73,11 @@ public class ClientGame extends Observable implements Runnable{
 	private boolean aborted = false;
 	
 	
-	public ClientGame(String playerName, boolean isSpectator){
+	public ClientGame(String playerName){
 		//this.client = client;
 		
 		this.playerName = playerName;
 		
-		if(!isSpectator){
-			this.spaceshipController = new SpaceshipController();
-		}
-		
-
 		setBackgroundImage(this.roundNumber);
 	}
 	

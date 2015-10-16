@@ -283,7 +283,7 @@ public class Game extends Observable implements Runnable
 					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*b.hashCode(), s.getRadius(), s.getColour()));
 
 					
-					server.sendPlayerLosePacket(this.ships.indexOf(s));
+// 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 
@@ -303,7 +303,7 @@ public class Game extends Observable implements Runnable
 					
 					//server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
 					addMessage(s.getName() + " was smashed by an Asteroid");
-					server.sendPlayerLosePacket(this.ships.indexOf(s));
+// 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 			

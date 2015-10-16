@@ -495,15 +495,11 @@ public class Game extends Observable implements Runnable
 	
 	private void destroyAllShipsOfDisconnectedPlayers(){
 		List<ClientConnection> playerConnections = this.server.getPlayerConnections();
-		try{
-			for(int i=0;i<playerConnections.size();i++){
-				Spaceship s = ships.get(i);
-				if(!s.isDestroyed() && playerConnections.get(i).isDisconnected()){
-					s.destroy();
-				}
+		for(int i=playerConnections.size()-1; i>=0; i--){
+			Spaceship s = ships.get(i);
+			if(!s.isDestroyed() && playerConnections.get(i).isDisconnected()){
+				s.destroy();
 			}
-		}catch(IndexOutOfBoundsException e){
-			//e.printStackTrace();
 		}
 		
 	}
@@ -515,6 +511,7 @@ public class Game extends Observable implements Runnable
 	 * In multiplayer, ships are set in a circle, pointing outward.
 	 * @param spaceships
 	 */
+	/* ehmm, this also removes all spaceships currently in the game*/
 	public void addSpaceships(List<Spaceship> spaceships) {
 		this.ships = spaceships;
 		for(int i=0;i<spaceships.size();i++){

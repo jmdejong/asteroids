@@ -34,11 +34,15 @@ public class ClientGame extends Observable implements Runnable{
 	
 	/* TODO:
 	 * - Fix sound error when loading multiple games on same computer
-	 * - Is this the right place for storing the spaceshipController
+	 * - Is this the right place for storing the spaceshipController?
 	 * - Didn't we want to make all collections of gameObjects lists?
 	 * - Make this class more readable
 	 * - Maybe do the sound stuff somewhere else.
 	 *   This is the model part and the sound would be the view part
+	 *   Even if this class is responsible for calling the playSound commands 
+	 *   (which I don't like but don't know how to solve), the code to play
+	 *   sounds could better have its own class
+	 * - fill in empty catch block
 	 */
 	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
@@ -216,10 +220,6 @@ public class ClientGame extends Observable implements Runnable{
 			}
 		}
 	}
-	/*
-	public void setMessages(List<GameMessage> messages){
-		this.messages = messages;
-	}*/
 	
 	public int getWidth(){
 		return (int)GameObject.worldWidth;
@@ -271,7 +271,30 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	
-
+	/** Check if the round has ended and update round number
+	 */
+	// Wow! Such name!
+	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
+		if(this.roundNumber != roundnumber){
+			playSound("NextLevelNew0.wav");
+			this.roundNumber = roundnumber;
+			this.hasLost = false;
+			setBackgroundImage(this.roundNumber);
+			this.bgPos = new Point2D.Double(0,0);
+		}
+	}
+	
+	
+	public void hasLost(){
+		this.hasLost = true;
+		playSound("PlayerDeathNew0.wav");
+	}
+	
+	
+	
+	// everything below this should not belong in ClientGame and I think it does not use any field of ClientGame
+	
+	
 	private void playShootSound(){
 		//int index = new Random(b.hashCode()).nextInt(2);
 		//playSound("Shoot"+index+".wav");
@@ -301,15 +324,18 @@ public class ClientGame extends Observable implements Runnable{
 				
 				class AudioListener implements LineListener {
 					private boolean done = false;
-					@Override public synchronized void update(LineEvent event) {
-					LineEvent.Type eventType = event.getType();
-					if (eventType == LineEvent.Type.STOP || eventType == LineEvent.Type.CLOSE) {
-						done = true;
-						notifyAll();
-					}
+					@Override
+					public synchronized void update(LineEvent event) {
+						LineEvent.Type eventType = event.getType();
+						if (eventType == LineEvent.Type.STOP || eventType == LineEvent.Type.CLOSE) {
+							done = true;
+							notifyAll();
+						}
 					}
 					public synchronized void waitUntilDone() throws InterruptedException {
-					while (!done) { wait(); }
+						while (!done) {
+							wait();
+						}
 					}
 				}
 			
@@ -341,7 +367,8 @@ public class ClientGame extends Observable implements Runnable{
 							clip.start();
 							listener.waitUntilDone();
 						} catch (InterruptedException e) {
-		
+							// TODO: something. The teachers don't like empty catch blocks (and neither do I)
+							// won't doing something help in finding out why the background music stops?
 						} finally {
 							clip.drain();
 							clip.close();
@@ -365,22 +392,4 @@ public class ClientGame extends Observable implements Runnable{
 		
 	}
 	
-	/** Check if the round has ended and update round number
-	 */
-	// Wow! Such name!
-	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
-		if(this.roundNumber != roundnumber){
-			playSound("NextLevelNew0.wav");
-			this.roundNumber = roundnumber;
-			this.hasLost = false;
-			setBackgroundImage(this.roundNumber);
-			this.bgPos = new Point2D.Double(0,0);
-		}
-	}
-	
-	
-	public void hasLost(){
-		this.hasLost = true;
-		playSound("PlayerDeathNew0.wav");
-	}
 }

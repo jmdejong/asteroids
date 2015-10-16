@@ -29,6 +29,7 @@ public class Asteroids {
 	 * - make an interface for all object that we can serialize to json
 	 * - use decorator pattern more
 	 * - move global constants to this class
+	 * - move sound functions to its own (singleton?) class
 	 */
 	
 	

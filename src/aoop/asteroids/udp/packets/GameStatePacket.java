@@ -13,6 +13,8 @@ import aoop.asteroids.model.*;
 public class GameStatePacket extends Packet {
 	
 	/* TODO:
+	 * 
+	 * DONE:
 	 * - move messages part to MessageListPacket
 	 */
 	

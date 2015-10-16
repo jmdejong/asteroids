@@ -21,6 +21,10 @@ import aoop.asteroids.udp.packets.SpectatorPingPacket;
 
 public class Client extends Base implements Observer{
 	
+	/* TODO:
+	 * - find out why message "connection with host lost" shows up at the beginning and fix
+	 */
+	
 	public InetSocketAddress serverAddress;
 	public ClientGame game;
 	

@@ -72,7 +72,7 @@ public class Server extends Base implements Observer{
 	}
 	
 	public void startFirstGame(){
-		this.game = new Game(this,roundNumber);
+		this.game = new Game(this.isSinglePlayerMode(),roundNumber);
 		game.addObserver(this);
 		Thread t = new Thread (game);
 		t.start();
@@ -83,6 +83,10 @@ public class Server extends Base implements Observer{
 		this.sendGameStatePacket();
 		this.sendMessageListPacket();
 		this.tagNonrespondingClients();
+		this.destroyAllShipsOfDisconnectedPlayers();
+		if (this.game.isGameOver()){
+			this.restartGame();
+		}
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
@@ -228,10 +232,9 @@ public class Server extends Base implements Observer{
 	
 	public void restartGame(){
 		++roundNumber;
-		//sendRoundOverPacket();
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
 		this.game.deleteObserver(this);
-		this.game = new Game(this, roundNumber); //TODO: Rename Lobby
+		this.game = new Game(this.isSinglePlayerMode(), roundNumber); //DONE: Rename Lobby
 		this.game.addObserver(this);
 		for(int i=this.playerConnections.size()-1;i>=0;i--){
 			ClientConnection c = playerConnections.get(i);
@@ -295,7 +298,7 @@ public class Server extends Base implements Observer{
 				}
 			}
 			this.roundNumber = 0;
-			this.game = new Game(this,0);
+			this.game = new Game(this.isSinglePlayerMode(),0);
 			this.game.addSpaceships(spaceships);
 			Thread t = new Thread (game);
 			t.start();
@@ -357,6 +360,17 @@ public class Server extends Base implements Observer{
 		this.game.abort();
 		this.responsesThread.stopServer();
 // 		this.sendSocket.close();
+	}
+	
+	private void destroyAllShipsOfDisconnectedPlayers(){
+		List<ClientConnection> playerConnections = this.getPlayerConnections();
+		List<Spaceship> ships = this.game.getSpaceships();
+		for(int i=0; i<playerConnections.size(); i++){
+			if( playerConnections.get(i).isDisconnected()){
+				this.game.destroySpaceship(i);
+			}
+		}
+		
 	}
 
 

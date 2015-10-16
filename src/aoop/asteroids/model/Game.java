@@ -2,9 +2,6 @@ package aoop.asteroids.model;
 
 import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
-import aoop.asteroids.udp.ClientConnection;
-import aoop.asteroids.udp.Server;
-import aoop.asteroids.udp.packets.GameStatePacket;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -53,10 +50,11 @@ public class Game extends Observable implements Runnable
 {
 	
 	/* TODO:
-	 * - remove all references of server from this class
-	 *   server should be only an observer
 	 * - see if we can make this class smaller
 	 * - see if we can orden the functions better
+	 * DONE:
+	 * - remove all references of server from this class
+	 *   server should be only an observer
 	 */
 	
 	/** List of spaceships. */
@@ -83,10 +81,9 @@ public class Game extends Observable implements Runnable
 	private int numberOfSpawnedAsteroids;
 
 	/** Asteroid limit. */
-	protected int asteroidsLimit;
+	private int asteroidsLimit;
 	
-	protected Server server;
-	
+	private boolean isSinglePlayer;
 	
 	//private ClientGame cg;
 
@@ -100,18 +97,14 @@ public class Game extends Observable implements Runnable
 	private long startCountdownTime = 0;
 
 	/** Initializes a new game from scratch. */
-	public Game (Server server, int roundNumber)
-	{
+	public Game (Boolean isSinglePlayer, int roundNumber){
 		Game.rng = new Random ();
-		//this.ship = new Spaceship ();
 		this.initGameData (roundNumber);
-		//this.cg = cg;
-		this.server = server;
+		this.isSinglePlayer = isSinglePlayer;
 	}
 
 	/** Sets all game data to hold the values of a new game. */
-	public void initGameData (int roundNumber)
-	{
+	public void initGameData (int roundNumber){
 		this.aborted = false;
 		this.numberOfSpawnedAsteroids = 0;
 		this.asteroidsLimit = roundNumber == 0 ? 0 : Math.max(1, roundNumber / 3);
@@ -201,7 +194,7 @@ public class Game extends Observable implements Runnable
 		this.checkCollisions ();
 		this.removeDestroyedObjects ();
 		
-		this.destroyAllShipsOfDisconnectedPlayers();
+// 		this.destroyAllShipsOfDisconnectedPlayers();
 		
 		
 		this.setChanged ();
@@ -281,7 +274,6 @@ public class Game extends Observable implements Runnable
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
 					if(/*b.getShooter() != null && */b.getShooter() != s){
 						//b.getShooter().increaseScore();
-						//server.sendMessagePacket(s.getName() + " was shot by " + b.getShooter().getName());
 						messages.add(new GameMessage(s.getName() + " was shot by " + b.getShooter().getName()));
 					}
 					
@@ -290,7 +282,6 @@ public class Game extends Observable implements Runnable
 					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*b.hashCode(), s.getRadius(), s.getColour()));
 
 					
-// 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 
@@ -308,9 +299,7 @@ public class Game extends Observable implements Runnable
 					this.explosions.add(new Explosion(new WrappablePoint(s.locationX, s.locationY), 3*s.hashCode()+5*a.hashCode(), s.getRadius(), s.getColour()));
 
 					
-					//server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
 					addMessage(s.getName() + " was smashed by an Asteroid");
-// 					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 			
@@ -467,9 +456,8 @@ public class Game extends Observable implements Runnable
 				sleepTime = 40 - executionTime;
 			}
 			else {
-				
-				sleepTime = 100;
-				this.server.restartGame();
+				this.setChanged();
+				this.notifyObservers();
 				return;
 			}
 
@@ -493,17 +481,13 @@ public class Game extends Observable implements Runnable
 		return this.ships.toArray(new Spaceship[this.ships.size()])[index];
 	}
 	
-	private void destroyAllShipsOfDisconnectedPlayers(){
-		List<ClientConnection> playerConnections = this.server.getPlayerConnections();
-		for(int i=playerConnections.size()-1; i>=0; i--){
-			Spaceship s = ships.get(i);
-			if(!s.isDestroyed() && playerConnections.get(i).isDisconnected()){
-				s.destroy();
-			}
+	public void destroySpaceship(int index) {
+		Spaceship s = getSpaceshipRef(index);
+		if(!s.isDestroyed()){
+			s.destroy();
 		}
-		
 	}
-
+	
 	/**
 	 * Adds multiple spaceships at once to the game.
 	 * Used when starting a new game round.
@@ -557,21 +541,20 @@ public class Game extends Observable implements Runnable
 
 	public double timeUntilOver() {
 	
-		if(    ( server.isSinglePlayerMode() && ((!this.getSpaceships().isEmpty() && this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed()))
-			|| (!server.isSinglePlayerMode() && (this.getSpaceships().size() > 1) && ((this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed() || this.isThereOnlyOneShipLeft() ))){
+		if(( this.isSinglePlayer && ((!this.getSpaceships().isEmpty() && this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed()))
+			|| (!this.isSinglePlayer && (this.getSpaceships().size() > 1) && ((this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed() || this.isThereOnlyOneShipLeft() ))){
 			
 			if(this.startCountdownTime==0){
 				startCountdownTime = System.currentTimeMillis();
 				if(this.asteroidsLimit != 0){
 					List<Spaceship> winners = getWinners();
 					for(Spaceship w : winners){
-						if(!server.isSinglePlayerMode() || !w.isDestroyed()){
+						if(!this.isSinglePlayer || !w.isDestroyed()){
 							w.increaseScore();
 							
 							long highscore = HighScores.getInstance().getScore(w.getName());
 							if(w.getScore() > highscore){
 								HighScores.getInstance().saveScore(w.getName(), w.getScore());
-								//this.server.sendMessagePacket(w.getName()+" has beat their high score!");
 								this.addMessage(w.getName()+" has beat their high score!");
 							}
 						}
@@ -579,11 +562,9 @@ public class Game extends Observable implements Runnable
 					}
 				}
 				
-				if(this.areAllAsteroidsDestroyed() && this.asteroidsLimit != 0){
-					//server.sendMessagePacket("Congradulations! Level Cleared.");
+				if(this.areAllAsteroidsDestroyed() && this.asteroidsLimit != 0 && !this.areAllShipsDestroyed()){
 					this.addMessage("Congradulations! Level Cleared.");
 				}
-				//server.sendMessagePacket("Starting Next Round in "+(waitingTime/1000)+" seconds");
 				this.addMessage("Starting Next Round in "+(waitingTime/1000)+" seconds");
 			}
 			double time = System.currentTimeMillis() - this.startCountdownTime;
@@ -594,7 +575,7 @@ public class Game extends Observable implements Runnable
 		
 	}
 
-	protected boolean isGameOver() {
+	public boolean isGameOver() {
 		Logging.LOGGER.fine("Time until next level:"+this.timeUntilOver());
 		return this.timeUntilOver() <= 0;
 	}

@@ -266,7 +266,7 @@ public class Game extends Observable implements Runnable
 		{ // For all bullets.
 			for (Asteroid a : this.asteroids)
 			{ // Check all bullet/asteroid combinations.
-				if (a.collides (b))
+				if (a.collidesThroughEdge(b, this.width, this.height))
 				{ // Collision -> destroy both objects.
 					b.destroy ();
 					a.destroy ();
@@ -274,7 +274,7 @@ public class Game extends Observable implements Runnable
 				}
 			}
 			for(Spaceship s : this.ships){
-				if (!s.isDestroyed() && b.collides (s))
+				if (!s.isDestroyed() && b.collidesThroughEdge(s, this.width, this.height))
 				{ // Collision with playerß -> destroy both objects
 					
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
@@ -297,7 +297,7 @@ public class Game extends Observable implements Runnable
 		for (Asteroid a : this.asteroids)
 		{ // For all asteroids, no cross check with bullets required.
 			for(Spaceship s : this.ships){
-				if (!s.isDestroyed() && a.collides (s))
+				if (!s.isDestroyed() && a.collidesThroughEdge(s, this.width, this.height))
 				{ // Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();

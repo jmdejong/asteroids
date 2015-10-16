@@ -2,6 +2,7 @@ package aoop.asteroids.model;
 
 
 import aoop.asteroids.Logging;
+import aoop.asteroids.Utils;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -153,6 +154,17 @@ public abstract class GameObject
 		
 		return distance < this.getRadius() + other.getRadius() && this.stepsTilCollide () == 0 && other.stepsTilCollide () == 0;
 	}
+	
+	/** An improved version of collides that will also detect collisions through edges */
+	public boolean collidesThroughEdge(GameObject other, double width, double height){
+		Point2D thisLocation = WrappablePoint.wrap(this.location, width, height);
+		Point2D closestLocation = new Point2D.Double(
+			Utils.getClosestPoint(thisLocation.getX(), other.getLocation().getX(), width),
+			Utils.getClosestPoint(thisLocation.getY(), other.getLocation().getY(), height)
+		);
+		double minDistance = this.getRadius() + other.getRadius();
+		return thisLocation.distanceSq(closestLocation)<(minDistance*minDistance);
+	}
 
 	/**
 	 *	Returns the amount of game ticks it takes until this object is allowed 
@@ -181,41 +193,23 @@ public abstract class GameObject
 		return this.getClass().toString() + "destroyed?"+this.isDestroyed()+";x="+this.location.getX()+";y="+this.location.getY()+";vX="+this.velocityX+";vY="+this.velocityY;
 	}
 	
-	public boolean isCloseToEdge(){
-		return isCloseToXEdge() && isCloseToYEdge();
-	}
-	
-	public boolean isCloseToXEdge(){
-		return this.location.getX() < (this.radius*2) || this.location.getX() > this.domain.getX() - (this.radius*2);
-	}
-	
-	public boolean isCloseToYEdge(){
-		return this.location.getY() < (this.radius*2) || this.location.getY() > this.domain.getY() - (this.radius*2);
-	}
-	
-
 	
 	public Collection<Point2D> getMirrorLocations(double width, double height){
 		
 		double mirrorX = this.location.getX();
 		double mirrorY = this.location.getY();
 		
-		if(isCloseToXEdge()){
-			if (this.location.getX() < width/2){
-				mirrorX += width;
-			}else{
-				mirrorX -= width;
-			}
+		if(this.location.getX() < (this.radius*2)){
+			mirrorX += width;
+		}else if (this.location.getX() > width - (this.radius*2)){
+			mirrorX -= width;
 		}
 		
-		if(isCloseToYEdge()){
-			if (this.location.getY() < height/2){
-				mirrorY += height;
-			}else{
-				mirrorY -= height;
-			}
+		if (this.location.getY() < (this.radius*2)){
+			mirrorY += height;
+		}else if (this.location.getY() > height - (this.radius*2)){
+			mirrorY -= height;
 		}
-		
 		
 		Set<Point2D> mirrorLocations = new HashSet<>();
 		mirrorLocations.add(new Point2D.Double(this.location.getX(),this.location.getY()));

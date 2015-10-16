@@ -55,7 +55,14 @@ public class Utils {
 		return name;
 	}
 	
-    public static Color getComplementColor(Color c){
-    	return new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue()).brighter().brighter();
-    }
+	public static Color getComplementColor(Color c){
+		return new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue()).brighter().brighter();
+	}
+	
+	/** get the value x where b mod range == x mod range that is closest to a mod range */
+	public static double getClosestPoint(double a, double b, double range){
+		a = floorMod(a, range);
+		double m = a - range/2;
+		return Utils.floorMod(b-m, range)+m;
+	}
 }

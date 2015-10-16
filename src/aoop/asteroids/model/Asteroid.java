@@ -79,8 +79,7 @@ public class Asteroid extends GameObject
 
 
 	/** Creates an exact copy of the asteroid. */
-	public Asteroid clone ()
-	{
+	public Asteroid clone (){
 		return new Asteroid (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.getRotation());
 	}
 	

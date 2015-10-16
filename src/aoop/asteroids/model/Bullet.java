@@ -16,7 +16,9 @@ import org.json.simple.JSONArray;
  */
 public class Bullet extends GameObject
 {
-
+	/* TODO:
+	 * - don't use the number of steps, but the distance travelled
+	 */
 	/** 
 	 *	The amount of steps this bullet still is allowed to live. When this 
 	 *	value drops below 0, the bullet is removed from the game model.

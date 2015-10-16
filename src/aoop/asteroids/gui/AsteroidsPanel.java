@@ -198,10 +198,10 @@ public class AsteroidsPanel extends JPanel
 			}
 			
 			// get the closest spaceship location
-			double mx = x - this.game.getWidth()/2;
-			double spaceshipX = Utils.floorMod(s.getLocation().getX()-mx, this.game.getWidth())+mx;
-			double my = y - this.game.getHeight()/2;
-			double spaceshipY = Utils.floorMod(s.getLocation().getY()-my, this.game.getHeight())+my;
+// 			double mx = x - this.game.getWidth()/2;
+			double spaceshipX = Utils.getClosestPoint(x, s.getLocation().getX(), this.game.getWidth());
+// 			double my = y - this.game.getHeight()/2;
+			double spaceshipY = Utils.getClosestPoint(y, s.getLocation().getY(), this.game.getHeight());
 			
 			
 			double distanceX = x-spaceshipX;

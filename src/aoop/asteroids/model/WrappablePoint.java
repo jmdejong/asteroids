@@ -56,4 +56,11 @@ public class WrappablePoint extends Point2D.Double {
 		this.setLocation(this.getX(),this.getY());
 	}
 	
+	public static Point2D wrap(Point2D p, double width, double height){
+		return new Point2D.Double(
+			Utils.floorMod(p.getX(), width),
+			Utils.floorMod(p.getY(), height)
+		);
+	}
+	
 }

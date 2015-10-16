@@ -25,7 +25,7 @@ public class ClientGame extends Observable implements Runnable{
 	
 	/* TODO:
 	 * - Fix sound error when loading multiple games on same computer
-	 * - Is this the right place for storing the spaceshipController? -> Yes, definitely.
+	 * - Is this the right place for storing the spaceshipController? -> No. Lets move it to Client.
 
 	 * - Make this class more readable
 	 * Done:

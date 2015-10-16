@@ -51,31 +51,18 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private int roundNumber = 1;
 	
-// 	private String playerName;
-	
-	
-	//private Client client;
-	
 	private BufferedImage bgimage;
 	
-	public Point2D.Double bgPos = new Point2D.Double();
+	private Point2D.Double bgPos = new Point2D.Double();
 	
-// 	/** if set to true, this Game will not try to send any more input packets until the current round is over.*/
-// 	public boolean hasLost = false;
-	
-	public boolean isFrozen = false;
+	private boolean frozen = false;
 	
 	private Sound sound = Sound.getInstance();
-	
-
 	
 	private boolean aborted = false;
 	
 	
 	public ClientGame(){
-		//this.client = client;
-		
-// 		this.playerName = playerName;
 		
 		setBackgroundImage(this.roundNumber);
 	}
@@ -98,7 +85,7 @@ public class ClientGame extends Observable implements Runnable{
 			}
 		}
 		
-		if(!isFrozen){
+		if(!frozen){
 			for (Asteroid a : this.asteroids) a.nextStep ();
 			for (Bullet b : this.bullets) b.nextStep ();
 			for (Spaceship s : this.ships) s.nextStep();
@@ -117,14 +104,6 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public void setSpaceships(List<Spaceship> ships){
 		this.ships = ships;
-// 		if(!this.hasLost && this.roundNumber != 0){
-// 			for(Spaceship s : ships){
-// 				if(s.getName().equals(this.playerName) && s.destroyed){
-// 					// this shouldn't be possible. destroyed is protected
-// 					this.hasLost();
-// 				}
-// 			}
-// 		}
 	}
 	
 	
@@ -223,20 +202,24 @@ public class ClientGame extends Observable implements Runnable{
 		return bgimage;
 	}
 	
+	public Point2D getBgPos(){
+		return (Point2D.Double)this.bgPos.clone();
+	}
+	
 	public Collection<Asteroid> getAsteroids() {
 		return asteroids;
 	}
 	
 	public void freeze(){
-		this.isFrozen = true;
+		this.frozen = true;
 		
 	}
 	public void unFreeze(){
-		if(this.isFrozen){
+		if(this.frozen){
 			sound.playSound("NextLevelNew0.wav");
 			setBackgroundImage(this.roundNumber);
 		}
-		this.isFrozen = false;
+		this.frozen = false;
 	}
 
 	public Collection <Explosion> getExplosions() {
@@ -292,5 +275,9 @@ public class ClientGame extends Observable implements Runnable{
 		if(!sound.hasBgmStarted()){
 			sound.playSound("background_music_bassline.wav", true);
 		}
+	}
+	
+	public boolean isFrozen(){
+		return frozen;
 	}
 }

@@ -22,10 +22,11 @@ import aoop.asteroids.udp.packets.SpectatorPingPacket;
 public class Client extends Base implements Observer{
 	
 	/* TODO:
-	 * - find out why message "connection with host lost" shows up at the beginning and fix
 	 * - maybe make a new class (Player, for example") that takes care of the clients on player (spaceshipController, hasLost etc...)
 	 *   this player object should have a reference to game
 	 *   or maybe we can just move this to spaceshipController
+	 * DONE:
+	 * - find out why message "connection with host lost" shows up at the beginning and fix
 	 */
 	
 	public InetSocketAddress serverAddress;
@@ -47,8 +48,6 @@ public class Client extends Base implements Observer{
 	private long lastPingTime = 0;
 	private long lastPacketId = 0;
 	private long lastConnectionCheckTime = 0;
-	
-// 	private boolean hasLost = false;
 	
 	DatagramSocket sendSocket;
 	
@@ -199,7 +198,7 @@ public class Client extends Base implements Observer{
 		}
 		
 		//When no longer connected, freeze the game, and display message.
-		if(!this.isConnected() && this.hasConnected && !this.game.isFrozen){
+		if(!this.isConnected() && this.hasConnected && !this.game.isFrozen()){
 			this.game.addMessage("Connection with Host has been lost.");
 			this.game.freeze();
 			return;

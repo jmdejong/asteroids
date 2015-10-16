@@ -57,6 +57,8 @@ public class Game extends Observable implements Runnable
 	 *   server should be only an observer
 	 */
 	
+	public static long waitingTime = 3000;
+	
 	/** List of spaceships. */
 	private List<Spaceship> ships;
 
@@ -75,8 +77,6 @@ public class Game extends Observable implements Runnable
 	/** Random number generator. */
 	private static Random rng;
 
-	public static long waitingTime = 3000;
-
 	/** Game tick counter for spawning random asteroids. */
 	private int numberOfSpawnedAsteroids;
 
@@ -85,7 +85,6 @@ public class Game extends Observable implements Runnable
 	
 	private boolean isSinglePlayer;
 	
-	//private ClientGame cg;
 
 	/** 
 	 *	Indicates whether the a new game is about to be started. 

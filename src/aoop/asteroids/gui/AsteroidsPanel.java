@@ -98,7 +98,7 @@ public class AsteroidsPanel extends JPanel
 		
 		BufferedImage bgimage = game.getBgImage();
 		if (bgimage != null){
-			paintBackground(g2, bgimage, (int)game.bgPos.x,(int) game.bgPos.y);
+			paintBackground(g2, bgimage, (int)game.getBgPos().getX(),(int) game.getBgPos().getY());
 		}
 		
 		

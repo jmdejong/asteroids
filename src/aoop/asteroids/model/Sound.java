@@ -120,8 +120,7 @@ public class Sound {
 							clip.start();
 							listener.waitUntilDone();
 						} catch (InterruptedException e) {
-							// TODO: something. The teachers don't like empty catch blocks (and neither do I)
-							// won't doing something help in finding out why the background music stops?
+							Logging.LOGGER.info("Playing of sound '"+filename+"' was interrupted.");
 						} finally {
 							clip.drain();
 							clip.close();
@@ -133,7 +132,7 @@ public class Sound {
 						}
 					}
 					
-				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException | IllegalStateException e) {
 					//This happens when a file is unavailable or the sound device is busy.
 					//Just don't play any sound when that happens.
 					Logging.LOGGER.info("Sound in '"+filename+"' could not be played");

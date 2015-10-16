@@ -12,6 +12,13 @@ import aoop.asteroids.Utils;
  *
  */
 public class WrappablePoint extends Point2D.Double {
+	
+	/* TODO:
+	 * - Do we really need this?
+	 *   It might be better to only wrap the location when we need it, not when we set it
+	 *   Without this class it's probably easier to avoid a public map size
+	 *   because then not all objects need the size
+	 */
 	private static final long serialVersionUID = 1L;
 	private double domainWidth = java.lang.Double.POSITIVE_INFINITY;
 	private double domainHeight = java.lang.Double.POSITIVE_INFINITY;

@@ -2,6 +2,7 @@ package aoop.asteroids.gui;
 
 import aoop.asteroids.HighScores;
 import aoop.asteroids.PlayerScore;
+import aoop.asteroids.Utils;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -27,21 +28,24 @@ import javax.swing.border.TitledBorder;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.List;
 
 
 public class MenuPanel extends JPanel {
 	
-	/**
+	/* 
+	 * TODO:
+	 * - Give highscores a fixed width (enough for a name of 12 chars)
+	 * - Make hightscores align to the top
+	 * - Make a function to update the highscores
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	// why are these capitalized? they're not classes. I would use either all caps or start with a lowercase letter
-	private static Color ButtonBorderColor = Color.GREEN;
-	private static Color TextColor = Color.GREEN;
-	private static Color BackColor = Color.BLACK;
-	private static int ButtonBorderWidth = 1;
+	private static Color BORDERCOLOR = Color.GREEN;
+	private static Color TEXTCOLOR = Color.GREEN;
+	private static Color BACKCOLOR = Color.BLACK;
+	private static int BORDERWIDTH = 1;
 // 	private static Color TRASPARENT = new Color(0,0,0,0);
 // 	private JPanel middle;
 // 	private JPanel left;
@@ -63,7 +67,7 @@ public class MenuPanel extends JPanel {
 	public MenuPanel() {
 		
 		// Set color of menu panel background
-		setBackground(BackColor);
+		setBackground(MenuPanel.BACKCOLOR);
 		
 		// Make a box layout of vertical buttons, rigid area dimensions determine it's location on the y-axis
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -71,7 +75,7 @@ public class MenuPanel extends JPanel {
 		
 		addTitle(this, "ASTEROIDS");
 		
-		nameField = addInput(this, generateName(), "Name:");
+		nameField = addInput(this, Utils.generateName(), "Name:");
 		
 
 		this.add(Box.createRigidArea(new Dimension(0,50)));
@@ -79,7 +83,7 @@ public class MenuPanel extends JPanel {
 		
 		
 		final JPanel switchable = new JPanel();
-		switchable.setBackground(BackColor);
+		switchable.setBackground(BACKCOLOR);
 		final CardLayout switchableLayout = new CardLayout();
 		switchable.setLayout(switchableLayout);
 		
@@ -125,7 +129,7 @@ public class MenuPanel extends JPanel {
 			panel.setPreferredSize(size);
 		}
 		
-		panel.setBackground(BackColor);
+		panel.setBackground(BACKCOLOR);
 		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		return panel;
@@ -140,7 +144,7 @@ public class MenuPanel extends JPanel {
 		title.setMaximumSize(new Dimension(800,50));
 		title.setHorizontalAlignment( JLabel.CENTER );
 		title.setFont(new Font("sansserif", Font.PLAIN, 40));
-		title.setForeground(MenuPanel.TextColor);
+		title.setForeground(MenuPanel.TEXTCOLOR);
 		panel.add(title);
 		
 		panel.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -161,17 +165,17 @@ public class MenuPanel extends JPanel {
 		JTextField inputField = new JTextField();
 // 		inputField.setAlignmentY( Component.TOP_ALIGNMENT );
 		inputField.setMaximumSize( new Dimension(120,80) );
-		inputField.setBackground(MenuPanel.BackColor);
-		inputField.setForeground(MenuPanel.TextColor);
+		inputField.setBackground(MenuPanel.BACKCOLOR);
+		inputField.setForeground(MenuPanel.TEXTCOLOR);
 		inputField.setBorder(BorderFactory.createCompoundBorder(
-			new TitledBorder(new EmptyBorder(10,10,10,10), title, TitledBorder.CENTER, TitledBorder.TOP, f, TextColor),
+			new TitledBorder(new EmptyBorder(10,10,10,10), title, TitledBorder.CENTER, TitledBorder.TOP, f, MenuPanel.TEXTCOLOR),
 			BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(MenuPanel.ButtonBorderColor, MenuPanel.ButtonBorderWidth),
+				BorderFactory.createLineBorder(MenuPanel.BORDERCOLOR, MenuPanel.BORDERWIDTH),
 				new EmptyBorder(5, 5, 5, 5)
 			)
 		));
 		inputField.setText( defaultText);
-		inputField.setCaretColor(MenuPanel.TextColor);
+		inputField.setCaretColor(MenuPanel.TEXTCOLOR);
 		inputField.getCaret().setVisible(true);
 		
 		return inputField;
@@ -196,9 +200,9 @@ public class MenuPanel extends JPanel {
 // 		button.setFont(Font.getFont("Courier"));
 		button.setAlignmentX( Component.CENTER_ALIGNMENT );
 		button.setMaximumSize( new Dimension(180,50) );
-		button.setBackground(MenuPanel.BackColor);
-		button.setForeground(MenuPanel.TextColor);
-		button.setBorder(BorderFactory.createLineBorder(MenuPanel.ButtonBorderColor, MenuPanel.ButtonBorderWidth));
+		button.setBackground(MenuPanel.BACKCOLOR);
+		button.setForeground(MenuPanel.TEXTCOLOR);
+		button.setBorder(BorderFactory.createLineBorder(MenuPanel.BORDERCOLOR, MenuPanel.BORDERWIDTH));
 		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
 		if(panel != null){
@@ -226,22 +230,23 @@ public class MenuPanel extends JPanel {
 	
 	private JPanel addHighScores(String scoreListName, List<PlayerScore> scores){
 		JPanel container = makeBox(null, BoxLayout.Y_AXIS);
+		container.setBorder(new TitledBorder(BorderFactory.createLineBorder(MenuPanel.BORDERCOLOR, MenuPanel.BORDERWIDTH), scoreListName, TitledBorder.CENTER, TitledBorder.TOP, container.getFont(), MenuPanel.TEXTCOLOR));
+		container.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		
 		Font scoreFont = new Font(Font.MONOSPACED, Font.PLAIN, 15);
 		for (int i=0;i<10;i++){
 			
 			JLabel scoreLabel = new JLabel();
-			if(i==0){
-				scoreLabel.setText(scoreListName+":");
-			}else if(i > scores.size()){
+			if(i >= scores.size()){
 				scoreLabel.setText("         -     ");
 			}else{
-				scoreLabel.setText(scores.get(i-1).toString());
+				scoreLabel.setText(scores.get(i).toString());
 			}
 			scoreLabel.setHorizontalAlignment( JLabel.RIGHT );
 			scoreLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 			scoreLabel.setAlignmentY(Component.TOP_ALIGNMENT);
 			scoreLabel.setFont(scoreFont);
-			scoreLabel.setForeground(Color.WHITE);
+			scoreLabel.setForeground(MenuPanel.TEXTCOLOR);
 			
 			
 			container.add(scoreLabel);
@@ -279,35 +284,4 @@ public class MenuPanel extends JPanel {
 		return this.addressField.getText();
 	}
 	
-	
-	
-	
-	/**
-	 * Function that generates a nice-looking (First or Last) name.<br>
-	 * Readability is improved by alternating between a vowel and a consonant.<br>
-	 * Vowels that are common in the English language have a higher chance to end up in the names.<br>
-	 * Names have between 3 and 12 characters.<br>
-	 * This function always terminates.<br>
-	 * @return the generated name
-	 */
-	public static String generateName(){
-		String vowels = "aaaeeeiiiooouuuy";
-		String consonants = "bbcddffgghjjkkllmmmnnnppqrrrsssttttvvwxz";
-		String name = "";
-		Random rand = new Random();
-		Boolean wroteVowel = rand.nextBoolean();
-		int length = (int)(rand.nextFloat()*rand.nextFloat()*10+3);
-		for (int i=0; i<length; i++){
-			if (!wroteVowel){
-				name += vowels.charAt(rand.nextInt(vowels.length()));
-			} else {
-				name += consonants.charAt(rand.nextInt(consonants.length()));
-			}
-			if (i==0){
-				name = name.toUpperCase();
-			}
-			wroteVowel = !wroteVowel;
-		}
-		return name;
-	}
 }

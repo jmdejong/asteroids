@@ -17,8 +17,8 @@ public class ServerThread extends BaseServerThread{
 	
 	Server server;
 	
-	public ServerThread(Server server) throws SocketException{
-		super("asteroids.udp.ServerThread",Server.UDPPort, server.sendSocket);
+	public ServerThread(Server server, int port, DatagramSocket socket) throws SocketException{
+		super("asteroids.udp.ServerThread",port, socket);
 		this.server = server;
 	}
 
@@ -46,10 +46,6 @@ public class ServerThread extends BaseServerThread{
 		}
 		
 		switch(packet_type){
-			case GAMESTATE:
-				//Do nothing. Server should send this; not receive it!
-				Logging.LOGGER.fine("S: Gamestate Packet Received");
-				break;
 			case SPECTATE_JOIN:
 				Logging.LOGGER.fine("S: Specate Join Packet Received");
 				server.addSpectatorConnection(packetData, packet);
@@ -73,24 +69,12 @@ public class ServerThread extends BaseServerThread{
 				server.updatePlayerShip((JSONArray)packetData.get("d"), packet.getSocketAddress());
 				server.updateConnectionData(packetData, packet);
 				break;
-			case PLAYER_LOSE:
-				//Do nothing. Server should send this; not receive it!
-				Logging.LOGGER.fine("S: Player Lose Packet Received");
-				break;
-			case ROUND_END:
-				//Do nothing. Server should send this; not receive it!
-				Logging.LOGGER.fine("S: Round End Packet Received");
-				break;
-			case MESSAGE:
-				//Do nothing. Server should send this; not receive it!
-				Logging.LOGGER.fine("S: Message Packet Received");
-				break;				
 			default:
-				Logging.LOGGER.fine("S: Unknown packet type!");
+				Logging.LOGGER.fine("C: packet received with type: "+packet_type);
 				break;
 		}
 		//System.out.println(server.getPlayerConnections());
-		server.tagNonrespondingClients();
+		//server.tagNonrespondingClients();
 	}
 	
 	

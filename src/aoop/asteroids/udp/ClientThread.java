@@ -10,8 +10,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import aoop.asteroids.udp.packets.GameStatePacket;
-import aoop.asteroids.udp.packets.MessagePacket;
+import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
+import aoop.asteroids.model.Sound;
 
 public class ClientThread extends BaseServerThread {
 	Client client;
@@ -22,60 +23,45 @@ public class ClientThread extends BaseServerThread {
 	}
 
 	@Override
-	protected void parsePacket(String packet_string, DatagramPacket packet) {
-		JSONObject packet_data = (JSONObject) JSONValue.parse(packet_string);
-		int raw_packet_type = ((Long) packet_data.get("t")).intValue();
-		if(PacketType.values().length < raw_packet_type){
+	protected void parsePacket(String packetString, DatagramPacket packet) {
+		JSONObject packetData = (JSONObject) JSONValue.parse(packetString);
+		int rawPacketType = ((Long) packetData.get("t")).intValue();
+		if(PacketType.values().length < rawPacketType){
 			return;
 		}
-		PacketType packet_type = PacketType.values()[raw_packet_type];
+		PacketType packet_type = PacketType.values()[rawPacketType];
+		
+		if(!this.client.checkIfLatestPacket(packetData, packet)){
+			return;
+		}else{
+			this.client.updateConnectionData(packetData, packet);
+		}
+		
 		switch(packet_type){
 			case GAMESTATE:
 				Logging.LOGGER.fine("C: Gamestate Packet Received");
-				Logging.LOGGER.fine(packet_data.toString());
+				Logging.LOGGER.fine(packetData.toString());
 				this.client.confirmConnectionExistance();
 				this.client.game.unFreeze();
-				GameStatePacket.decodePacket((JSONArray) packet_data.get("d"), client.game);
+				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), client.game);
 				
-				if(!client.game.bgmHasStarted){
-					client.game.bgmHasStarted = true;
-					client.game.playSound("background_music_the_cosmos.wav",0/* ((Long) packet_data.get("r")).intValue() % 3600*/);
-				}
+				this.client.game.playBGMIfNotAlreadyStarted();
 				break;
-			case SPECTATE_JOIN:
-				//Do nothing. Client should send this; not receive it!
-				Logging.LOGGER.fine("C: Specate Join Packet Received");
+// 			case ROUND_END:
+// 				Logging.LOGGER.fine("C: Round End Packet Received");
+// 				if(!this.client.isSpectator){
+// 					this.client.game.hasLost = false; //TODO: better separation of concerns?
+// 				}
+// 				this.client.game.freeze();
+// 				//TODO: More sophisticated round restart logic?
+// 				break;
+			
+			case MESSAGE_LIST:
+				Logging.LOGGER.fine("C: Message List Packet Received");
+				client.game.addPossiblyNewMessages(MessageListPacket.decodePacket((JSONArray) packetData.get("d")));
 				break;
-			case PLAYER_JOIN:
-				//Do nothing. Client should send this; not receive it!
-				Logging.LOGGER.fine("C: Player Join Packet Received");
-				break;
-			case SPECTATOR_PING:
-				Logging.LOGGER.fine("C: Spectator Ping Packet Received");
-				break;
-			case PLAYER_UPDATE:
-				//Do nothing. Client should send this; not receive it!
-				Logging.LOGGER.fine("C: Player Update Packet Received");
-				break;
-			case PLAYER_LOSE:
-				Logging.LOGGER.fine("C: Player Lose Packet Received");
-				this.client.game.hasLost(); //TODO: better separation of concerns?
-				break;
-			case ROUND_END:
-				Logging.LOGGER.fine("C: Round End Packet Received");
-				if(!this.client.isSpectator){
-					this.client.game.hasLost = false; //TODO: better separation of concerns?
-				}
-				this.client.game.freeze();
-				//TODO: More sophisticated round restart logic?
-				break;
-			case MESSAGE:
-				Logging.LOGGER.fine("C: Message Packet Received");
-				Logging.LOGGER.fine(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
-				client.game.addMessage(MessagePacket.decodePacket((JSONArray) packet_data.get("d")));
-				break;	
 			default:
-				Logging.LOGGER.fine("C: Unknown packet type!");
+				Logging.LOGGER.fine("C: packet received with type: "+packet_type);
 				break;
 				
 		}

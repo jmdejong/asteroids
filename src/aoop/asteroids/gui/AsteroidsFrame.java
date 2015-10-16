@@ -42,7 +42,12 @@ import aoop.asteroids.udp.Server;
  */
 public class AsteroidsFrame extends JFrame
 {
-
+	
+	/* TODO:
+	 * - reload highscores after going back to menu
+	 * - more menu options?
+	 * 
+	 */
 	/** serialVersionUID */
 	public static final long serialVersionUID = 1L;
 	
@@ -77,6 +82,9 @@ public class AsteroidsFrame extends JFrame
 		mb.setBackground(Color.BLACK);
 		mb.setForeground(Color.GREEN);
 		JMenu m = new JMenu ("Game");
+		m.setBackground(Color.BLACK);
+		m.setForeground(Color.GREEN);
+		
 		mb.add (m);
 		m.add (new AbstractAction("Quit"){ public void actionPerformed(ActionEvent arg0){
 			System.exit(0);
@@ -156,7 +164,7 @@ public class AsteroidsFrame extends JFrame
 	public void startGame(String address, Boolean isSpectator){
 		
 		this.client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
-		addKeyListener(client.game.spaceshipController);
+		addKeyListener(client.getController());
 		
 		ap.observeGame(client.game);
 		cardLayout.show(cards, "game card");

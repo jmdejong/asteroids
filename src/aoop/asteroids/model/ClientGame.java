@@ -15,15 +15,6 @@ import java.util.Observable;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioFileFormat.Type;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import aoop.asteroids.Asteroids;
 import aoop.asteroids.Logging;
@@ -32,51 +23,47 @@ import aoop.asteroids.udp.Client;
 
 public class ClientGame extends Observable implements Runnable{
 	
-	private Collection <Spaceship> ships = new ArrayList<Spaceship>();
+	/* TODO:
+	 * - Make this class more readable
+	 * Done:
+	 * - All collections of GameObjects are now lists.
+	 * - Maybe do the sound stuff somewhere else.
+	 *   This is the model part and the sound would be the view part
+	 *   Even if this class is responsible for calling the playSound commands 
+	 *   (which I don't like but don't know how to solve), the code to play
+	 *   sounds could better have its own class
+	 * - Is this the right place for storing the spaceshipController? -> No. moved it to Client.
+	 */
+	
+	private List <Spaceship> ships = new ArrayList<Spaceship>();
 	/** List of bullets. */
-	private Collection <Bullet> bullets = new ArrayList<Bullet>();
+	private List <Bullet> bullets = new ArrayList<Bullet>();
 
 	/** List of asteroids. */
-	private Collection <Asteroid> asteroids = new ArrayList<Asteroid>();
+	private List <Asteroid> asteroids = new ArrayList<Asteroid>();
 	
 	/** List of explosions. */
-	private Collection <Explosion> explosions = new ArrayList<Explosion>();
+	private List <Explosion> explosions = new ArrayList<Explosion>();
 	
 	/** List of game messages. */
 	private List <GameMessage> messages = new ArrayList<GameMessage>();
 	
 	
-	public SpaceshipController spaceshipController;
-	
 	private int roundNumber = 1;
-	
-	
-	private Client client;
 	
 	private BufferedImage bgimage;
 	
-	public Point2D.Double bgPos = new Point2D.Double();
+	private Point2D.Double bgPos = new Point2D.Double();
 	
-	/** if set to true, this Game will not try to send any more input packets until the current round is over.*/
-	public boolean hasLost = false;
+	private boolean frozen = false;
 	
-	public boolean isFrozen = false;
-	
-	public boolean bgmHasStarted = false;
-	
-	private long lastConnectionCheckTime = 0;
+	private Sound sound = Sound.getInstance();
 	
 	private boolean aborted = false;
 	
 	
-	public ClientGame(Client client){
-		this.client = client;
+	public ClientGame(){
 		
-		if(!this.client.isSpectator){
-			this.spaceshipController = new SpaceshipController();
-		}
-		
-
 		setBackgroundImage(this.roundNumber);
 	}
 	
@@ -89,12 +76,7 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	private void update(){
-		if(isFrozen){
-			return;
-		}
-		for (Asteroid a : this.asteroids) a.nextStep ();
-		for (Bullet b : this.bullets) b.nextStep ();
-		for (Spaceship s : this.ships) s.nextStep();
+		
 		
 		
 		for(int i = messages.size()-1; i>=0; i--){
@@ -103,38 +85,40 @@ public class ClientGame extends Observable implements Runnable{
 			}
 		}
 		
-		//TODO: send player packet depending on player input.
-		if(!this.client.isSpectator && !this.hasLost){
-			this.client.sendPlayerUpdatePacket(this.spaceshipController);
-		}else{
-			this.client.sendSpectatorPingPacket();
+		if(!frozen){
+			for (Asteroid a : this.asteroids) a.nextStep ();
+			for (Bullet b : this.bullets) b.nextStep ();
+			for (Spaceship s : this.ships) s.nextStep();
+			
+
+			Random r = new Random(113*this.roundNumber);
+			double xVelocity = 3 * (r.nextDouble() - .5);
+			double yVelocity = 3 * (r.nextDouble() - .5);
+			this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
 		}
 		
 		this.setChanged ();
 		this.notifyObservers ();
-				
-		Random r = new Random(113*this.roundNumber);
-		double xVelocity = 3 * (r.nextDouble() - .5);
-		double yVelocity = 3 * (r.nextDouble() - .5);
-		this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
+		
 	}
 	
-	public void setSpaceships(Collection<Spaceship> ships){
+	public void setSpaceships(List<Spaceship> ships){
 		this.ships = ships;
 	}
+	
 	
 	public void setBullets(List<Bullet> bullets){
 		int bulletsSize = this.bullets.size();
 		
 		//Play `fire` sound whenever a new bullet appears.
 		if(bullets.size() > bulletsSize){
-			playShootSound(bullets.get(bullets.size()-1));
+			sound.playSound("ShootNew2.wav");
 		}
 		
 		this.bullets = bullets;
 	}
 	
-	public void setAsteroids(Collection<Asteroid> asteroids){
+	public void setAsteroids(List<Asteroid> asteroids){
 		this.asteroids = asteroids;
 	}
 
@@ -149,10 +133,7 @@ public class ClientGame extends Observable implements Runnable{
 			if (true)
 			{
 				executionTime = System.currentTimeMillis ();
-				if(!this.client.hasConnected() && this.lastConnectionCheckTime + 3000 < executionTime){
-					this.client.sendPlayerJoinPacket();
-					this.lastConnectionCheckTime = executionTime;
-				}
+				
 				
 				this.update ();
 				executionTime -= System.currentTimeMillis ();
@@ -180,9 +161,19 @@ public class ClientGame extends Observable implements Runnable{
 	public Collection<Bullet> getBullets() {
 		return bullets;
 	}
-	public Collection<Spaceship> getSpaceships() {
+	public List<Spaceship> getSpaceships() {
 		return ships;
 	}
+	
+	public Spaceship getSpaceship(String name){
+		for(Spaceship s : ships){
+			if(s.getName().equals(name)){
+				return s;
+			}
+		}
+		return null;
+	}
+		
 	public List<GameMessage> getMessages() {
 		return messages;
 	}
@@ -191,6 +182,13 @@ public class ClientGame extends Observable implements Runnable{
 		this.messages.add(new GameMessage(message));
 	}
 	
+	public void addPossiblyNewMessages(List<GameMessage> newMessages){
+		for(GameMessage m : newMessages){
+			if(!this.messages.contains(m)){
+				this.messages.add(m);
+			}
+		}
+	}
 	
 	public int getWidth(){
 		return (int)GameObject.worldWidth;
@@ -204,34 +202,37 @@ public class ClientGame extends Observable implements Runnable{
 		return bgimage;
 	}
 	
+	public Point2D getBgPos(){
+		return (Point2D.Double)this.bgPos.clone();
+	}
+	
 	public Collection<Asteroid> getAsteroids() {
 		return asteroids;
 	}
 	
 	public void freeze(){
-		this.isFrozen = true;
+		this.frozen = true;
 		
 	}
 	public void unFreeze(){
-		if(this.isFrozen){
-			playSound("NextLevel.wav");
-			++roundNumber;
+		if(this.frozen){
+			sound.playSound("NextLevelNew0.wav");
 			setBackgroundImage(this.roundNumber);
 		}
-		this.isFrozen = false;
+		this.frozen = false;
 	}
 
 	public Collection <Explosion> getExplosions() {
 		return explosions;
 	}
 
-	public void setExplosions(List <Explosion> explosions) {
+	public void setExplosions(List<Explosion> explosions) {
 		
 		int explosionsSize = this.explosions.size();
 		
 		//Play `fire` sound whenever a new bullet appears.
 		if(explosions.size() > explosionsSize){
-			playExplosionSound(explosions.get(explosions.size()-1));
+			sound.playExplosionSound(explosions.get(explosions.size()-1));
 		}
 		
 		
@@ -243,95 +244,40 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	
-
-	private void playShootSound(Bullet b){
-		int index = new Random(b.hashCode()).nextInt(2);
-		playSound("Shoot"+index+".wav");
-	}
-	
-	private void playExplosionSound(Explosion explosion){
-		int index = new Random(explosion.hashCode()).nextInt(5);
-		playSound("Explosion"+index+".wav");
-	}
-	
-	public void playSound(String filename){
-		playSound(filename,0);
-	}
-	
-	public void playSound(final String filename, final int startOffset){
-		
-		
-		
-		new Thread(new Runnable() {
-		
-			@Override
-			public void run() {
-				
-				class AudioListener implements LineListener {
-		            private boolean done = false;
-		            @Override public synchronized void update(LineEvent event) {
-		              LineEvent.Type eventType = event.getType();
-		              if (eventType == LineEvent.Type.STOP || eventType == LineEvent.Type.CLOSE) {
-		                done = true;
-		                notifyAll();
-		              }
-		            }
-		            public synchronized void waitUntilDone() throws InterruptedException {
-		              while (!done) { wait(); }
-		            }
-		          }
-	        
-				try {
-					
-					InputStream stream = new BufferedInputStream(new FileInputStream("sounds/"+filename));
-					AudioInputStream inputStream = AudioSystem.getAudioInputStream(stream);
-					
-					
-					
-					DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
-					
-					AudioListener listener = new AudioListener();
-			        
-			        try {
-			            Clip clip;// = AudioSystem.getClip();
-			            	            
-			            clip = (Clip) AudioSystem.getLine(info);
-			            clip.addLineListener(listener);
-				        clip.open(inputStream);
-				        
-				        if(startOffset != 0){
-				        	clip.setFramePosition(startOffset);
-				        }
-				        
-			            try {
-			              clip.start();
-			              listener.waitUntilDone();
-			            } catch (InterruptedException e) {
-		
-						} finally {
-			              clip.close();
-			            }
-			          } finally {
-			        	  inputStream.close();
-			          }
-			        
-				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-					//This happens when a file is unavailable or the sound device is busy.
-					//Just don't play any sound when that happens.
-				}
-				
-					// TODO Auto-generated method stub
-					
-			}
-			
-		
-		}).start();
-        
+	/** Check if the round has ended and update round number
+	 */
+	// Wow! Such name! :D
+	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
+		if(this.roundNumber != roundnumber){
+			sound.playSound("NextLevelNew0.wav");
+			this.roundNumber = roundnumber;
+// 			this.hasLost = false;
+			setBackgroundImage(this.roundNumber);
+			this.bgPos = new Point2D.Double(0,0);
+		}
 	}
 	
 	
-	public void hasLost(){
-		this.hasLost = true;
-		playSound("ShipExplosion.wav");
+// 	public void hasLost(){
+// 		this.hasLost = true;
+// 		sound.playSound("PlayerDeathNew0.wav");
+// 	}
+	
+	
+	public void playBGMIfNotAlreadyStarted(){
+		
+		//Do not play music while waiting for a connection, to synchronize audio between multiple PC's in close physical proximity.
+		if(this.roundNumber == 0){
+			return;
+		}
+		
+		Sound sound = Sound.getInstance();
+		if(!sound.hasBgmStarted()){
+			sound.playSound("background_music_bassline.wav", true);
+		}
+	}
+	
+	public boolean isFrozen(){
+		return frozen;
 	}
 }

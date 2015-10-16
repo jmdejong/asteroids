@@ -10,39 +10,47 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Observer;
+import java.util.Observable;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Game;
-import aoop.asteroids.model.Lobby;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
-import aoop.asteroids.udp.packets.MessagePacket;
+import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.PlayerLosePacket;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 import aoop.asteroids.udp.packets.RoundEndPacket;
 
 
-public class Server extends Base{
+public class Server extends Base implements Observer{
 	
 	public static int UDPPort = 8090;
 	
 	/**
 	 * If a client takes longer than this to send a packet, the connection to that client will be considered disconnected.
 	 */
-	public static int MaxNonRespondTime = 5000; 
+	 
+	/**
+	 * Longer than what?
+	 */
 	
-	List<ClientConnection> spectatorConnections 	= new ArrayList<ClientConnection>();
-	private List<ClientConnection> playerConnections		= new ArrayList<ClientConnection>();
+	private CopyOnWriteArrayList<ClientConnection> spectatorConnections = new CopyOnWriteArrayList<ClientConnection>();
+	private CopyOnWriteArrayList<ClientConnection> playerConnections = new CopyOnWriteArrayList<ClientConnection>();
+	
+	
 	
 	private boolean singlePlayerMode = false;
 	private int roundNumber = 0;
 	
-	Game game;
+	private Game game;
 	
-	DatagramSocket sendSocket;
+	private DatagramSocket sendSocket;
 	
 	
 	public Server(boolean isSinglePlayer) throws SocketException{
@@ -51,7 +59,7 @@ public class Server extends Base{
 		this.sendSocket = new DatagramSocket(Server.UDPPort);
 
 		try {
-			this.responsesThread =  new ServerThread(this);
+			this.responsesThread = new ServerThread(this, Server.UDPPort, this.sendSocket);
 			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -64,37 +72,65 @@ public class Server extends Base{
 	}
 	
 	public void startFirstGame(){
-		this.game = new Lobby(this,roundNumber);
+		this.game = new Game(this.isSinglePlayerMode(),roundNumber);
+		game.addObserver(this);
 		Thread t = new Thread (game);
 		t.start();
 	}
 	
+	
+	public void update(Observable o, Object arg){
+		this.sendGameStatePacket();
+		this.sendMessageListPacket();
+		this.tagNonrespondingClients();
+		this.destroyAllShipsOfDisconnectedPlayers();
+		if (this.game.isGameOver()){
+			this.restartGame();
+		}
+	}
+	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		addConnection(spectatorConnections, packetData, packet);
-		sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
+		//sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
+		this.game.addMessage("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
 	}
 	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
 		//In single-player mode, reject more than one connection, and also all connections that are not from the current computer.
-		if(this.isSinglePlayerMode() && (playerConnections.size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
+		if(this.isSinglePlayerMode() && (getPlayerConnections().size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
 			return;
 		}
 		
-		addConnection(playerConnections, packetData, packet);
+		
 		
 		String name = PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d"));
 		
-		this.game.addSpaceship(name, !isSinglePlayerMode());
+		boolean nameExists = false;
+		for(ClientConnection c : this.getPlayerConnections()){
+			if(c.getName().equals(name)){
+				nameExists = true;
+				break;
+			}
+		}
 		
-		if(this.playerConnections.size() - countDisconnectedPlayers() == 1){
+		if(nameExists){
+			this.game.addMessage("Duplicate Player `"+name+"` was added as Spectator instead.");
+			this.addSpectatorConnection(packetData, packet);
+		}else{
+			addConnection(getPlayerConnections(), packetData, packet);
+			this.game.addSpaceship(name, !isSinglePlayerMode());
+		}
+			
+		if(getPlayerConnections().size() - countDisconnectedPlayers() == 1){
 			if(isSinglePlayerMode()){
-				sendMessagePacket("Singleplayer Game Started");
+				this.game.addMessage("Singleplayer Game Started");
 			}else{
-				sendMessagePacket("Local Client⟷Server connection made.");
-				sendMessagePacket("Waiting for another Player");
+				this.game.addMessage("Local Client⟷Host connection made.");
+
+				this.game.addMessage("Waiting for at least one more Player");
 			}
 		}else{
-			sendMessagePacket("New Player Connected: "+name);
+			this.game.addMessage("New Player Connected: "+name);
 		}
 		
 
@@ -117,6 +153,7 @@ public class Server extends Base{
 	public void sendGameStatePacket(){
 		
 		GameStatePacket gameStatePacket = new GameStatePacket(
+				this.roundNumber,
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids(),
@@ -176,16 +213,18 @@ public class Server extends Base{
 	}
 	
 	public ClientConnection findClientConnection(SocketAddress socketAddress){
-		int index = getPlayerConnections().indexOf(new ClientConnection((InetSocketAddress)socketAddress));
+		int index = this.playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
 		if(index == -1){
 			return null;
 		}
-		return getPlayerConnections().get(index);
+		return this.playerConnections.get(index);
 	}
 	
-	public void sendMessagePacket(String message){
+
+	
+	public void sendMessageListPacket(){
 		try {
-			this.sendPacketToAll(new MessagePacket(message).toJsonString());
+			this.sendPacketToAll(new MessageListPacket(this.game.getMessages()).toJsonString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -193,9 +232,10 @@ public class Server extends Base{
 	
 	public void restartGame(){
 		++roundNumber;
-		sendRoundOverPacket();
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
-		this.game = new Lobby(this, roundNumber); //TODO: Rename Lobby
+		this.game.deleteObserver(this);
+		this.game = new Game(this.isSinglePlayerMode(), roundNumber); //DONE: Rename Lobby
+		this.game.addObserver(this);
 		for(int i=this.playerConnections.size()-1;i>=0;i--){
 			ClientConnection c = playerConnections.get(i);
 			if(c.isDisconnected()){
@@ -225,14 +265,14 @@ public class Server extends Base{
 			c.tagAsDisconnectedIfNotResponding();
 			Logging.LOGGER.fine(c.toDebugString());
 			if(c.isDisconnected()){
-				this.sendMessagePacket("Connection Lost with: "+c.getName());
+				this.game.addMessage("Connection Lost with: "+c.getName());
 			}
 		}
 		
 		if(getPlayerConnections().size() > 1 &&  getPlayerConnections().size() - amountOfDisconnectedClients <= 1){
 			//Return to main menu.
-			this.sendMessagePacket("Connections with all other players lost. ");
-			this.sendMessagePacket("Waiting for new players... ");
+			this.game.addMessage("Connections with all other players lost. ");
+			this.game.addMessage("Waiting for new players... ");
 			
 			/*//Find the local connection
 			ClientConnection myLocalConnection = null;
@@ -249,15 +289,16 @@ public class Server extends Base{
 			
 			this.roundNumber = 0;*/
 			List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
-			for(int i=this.playerConnections.size()-1;i>=0;i--){
-				ClientConnection c = playerConnections.get(i);
+			List<ClientConnection> pcs = this.getPlayerConnections();
+			for(int i=pcs.size()-1;i>=0;i--){
+				ClientConnection c = pcs.get(i);
 				if(c.isDisconnected()){
-					playerConnections.remove(i);
+					pcs.remove(i);
 					spaceships.remove(i);
 				}
 			}
 			this.roundNumber = 0;
-			this.game = new Lobby(this,0);
+			this.game = new Game(this.isSinglePlayerMode(),0);
 			this.game.addSpaceships(spaceships);
 			Thread t = new Thread (game);
 			t.start();
@@ -293,8 +334,23 @@ public class Server extends Base{
 	}
 
 	public List<ClientConnection> getPlayerConnections() {
-		return playerConnections;
+		/*List <ClientConnection> pcs = new ArrayList <> ();
+		for (ClientConnection pc : this.playerConnections) {
+			pcs.add (pc.clone ());
+		}
+		return pcs;*/
+		return this.playerConnections;
 	}
+	
+	public List<ClientConnection> getSpectatorConnections() {
+		/*List <ClientConnection> pcs = new ArrayList <> ();
+		for (ClientConnection pc : this.spectatorConnections) {
+			pcs.add (pc.clone ());
+		}
+		return pcs;*/
+		return this.spectatorConnections;
+	}
+	
 
 	public boolean isSinglePlayerMode() {
 		return singlePlayerMode;
@@ -304,6 +360,17 @@ public class Server extends Base{
 		this.game.abort();
 		this.responsesThread.stopServer();
 // 		this.sendSocket.close();
+	}
+	
+	private void destroyAllShipsOfDisconnectedPlayers(){
+		List<ClientConnection> playerConnections = this.getPlayerConnections();
+		List<Spaceship> ships = this.game.getSpaceships();
+		for(int i=0; i<playerConnections.size(); i++){
+			if( playerConnections.get(i).isDisconnected()){
+				this.game.destroySpaceship(i);
+			}
+		}
+		
 	}
 
 

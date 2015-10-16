@@ -13,6 +13,13 @@ public class ClientConnection {
 	public ClientConnection(InetSocketAddress socketAddress) {
 		this.socketAddress = socketAddress;
 	}
+	private ClientConnection(InetSocketAddress socketAddress, long lastPingTime, long lastPacketId, boolean disconnected, String name){
+		this(socketAddress);
+		this.lastPingTime = lastPingTime;
+		this.lastPacketId = lastPacketId;
+		this.disconnected = disconnected;
+		this.name = name;
+	}
 
 	public InetAddress getAddress() {
 		return this.getSocketAddress().getAddress();
@@ -54,7 +61,7 @@ public class ClientConnection {
 		long currentTime = System.currentTimeMillis();
 		if(this.getLastPingTime() < currentTime - Server.MaxNonRespondTime){
 			this.disconnected = true;
-			System.err.println("Connection is not responding:"+this);
+			System.err.println("Connection is not responding:"+this.toDebugString());
 		}
 	}
 	
@@ -74,6 +81,10 @@ public class ClientConnection {
 	
 	public String toDebugString(){
 		return this.toString() + " last ping time:"+ this.lastPingTime + "last packet ID:"+this.lastPacketId;
+	}
+	
+	public ClientConnection clone(){
+		return new ClientConnection(socketAddress, lastPingTime, lastPacketId, disconnected, name);
 	}
 	
 	@Override

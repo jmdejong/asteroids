@@ -1,9 +1,7 @@
 package aoop.asteroids.model;
 
+import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
-import aoop.asteroids.udp.ClientConnection;
-import aoop.asteroids.udp.Server;
-import aoop.asteroids.udp.packets.GameStatePacket;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -51,18 +49,31 @@ import org.json.simple.JSONValue;
  */
 public class Game extends Observable implements Runnable
 {
-
-	/** The spaceship of the player. */
+	
+	/* TODO:
+	 * - see if we can make this class smaller
+	 * - see if we can orden the functions better
+	 * DONE:
+	 * - remove all references of server from this class
+	 *   server should be only an observer
+	 */
+	
+	public static long waitingTime = 3000;
+	
+	/** List of spaceships. */
 	private List<Spaceship> ships;
 
 	/** List of bullets. */
-	private Collection <Bullet> bullets;
+	private List <Bullet> bullets;
 
 	/** List of asteroids. */
-	private Collection <Asteroid> asteroids;
+	private List <Asteroid> asteroids;
 	
 	/** List of explosions. */
 	private List <Explosion> explosions;
+	 
+	/** List of all messages */
+	private List <GameMessage> messages;
 
 	/** Random number generator. */
 	private static Random rng;
@@ -71,16 +82,14 @@ public class Game extends Observable implements Runnable
 	private int numberOfSpawnedAsteroids;
 
 	/** Asteroid limit. */
-	protected int asteroidsLimit;
+	private int asteroidsLimit;
 	
-	protected Server server;
+	private boolean isSinglePlayer;
 	
 	private double width;
 	private double height;
 	
 	
-	//private ClientGame cg;
-
 	/** 
 	 *	Indicates whether the a new game is about to be started. 
 	 *
@@ -88,23 +97,20 @@ public class Game extends Observable implements Runnable
 	 */
 	private boolean aborted;
 
+	private long startCountdownTime = 0;
+
 	/** Initializes a new game from scratch. */
-	public Game (Server server, int roundNumber)
+	public Game (boolean isSinglePlayer, int roundNumber)
 	{
 		this.width = GameObject.worldWidth;
 		this.height = GameObject.worldHeight;
-		
 		Game.rng = new Random ();
-		
 		this.initGameData (roundNumber);
-		
-		this.server = server;
-		
+		this.isSinglePlayer = isSinglePlayer;
 	}
 
 	/** Sets all game data to hold the values of a new game. */
-	public void initGameData (int roundNumber)
-	{
+	public void initGameData (int roundNumber){
 		this.aborted = false;
 		this.numberOfSpawnedAsteroids = 0;
 		this.asteroidsLimit = roundNumber == 0 ? 0 : Math.max(1, roundNumber / 3);
@@ -113,6 +119,7 @@ public class Game extends Observable implements Runnable
 		this.asteroids = new ArrayList <> ();
 		this.ships = new ArrayList<> ();
 		this.explosions = new ArrayList<> ();
+		this.messages = new ArrayList<>();
 		//this.ship.reinit ();
 		
 		while(asteroids.size() < asteroidsLimit){
@@ -125,9 +132,9 @@ public class Game extends Observable implements Runnable
 	 *
 	 *	@return a clone of the asteroid set.
 	 */
-	public Collection <Spaceship> getSpaceships(){
+	public List <Spaceship> getSpaceships(){
 		
-		Collection <Spaceship> c = new ArrayList <> ();
+		List <Spaceship> c = new ArrayList <> ();
 		for (Spaceship s : this.ships) c.add (s.clone ());
 		return c;
 	}
@@ -148,9 +155,9 @@ public class Game extends Observable implements Runnable
 	 *
 	 *	@return a clone of the asteroid set.
 	 */
-	public Collection <Asteroid> getAsteroids ()
+	public List <Asteroid> getAsteroids ()
 	{
-		Collection <Asteroid> c = new ArrayList <> ();
+		List <Asteroid> c = new ArrayList <> ();
 		for (Asteroid a : this.asteroids) c.add (a.clone ());
 		return c;
 	}
@@ -160,9 +167,9 @@ public class Game extends Observable implements Runnable
 	 *
 	 *	@return a clone of the bullet set.
 	 */
-	public Collection <Bullet> getBullets ()
+	public List <Bullet> getBullets ()
 	{
-		Collection <Bullet> c = new ArrayList <> ();
+		List <Bullet> c = new ArrayList <> ();
 		for (Bullet b : this.bullets) c.add (b.clone ());
 		return c;
 	}
@@ -187,30 +194,15 @@ public class Game extends Observable implements Runnable
 				s.setFired ();
 			}
 		}
-
 		
-
+		
+		
 		this.checkCollisions ();
 		this.removeDestroyedObjects ();
 		
-		this.destroyAllShipsOfDisconnectedPlayers();
-
-		/*if (	   this.numberOfSpawnedAsteroids == 0 
-				&& this.numberOfSpawnedAsteroids < this.asteroidsLimit 
-				&& !this.ships.isEmpty() 
-				&& !this.areAllShipsDestroyed() ) {
-			this.addRandomAsteroid ();
-			this.numberOfSpawnedAsteroids++;
-		}*/
+// 		this.destroyAllShipsOfDisconnectedPlayers();
 		
-		//this.cycleCounter %= 200;
 		
-		server.sendGameStatePacket();
-		
-		//ClientGame cg = new ClientGame();
-		//JSONObject packet_data = (JSONObject) JSONValue.parse(testpacket.toJsonString());
-		//GameStatePacket.decodePacket((JSONArray)packet_data.get("d"), cg);
-
 		this.setChanged ();
 		this.notifyObservers ();
 	}
@@ -223,16 +215,22 @@ public class Game extends Observable implements Runnable
 	{
 		int prob = Game.rng.nextInt (3000);
 		Point2D loc;
-		int x, y;
 		do
 		{
 			loc = new WrappablePoint (Game.rng.nextInt ((int)this.width), Game.rng.nextInt ((int)this.height));
 		}
 		while (pointOverlapsCenterCircle(loc));
-
-		if (prob < 1000)		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 40, Game.rng.nextDouble()*2*Math.PI- Math.PI));
-		else if (prob < 2000)	this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 20, Game.rng.nextDouble()*2*Math.PI- Math.PI));
-		else					this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, 10, Game.rng.nextDouble()*2*Math.PI- Math.PI));
+		
+		int size;
+		if (prob < 1000){
+			size = 40;
+		} else if (prob < 2000){
+			size = 20;
+		} else {
+			size = 10;
+		}
+		
+		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, size, Game.rng.nextDouble()*2*Math.PI- Math.PI));
 	}
 	
 	private boolean pointOverlapsCenterCircle(Point2D p){
@@ -282,7 +280,7 @@ public class Game extends Observable implements Runnable
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
 					if(/*b.getShooter() != null && */b.getShooter() != s){
 						//b.getShooter().increaseScore();
-						server.sendMessagePacket(s.getName() + " was shot by " + b.getShooter().getName());
+						messages.add(new GameMessage(s.getName() + " was shot by " + b.getShooter().getName()));
 					}
 					
 					b.destroy ();
@@ -290,7 +288,6 @@ public class Game extends Observable implements Runnable
 					this.explosions.add(new Explosion(s.getLocation(), 3*s.hashCode()+5*b.hashCode(), s.getRadius(), s.getColour()));
 
 					
-					server.sendPlayerLosePacket(this.ships.indexOf(s));
 				}
 			}
 
@@ -308,24 +305,16 @@ public class Game extends Observable implements Runnable
 					this.explosions.add(new Explosion(s.getLocation(), 3*s.hashCode()+5*a.hashCode(), s.getRadius(), s.getColour()));
 
 					
-					server.sendMessagePacket(s.getName() + " was smashed by an Asteroid");
-					server.sendPlayerLosePacket(this.ships.indexOf(s));
+					addMessage(s.getName() + " was smashed by an Asteroid");
 				}
 			}
 			
 		}
 		
 	}
-
-	/**
-	 * 	Increases the score of the player by one and updates asteroid limit 
-	 *	when required.
-	 */
-	private void increaseScore ()
-	{
-		//this.ship.increaseScore ();
-		//if (this.ship.getScore () % 5 == 0) this.asteroidsLimit++;
-		//TODO: re-enable for multiple players.
+	
+	public void addMessage(String message){
+		messages.add(new GameMessage(message));
 	}
 
 	/**
@@ -336,21 +325,26 @@ public class Game extends Observable implements Runnable
 	 */
 	private void removeDestroyedObjects ()
 	{
-		Collection <Asteroid> newAsts = new ArrayList <> ();
+		
+		List <Asteroid> newAsts = new ArrayList <> ();
 		for (Asteroid a : this.asteroids)
 		{
 			if (a.isDestroyed ())
 			{
-				//this.increaseScore ();
-				Collection <Asteroid> successors = a.getSuccessors ();
-				newAsts.addAll (successors);
+				newAsts.addAll (a.getSuccessors ());
 			}
-			else newAsts.add (a);
+			else {
+				newAsts.add (a);
+			}
 		}
 		this.asteroids = newAsts;
 
-		Collection <Bullet> newBuls = new ArrayList <> ();
-		for (Bullet b : this.bullets) if (!b.isDestroyed ()) newBuls.add (b);
+		List <Bullet> newBuls = new ArrayList <> ();
+		for (Bullet b : this.bullets) {
+			if (!b.isDestroyed ()){
+				newBuls.add (b);
+			}
+		}
 		this.bullets = newBuls;
 		
 		for(int i=explosions.size()-1;i >= 0;i--){
@@ -380,29 +374,8 @@ public class Game extends Observable implements Runnable
 	
 	protected boolean areAllAsteroidsDestroyed(){
 		
-		/*if(this.asteroids.isEmpty()){
-			if(!this.areAllShipsDestroyed()){
-				for(Spaceship s: ships){
-					if(!s.isDestroyed()){
-						s.increaseScore();
-						s.destroy();
-					}
-				}
-				server.sendMessagePacket("Congradulations! Level Cleared.");
-			}
-			return true;
-		}else{
-			return false;
-		}*/
 		return this.asteroids.isEmpty();
 		
-		
-		/*for(Asteroid a : this.asteroids){
-			if (!a.isDestroyed()){
-				return false;
-			}
-		}
-		return true;*/
 		
 	}
 	
@@ -420,16 +393,16 @@ public class Game extends Observable implements Runnable
 		return amount == 1;
 	}
 	
-	protected boolean isGameOver(){
+/*	protected boolean isGameOver(){
 		return this.isThereOnlyOneShipLeft() || this.areAllAsteroidsDestroyed();
-	}
+	}*/
 	
 	/**
 	 * Returns the list of one or multiple winners of the current game round.<br>
 	 * That is:<br>
 	 * -> If all ships have died, the ship(s) that died the last.<br>
 	 * -> If there are still some ships alive, then return those.<br>
-	 * @return
+	 * @return the winners or the round
 	 */
 	protected List<Spaceship> getWinners(){
 		double latestDestroyTime = 0;
@@ -498,9 +471,8 @@ public class Game extends Observable implements Runnable
 				sleepTime = 40 - executionTime;
 			}
 			else {
-				
-				sleepTime = 100;
-				this.server.restartGame();
+				this.setChanged();
+				this.notifyObservers();
 				return;
 			}
 
@@ -510,7 +482,7 @@ public class Game extends Observable implements Runnable
 			}
 			catch (InterruptedException e)
 			{
-				System.err.println ("Could not perfrom action: Thread.sleep(...)");
+				System.err.println ("Could not perform action: Thread.sleep(...)");
 				System.err.println ("The thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).");
 				e.printStackTrace ();
 			}
@@ -524,21 +496,13 @@ public class Game extends Observable implements Runnable
 		return this.ships.toArray(new Spaceship[this.ships.size()])[index];
 	}
 	
-	private void destroyAllShipsOfDisconnectedPlayers(){
-		List<ClientConnection> playerConnections = this.server.getPlayerConnections();
-		try{
-			for(int i=0;i<playerConnections.size();i++){
-				Spaceship s = ships.get(i);
-				if(!s.isDestroyed() && playerConnections.get(i).isDisconnected()){
-					s.destroy();
-				}
-			}
-		}catch(IndexOutOfBoundsException e){
-			//e.printStackTrace();
+	public void destroySpaceship(int index) {
+		Spaceship s = getSpaceshipRef(index);
+		if(!s.isDestroyed()){
+			s.destroy();
 		}
-		
 	}
-
+	
 	/**
 	 * Adds multiple spaceships at once to the game.
 	 * Used when starting a new game round.
@@ -546,6 +510,7 @@ public class Game extends Observable implements Runnable
 	 * In multiplayer, ships are set in a circle, pointing outward.
 	 * @param spaceships
 	 */
+	/* ehmm, this also removes all spaceships currently in the game*/
 	public void addSpaceships(List<Spaceship> spaceships) {
 		this.ships = spaceships;
 		for(int i=0;i<spaceships.size();i++){
@@ -570,9 +535,64 @@ public class Game extends Observable implements Runnable
 	public List <Explosion> getExplosions() {
 		return explosions;
 	}
+	
+	public List<GameMessage> getMessages(){
+		checkMessages();
+		// return a clone of the message list
+		// GameMessage is immutable anyways so no need to clone the messages
+		return messages.subList(0, messages.size());
+	}
+	
+	/** check whether the messages should still be shown
+	 * removes the messages that are no longer relevant
+	 */
+	public void checkMessages(){
+		for(int i=messages.size()-1;i >= 0;i--){
+			if(messages.get(i).isOver()){
+				messages.remove(i);
+			}
+		}
+	}
 
-	public void setExplosions(List <Explosion> explosions) {
-		this.explosions = explosions;
+	public double timeUntilOver() {
+	
+		if(( this.isSinglePlayer && ((!this.getSpaceships().isEmpty() && this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed()))
+			|| (!this.isSinglePlayer && (this.getSpaceships().size() > 1) && ((this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed() || this.isThereOnlyOneShipLeft() ))){
+			
+			if(this.startCountdownTime==0){
+				startCountdownTime = System.currentTimeMillis();
+				if(this.asteroidsLimit != 0){
+					List<Spaceship> winners = getWinners();
+					for(Spaceship w : winners){
+						if(!this.isSinglePlayer || !w.isDestroyed()){
+							w.increaseScore();
+							
+							long highscore = HighScores.getInstance().getScore(w.getName());
+							if(w.getScore() > highscore){
+								HighScores.getInstance().saveScore(w.getName(), w.getScore());
+								this.addMessage(w.getName()+" has beat their high score!");
+							}
+						}
+						
+					}
+				}
+				
+				if(this.areAllAsteroidsDestroyed() && this.asteroidsLimit != 0 && !this.areAllShipsDestroyed()){
+					this.addMessage("Congradulations! Level Cleared.");
+				}
+				this.addMessage("Starting Next Round in "+(waitingTime/1000)+" seconds");
+			}
+			double time = System.currentTimeMillis() - this.startCountdownTime;
+			return Game.waitingTime - time;
+		}else{
+			return Double.POSITIVE_INFINITY;
+		}
+		
+	}
+
+	public boolean isGameOver() {
+		Logging.LOGGER.fine("Time until next level:"+this.timeUntilOver());
+		return this.timeUntilOver() <= 0;
 	}
     
 	

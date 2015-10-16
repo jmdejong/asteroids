@@ -9,6 +9,7 @@ import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import org.json.simple.JSONArray;
@@ -90,11 +91,22 @@ public class HighScores {
 	
 	public ArrayList<PlayerScore> getHighScoresNewerThan(long datetime){
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
-		EntityManager em = emf.createEntityManager();
-		TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.datetime > :maxtime ORDER BY p.score DESC", PlayerScore.class);
-		ArrayList<PlayerScore> list = (ArrayList<PlayerScore>) query.setParameter("maxtime", datetime).setMaxResults(10).getResultList();
-		emf.close();
+		ArrayList<PlayerScore> list = new ArrayList<PlayerScore>();
+		try{
+			
+			EntityManager em = emf.createEntityManager();
+			TypedQuery<PlayerScore> query = em.createQuery("SELECT p FROM PlayerScore p WHERE p.datetime > :maxtime ORDER BY p.score DESC", PlayerScore.class);
+			list = (ArrayList<PlayerScore>) query.setParameter("maxtime", datetime).setMaxResults(10).getResultList();
+			
+		}catch(PersistenceException e){
+			Logging.LOGGER.info("Database file could not be opened. Possibly in use by another copy of this program.");
+			
+		}finally{
+			emf.close();
+			
+		}
 		return list;
+
 	}
 	
 	public ArrayList<PlayerScore> getLastHourHighScores(){

@@ -23,6 +23,9 @@ public class Client extends Base implements Observer{
 	
 	/* TODO:
 	 * - find out why message "connection with host lost" shows up at the beginning and fix
+	 * - maybe make a new class (Player, for example") that takes care of the clients on player (spaceshipController, hasLost etc...)
+	 *   this player object should have a reference to game
+	 *   or maybe we can just move this to spaceshipController
 	 */
 	
 	public InetSocketAddress serverAddress;
@@ -45,6 +48,7 @@ public class Client extends Base implements Observer{
 	private long lastPacketId = 0;
 	private long lastConnectionCheckTime = 0;
 	
+// 	private boolean hasLost = false;
 	
 	DatagramSocket sendSocket;
 	
@@ -59,13 +63,9 @@ public class Client extends Base implements Observer{
 		
 		this.playerName = playerName;
 		
-		//try {
-			this.sendSocket = createSocketOnFirstUnusedPort();//new DatagramSocket(Client.UDPPort);
-		//} catch (SocketException e1) {
-		//	e1.printStackTrace();
-		//}
+		this.sendSocket = createSocketOnFirstUnusedPort();
 		
-		this.game = new ClientGame(playerName);
+		this.game = new ClientGame();
 		game.addObserver(this);
 		
 		
@@ -206,7 +206,7 @@ public class Client extends Base implements Observer{
 		}
 		
 		//Otherwise, send update to server.
-		if(!this.isSpectator && !this.game.hasLost){
+		if(!this.isSpectator && !this.hasLost()){
 			this.sendPlayerUpdatePacket(this.spaceshipController);
 		}else{
 			this.sendSpectatorPingPacket();
@@ -216,5 +216,10 @@ public class Client extends Base implements Observer{
 	
 	public SpaceshipController getController(){
 		return this.spaceshipController;
+	}
+	
+	public boolean hasLost(){
+		Spaceship s = game.getSpaceship(this.playerName);
+		return s!=null && s.isDestroyed();
 	}
 }

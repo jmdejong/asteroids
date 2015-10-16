@@ -30,6 +30,7 @@ public class Asteroids {
 	 * - use decorator pattern more
 	 * - move global constants to this class
 	 * - move sound functions to its own (singleton?) class
+	 * - for all large classes, see if we can split them up across multiple domains
 	 */
 	
 	

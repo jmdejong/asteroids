@@ -51,7 +51,7 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private int roundNumber = 1;
 	
-	private String playerName;
+// 	private String playerName;
 	
 	
 	//private Client client;
@@ -60,8 +60,8 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public Point2D.Double bgPos = new Point2D.Double();
 	
-	/** if set to true, this Game will not try to send any more input packets until the current round is over.*/
-	public boolean hasLost = false;
+// 	/** if set to true, this Game will not try to send any more input packets until the current round is over.*/
+// 	public boolean hasLost = false;
 	
 	public boolean isFrozen = false;
 	
@@ -72,10 +72,10 @@ public class ClientGame extends Observable implements Runnable{
 	private boolean aborted = false;
 	
 	
-	public ClientGame(String playerName){
+	public ClientGame(){
 		//this.client = client;
 		
-		this.playerName = playerName;
+// 		this.playerName = playerName;
 		
 		setBackgroundImage(this.roundNumber);
 	}
@@ -98,11 +98,6 @@ public class ClientGame extends Observable implements Runnable{
 			}
 		}
 		
-
-		
-		
-		
-		
 		if(!isFrozen){
 			for (Asteroid a : this.asteroids) a.nextStep ();
 			for (Bullet b : this.bullets) b.nextStep ();
@@ -122,14 +117,16 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public void setSpaceships(List<Spaceship> ships){
 		this.ships = ships;
-		if(!this.hasLost && this.roundNumber != 0){
-			for(Spaceship s : ships){
-				if(s.getName().equals(this.playerName) && s.destroyed){
-					this.hasLost();
-				}
-			}
-		}
+// 		if(!this.hasLost && this.roundNumber != 0){
+// 			for(Spaceship s : ships){
+// 				if(s.getName().equals(this.playerName) && s.destroyed){
+// 					// this shouldn't be possible. destroyed is protected
+// 					this.hasLost();
+// 				}
+// 			}
+// 		}
 	}
+	
 	
 	public void setBullets(List<Bullet> bullets){
 		int bulletsSize = this.bullets.size();
@@ -188,6 +185,16 @@ public class ClientGame extends Observable implements Runnable{
 	public List<Spaceship> getSpaceships() {
 		return ships;
 	}
+	
+	public Spaceship getSpaceship(String name){
+		for(Spaceship s : ships){
+			if(s.getName().equals(name)){
+				return s;
+			}
+		}
+		return null;
+	}
+		
 	public List<GameMessage> getMessages() {
 		return messages;
 	}
@@ -256,22 +263,22 @@ public class ClientGame extends Observable implements Runnable{
 	
 	/** Check if the round has ended and update round number
 	 */
-	// Wow! Such name!
+	// Wow! Such name! :D
 	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
 		if(this.roundNumber != roundnumber){
 			sound.playSound("NextLevelNew0.wav");
 			this.roundNumber = roundnumber;
-			this.hasLost = false;
+// 			this.hasLost = false;
 			setBackgroundImage(this.roundNumber);
 			this.bgPos = new Point2D.Double(0,0);
 		}
 	}
 	
 	
-	public void hasLost(){
-		this.hasLost = true;
-		sound.playSound("PlayerDeathNew0.wav");
-	}
+// 	public void hasLost(){
+// 		this.hasLost = true;
+// 		sound.playSound("PlayerDeathNew0.wav");
+// 	}
 	
 	
 	public void playBGMIfNotAlreadyStarted(){

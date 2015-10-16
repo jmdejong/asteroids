@@ -51,8 +51,15 @@ import org.json.simple.JSONValue;
  */
 public class Game extends Observable implements Runnable
 {
-
-	/** The spaceship of the player. */
+	
+	/* TODO:
+	 * - remove all references of server from this class
+	 *   server should be only an observer
+	 * - see if we can make this class smaller
+	 * - see if we can orden the functions better
+	 */
+	
+	/** List of spaceships. */
 	private List<Spaceship> ships;
 
 	/** List of bullets. */
@@ -90,7 +97,7 @@ public class Game extends Observable implements Runnable
 	 */
 	private boolean aborted;
 
-	public long startCountdownTime = 0;
+	private long startCountdownTime = 0;
 
 	/** Initializes a new game from scratch. */
 	public Game (Server server, int roundNumber)

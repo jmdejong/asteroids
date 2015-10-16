@@ -36,6 +36,9 @@ public class Server extends Base implements Observer{
 	 * If a client takes longer than this to send a packet, the connection to that client will be considered disconnected.
 	 */
 	 
+	/**
+	 * Longer than what?
+	 */
 	
 	private CopyOnWriteArrayList<ClientConnection> spectatorConnections = new CopyOnWriteArrayList<ClientConnection>();
 	private CopyOnWriteArrayList<ClientConnection> playerConnections = new CopyOnWriteArrayList<ClientConnection>();

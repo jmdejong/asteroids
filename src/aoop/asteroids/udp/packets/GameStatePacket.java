@@ -11,6 +11,11 @@ import aoop.asteroids.Logging;
 import aoop.asteroids.model.*;
 
 public class GameStatePacket extends Packet {
+	
+	/* TODO:
+	 * - move messages part to MessageListPacket
+	 */
+	
 	public GameStatePacket(
 			int roundNumber,
 			List<Spaceship> spaceships, 

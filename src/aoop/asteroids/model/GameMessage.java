@@ -4,6 +4,12 @@ package aoop.asteroids.model;
 import org.json.simple.JSONArray;
 
 public class GameMessage {
+	
+	/* TODO:
+	 * - find some way to annotate that GameMessage objects are immutable
+	 * - rename to Message?
+	 */
+	
 	private long creationTime;
 	
 	private long visibleTime;

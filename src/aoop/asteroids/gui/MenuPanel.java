@@ -33,7 +33,11 @@ import java.util.List;
 
 public class MenuPanel extends JPanel {
 	
-	/**
+	/* 
+	 * TODO:
+	 * - Give highscores a fixed width (enough for a name of 12 chars)
+	 * - Make hightscores align to the top
+	 * - Make a function to update the highscores
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;

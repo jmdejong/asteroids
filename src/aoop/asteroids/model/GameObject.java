@@ -15,7 +15,13 @@ import org.json.simple.JSONArray;
 public abstract class GameObject 
 {
 	
-	// I think we should not use these as public static variables, but pass them in somewhere
+	/* TODO:
+	 * - move worldWidth and worldHeight somewhere else and avoid using them where possible
+	 * - look critically where we actually need WrappablePoint instead of Point2D.double
+	 * - change all _X and _Y to 2d vectors (for example Point2D.double)
+	 * - make a function getMirrorLocations that returns a list of 1, 2 of 4 points
+	 */
+	
 	public static double worldWidth = 800;
 	public static double worldHeight = 700;
 

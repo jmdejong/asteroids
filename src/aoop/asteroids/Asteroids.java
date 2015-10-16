@@ -24,6 +24,15 @@ import java.net.SocketException;
  */
 public class Asteroids {
 	
+	/* TODO: general
+	 * - add/update documentation
+	 * - make an interface for all object that we can serialize to json
+	 * - use decorator pattern more
+	 * - move global constants to this class
+	 */
+	
+	
+	
 	/** 
 	 *	Main function.
 	 *

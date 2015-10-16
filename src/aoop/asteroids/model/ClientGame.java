@@ -32,6 +32,12 @@ import aoop.asteroids.udp.Client;
 
 public class ClientGame extends Observable implements Runnable{
 	
+	/* TODO:
+	 * - Fix sound error when loading multiple games on same computer
+	 * - Is this the right place for storing the spaceshipController
+	 * - Didn't we want to make all collections of gameObjects lists?
+	 */
+	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
 	/** List of bullets. */
 	private Collection <Bullet> bullets = new ArrayList<Bullet>();
@@ -358,6 +364,9 @@ public class ClientGame extends Observable implements Runnable{
 		
 	}
 	
+	/** Check if the round has ended and update round number
+	 */
+	// Wow! Such name!
 	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
 		if(this.roundNumber != roundnumber){
 			playSound("NextLevelNew0.wav");

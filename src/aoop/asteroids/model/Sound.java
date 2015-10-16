@@ -29,7 +29,6 @@ public class Sound {
 	 * 
 	 * TODO:
 	 * - find something better than singleton
-	 * - fill in empty catch block
 	 * 
 	 */
 	

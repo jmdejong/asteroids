@@ -281,4 +281,17 @@ public class ClientGame extends Observable implements Runnable{
 		sound.playSound("PlayerDeathNew0.wav");
 	}
 	
+	
+	public void playBGMIfNotAlreadyStarted(){
+		
+		//Do not play music while waiting for a connection, to synchronize audio between multiple PC's in close physical proximity.
+		if(this.roundNumber == 0){
+			return;
+		}
+		
+		Sound sound = Sound.getInstance();
+		if(!sound.hasBgmStarted()){
+			sound.playSound("background_music_bassline.wav", true);
+		}
+	}
 }

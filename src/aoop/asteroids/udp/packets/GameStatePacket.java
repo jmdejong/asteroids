@@ -21,8 +21,7 @@ public class GameStatePacket extends Packet {
 			List<Spaceship> spaceships, 
 			List<Bullet> bullets, 
 			List<Asteroid> asteroids,
-			List<Explosion> explosions,
-			List<GameMessage> messages
+			List<Explosion> explosions
 			){
 		super(Packet.PacketType.GAMESTATE);
 		
@@ -45,10 +44,6 @@ public class GameStatePacket extends Packet {
 		this.data.add(jsonExplosions);
 		
 		
-		JSONArray jsonMessages = new JSONArray();
-		for(GameMessage e : messages) jsonMessages.add(e.toJSON());
-		this.data.add(jsonMessages);
-		
 		
 	}
 	
@@ -61,7 +56,6 @@ public class GameStatePacket extends Packet {
 		JSONArray jsonBullets = (JSONArray) data.get(2);
 		JSONArray jsonAsteroids = (JSONArray) data.get(3);
 		JSONArray jsonExplosions = (JSONArray) data.get(4);
-		JSONArray jsonMessages = (JSONArray) data.get(5);
 		
 		List <Spaceship> spaceships = new ArrayList<Spaceship>();
 		for(Object s : jsonSpaceships) spaceships.add(Spaceship.fromJSON(((JSONArray) s)));
@@ -78,10 +72,6 @@ public class GameStatePacket extends Packet {
 		List <Explosion> explosions = new ArrayList<Explosion>();
 		for(Object a : jsonExplosions) explosions.add(Explosion.fromJSON(((JSONArray) a)));
 		currentGameState.setExplosions(explosions);
-		
-		List <GameMessage> messages = new ArrayList<>();
-		for(Object a : jsonMessages) messages.add(GameMessage.fromJSON(((JSONArray) a)));
-		currentGameState.setMessages(messages);
 		
 		
 	}

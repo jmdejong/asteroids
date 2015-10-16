@@ -479,7 +479,7 @@ public class Game extends Observable implements Runnable
 			}
 			catch (InterruptedException e)
 			{
-				System.err.println ("Could not perfrom action: Thread.sleep(...)");
+				System.err.println ("Could not perform action: Thread.sleep(...)");
 				System.err.println ("The thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).");
 				e.printStackTrace ();
 			}
@@ -542,8 +542,9 @@ public class Game extends Observable implements Runnable
 	
 	public List<GameMessage> getMessages(){
 		checkMessages();
-		// TODO: only return a copy of the messages
-		return messages;
+		// return a clone of the message list
+		// GameMessage is immutable anyways so no need to clone the messages
+		return messages.subList(0, messages.size());
 	}
 	
 	/** check whether the messages should still be shown

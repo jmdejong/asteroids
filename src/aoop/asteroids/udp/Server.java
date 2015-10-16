@@ -153,8 +153,7 @@ public class Server extends Base implements Observer{
 				game.getSpaceships(),
 				game.getBullets(),
 				game.getAsteroids(),
-				game.getExplosions(),
-				game.getMessages());
+				game.getExplosions());
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString());

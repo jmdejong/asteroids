@@ -36,6 +36,9 @@ public class ClientGame extends Observable implements Runnable{
 	 * - Fix sound error when loading multiple games on same computer
 	 * - Is this the right place for storing the spaceshipController
 	 * - Didn't we want to make all collections of gameObjects lists?
+	 * - Make this class more readable
+	 * - Maybe do the sound stuff somewhere else.
+	 *   This is the model part and the sound would be the view part
 	 */
 	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
@@ -213,10 +216,10 @@ public class ClientGame extends Observable implements Runnable{
 			}
 		}
 	}
-	
+	/*
 	public void setMessages(List<GameMessage> messages){
 		this.messages = messages;
-	}
+	}*/
 	
 	public int getWidth(){
 		return (int)GameObject.worldWidth;
@@ -353,10 +356,8 @@ public class ClientGame extends Observable implements Runnable{
 				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 					//This happens when a file is unavailable or the sound device is busy.
 					//Just don't play any sound when that happens.
+					Logging.LOGGER.info("Sound in '"+filename+"' could not be played");
 				}
-				
-					// TODO Auto-generated method stub
-					
 			}
 			
 		

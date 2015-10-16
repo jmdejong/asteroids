@@ -104,7 +104,7 @@ public class AsteroidsPanel extends JPanel
 		
 		
 		g2.setColor(new Color(0,0,0,0.5f));
-		g2.fillRect(0, 0, (int)GameObject.worldWidth, (int)GameObject.worldHeight);
+		g2.fillRect(0, 0, (int)this.game.getWidth(), (int)this.game.getHeight());
 		
 		
 		//this.paintSun(g2);
@@ -150,13 +150,12 @@ public class AsteroidsPanel extends JPanel
 	{
 		g.setColor (Color.GRAY);
 
-		for (Asteroid a : this.game.getAsteroids ())
-		{
+		for (Asteroid a : this.game.getAsteroids ()) {
+			
 			int seed = (int)(3*a.getVelocityX()+5*a.getVelocityY());
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getLocation().getY()		,a.getRadius(), seed, a.getRotation());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getLocation().getY()		,a.getRadius(), seed, a.getRotation());
-			paintAsteroidPart(g,(int)a.getLocation().getX()			,(int)a.getMirrorLocation().getY()	,a.getRadius(), seed, a.getRotation());
-			paintAsteroidPart(g,(int)a.getMirrorLocation().getX()	,(int)a.getMirrorLocation().getY()	,a.getRadius(), seed, a.getRotation());
+			for (Point2D location : a.getMirrorLocations(this.game.getWidth(), this.game.getHeight())){
+				paintAsteroidPart(g, (int)location.getX(), (int)location.getY(), a.getRadius(), seed, a.getRotation());
+			}
 		}
 	}
 	
@@ -165,7 +164,7 @@ public class AsteroidsPanel extends JPanel
 		//e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
 		
 		
-		RadialGradientPaint sunlight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0,1}, new Color[]{new Color(191,191,191,255), new Color(191,191,191,32)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
+		RadialGradientPaint sunlight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)this.game.getWidth()/2, (int)this.game.getHeight()/2, new float[]{0,1}, new Color[]{new Color(191,191,191,255), new Color(191,191,191,32)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
 		
 		
 		
@@ -199,16 +198,16 @@ public class AsteroidsPanel extends JPanel
 			}
 			
 			// get the closest spaceship location
-			double mx = x - GameObject.worldWidth/2;
-			double spaceshipX = Utils.floorMod(s.getLocation().getX()-mx, GameObject.worldWidth)+mx;
-			double my = y - GameObject.worldHeight/2;
-			double spaceshipY = Utils.floorMod(s.getLocation().getY()-my, GameObject.worldHeight)+my;
+			double mx = x - this.game.getWidth()/2;
+			double spaceshipX = Utils.floorMod(s.getLocation().getX()-mx, this.game.getWidth())+mx;
+			double my = y - this.game.getHeight()/2;
+			double spaceshipY = Utils.floorMod(s.getLocation().getY()-my, this.game.getHeight())+my;
 			
 			
 			double distanceX = x-spaceshipX;
 			double distanceY = y-spaceshipY;
 			double distanceSquared = distanceX * distanceX + distanceY * distanceY;
-			double maxDistance = Math.min(GameObject.worldWidth, GameObject.worldHeight)/2;
+			double maxDistance = Math.min(this.game.getWidth(), this.game.getHeight())/2;
 			int intensity = (int) Math.max(255*(1-(distanceSquared/(maxDistance*maxDistance))),0);
 			
 			Color c = new Color(s.getColour());
@@ -222,18 +221,14 @@ public class AsteroidsPanel extends JPanel
 // 		g.fill(polygon);
 	}
 	
-// 	private void paintAsteroidShape(Graphics2D g, int x, int y, int radius, double seed, double rotation){
-// 	
-// 	
-// 	}
 	
 	private void paintSun(Graphics2D g){
 		Ellipse2D.Double e = new Ellipse2D.Double ();
 		int radius = 100;
-		int x = (int) (GameObject.worldWidth / 2);
-		int y = (int) (GameObject.worldHeight / 2);
+		int x = (int) (this.game.getWidth() / 2);
+		int y = (int) (this.game.getHeight() / 2);
 		e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
-		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)GameObject.worldWidth/2, (int)GameObject.worldHeight/2, new float[]{0, 0.05f, 0.2f, 1}, new Color[]{Color.WHITE, new Color(0,40,41, 191), new Color(0,10,10, 0), new Color(0,0,0,0)}, CycleMethod.NO_CYCLE);
+		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)this.game.getWidth()/2, (int)this.game.getHeight()/2, new float[]{0, 0.05f, 0.2f, 1}, new Color[]{Color.WHITE, new Color(0,40,41, 191), new Color(0,10,10, 0), new Color(0,0,0,0)}, CycleMethod.NO_CYCLE);
 		g.setPaint(roundGradientPaint);
 		g.fill (e);
 	}
@@ -252,25 +247,10 @@ public class AsteroidsPanel extends JPanel
 				continue;
 			}
 			Color c = new Color(s.getColour());
-			int xa,xb,ya,yb;
-			xa = (int) s.getLocation().getX();
-			xb = (int) s.getMirrorLocation().getX();
-			ya = (int) s.getLocation().getY();
-			yb = (int) s.getMirrorLocation().getY();
-
-			paintSpaceshipPart(g,xa,ya,s.getDirection(),s.isAccelerating(), c);
-			if(yb != ya){
-				paintSpaceshipPart(g,xa,yb,s.getDirection(),s.isAccelerating(), c);
-			}
-			if(xb != xa){
-				paintSpaceshipPart(g,xb,ya,s.getDirection(),s.isAccelerating(), c);
-				if(yb != ya){
-					paintSpaceshipPart(g,xb,yb,s.getDirection(),s.isAccelerating(), c);
-				}
-				
-			}
 			
-			
+			for (Point2D location : s.getMirrorLocations(this.game.getWidth(), this.game.getHeight())){
+				paintSpaceshipPart(g, (int)location.getX(), (int)location.getY(), s.getDirection(), s.isAccelerating(), c);
+			}
 			
 		}
 		
@@ -347,7 +327,7 @@ public class AsteroidsPanel extends JPanel
 			int stringHeight = fm.getHeight();
 			
 			
-			g.drawString(str, ((int)GameObject.worldWidth/2)-(stringWidth/2), ((int)GameObject.worldHeight/2)+(stringHeight*i));
+			g.drawString(str, ((int)this.game.getWidth()/2)-(stringWidth/2), ((int)this.game.getHeight()/2)+(stringHeight*i));
 		}
 	}
 	private void paintScores(Graphics2D g) {
@@ -419,7 +399,7 @@ public class AsteroidsPanel extends JPanel
 	    TexturePaint    tp = new TexturePaint(i, imageBounds);
 	    
 	    g.setPaint(tp);
-	    g.fillRect(0, 0, (int) GameObject.worldWidth, (int) GameObject.worldHeight);
+	    g.fillRect(0, 0, (int) this.game.getWidth(), (int) this.game.getHeight());
 	}
     
 

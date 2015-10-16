@@ -5,6 +5,9 @@ import aoop.asteroids.Logging;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collection;
 
 import org.json.simple.JSONArray;
 
@@ -190,28 +193,36 @@ public abstract class GameObject
 		return this.location.getY() < (this.radius*2) || this.location.getY() > this.domain.getY() - (this.radius*2);
 	}
 	
-	public Point2D getMirrorLocation(){
-		double x, y = 0;
-		Point2D mirrorLoc = this.getLocation();
-		x = this.location.getX();
-		y = this.location.getY();
+
+	
+	public Collection<Point2D> getMirrorLocations(double width, double height){
+		
+		double mirrorX = this.location.getX();
+		double mirrorY = this.location.getY();
 		
 		if(isCloseToXEdge()){
-			if (this.location.getX() < this.domain.getX()/2){
-				x = this.location.getX() + this.domain.getX();
+			if (this.location.getX() < width/2){
+				mirrorX += width;
 			}else{
-				x = this.location.getX() - this.domain.getX();
+				mirrorX -= width;
 			}
 		}
 		
 		if(isCloseToYEdge()){
-			if (this.location.getX() < this.domain.getY()/2){
-				y = this.location.getY() + this.domain.getY();
+			if (this.location.getY() < height/2){
+				mirrorY += height;
 			}else{
-				y = this.location.getY() - this.domain.getY();
+				mirrorY -= height;
 			}
 		}
 		
-		return new Point2D.Double(x,y);
+		
+		Set<Point2D> mirrorLocations = new HashSet<>();
+		mirrorLocations.add(new Point2D.Double(this.location.getX(),this.location.getY()));
+		mirrorLocations.add(new Point2D.Double(mirrorX,this.location.getY()));
+		mirrorLocations.add(new Point2D.Double(this.location.getX(),mirrorY));
+		mirrorLocations.add(new Point2D.Double(mirrorX,mirrorY));
+		
+		return mirrorLocations;
 	}
 }

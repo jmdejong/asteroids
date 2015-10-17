@@ -60,7 +60,7 @@ public class Explosion extends GameObject {
 		int color = ((Long) json.get(6)).intValue();
 		long creationTime = ((Long) json.get(7));
 		
-		return new Explosion(new WrappablePoint(x,y), seed, radius, color, creationTime); //Client is not interested in the shooter.
+		return new Explosion(new Point2D.Double(x,y), seed, radius, color, creationTime); //Client is not interested in the shooter.
 	}
 	
 	public boolean isDestroyed(){

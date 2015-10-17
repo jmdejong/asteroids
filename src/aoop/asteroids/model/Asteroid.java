@@ -97,7 +97,7 @@ public class Asteroid extends GameObject
 		double velocityY = (double) json.get(3);
 		int radius = ((Long) json.get(4)).intValue();
 		double rotation = (double) json.get(5);
-		return new Asteroid((Point2D)new WrappablePoint(x,y),velocityX, velocityY, radius, rotation);
+		return new Asteroid(new Point2D.Double(x,y) ,velocityX, velocityY, radius, rotation);
 	}
 
 	public double getRotation() {

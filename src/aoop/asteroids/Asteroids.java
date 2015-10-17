@@ -9,7 +9,6 @@ import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.udp.Server;
-import aoop.asteroids.model.WrappablePoint;
 
 import java.awt.Point;
 import java.net.SocketException;
@@ -48,14 +47,7 @@ public class Asteroids {
 		
 		Logging.LOGGER.setLevel(Logging.loggerLevel);
 		
-		
-// 		WrappablePoint p = new WrappablePoint(10,10, 700, 700);
-// // 		p.setLocation(11,11);
-// 		Logging.LOGGER.warning(p.toString());
-// 		Logging.LOGGER.warning(Double.toString(Utils.floorMod(2.0,7.0)));
-		
-		
-		HighScores h = HighScores.getInstance();
+// 		HighScores h = HighScores.getInstance();
 		
 		
 		if (args.length == 0){

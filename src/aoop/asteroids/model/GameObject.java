@@ -23,37 +23,30 @@ public abstract class GameObject
 	
 	/* TODO:
 	 * - move worldWidth and worldHeight somewhere else and avoid using them where possible
-	 * - look critically where we actually need WrappablePoint instead of Point2D.double
 	 * - change all _X and _Y to 2d vectors (for example Point2D.double)
+	 * DONE:
 	 * - make a function getMirrorLocations that returns a list of 1, 2 of 4 points
+	 * - look critically where we actually need WrappablePoint instead of Point2D.double -> nowhere
 	 */
 	
 	public static double worldWidth = 800;
 	public static double worldHeight = 700;
-
 	
-	private WrappablePoint location;
 	
-// 	private Point2D domain = new Point((int)GameObject.worldWidth, (int)GameObject.worldHeight);
-
+	private Point2D.Double location;
+	
 	/** Velocity in X direction. */
 	protected double velocityX;
-
+	
 	/** Velocity in Y direction. */
 	protected double velocityY;
-
+	
 	/** Radius of the object. */
 	protected int radius;
-
+	
 	/** Holds true if object collided with another object, false otherwise. */
 	protected boolean destroyed;
-
-// 	/** 
-// 	 *	Counts the amount of game ticks left, until this object is allowed to 
-// 	 *	collide. 
-// 	 */
-// 	protected int stepsTilCollide;
-
+	
 	/**
 	 *	Constructs a new game object with the specified location, velocity and 
 	 *	radius.
@@ -65,11 +58,10 @@ public abstract class GameObject
 	 */
 	protected GameObject (Point2D location, double velocityX, double velocityY, int radius)
 	{
-		this.location = new WrappablePoint(location.getX(), location.getY());//, domain.getX(), domain.getY());
+		this.location = new Point2D.Double(location.getX(), location.getY());//, domain.getX(), domain.getY());
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;
 		this.radius = radius;
-// 		this.stepsTilCollide = 3;
 	}
 
 	/** Subclasses need to specify their own behaviour. */
@@ -97,13 +89,16 @@ public abstract class GameObject
 	 *
 	 *  @return the location of the object.
 	 */
-	public Point2D getLocation ()
-	{
-		return (WrappablePoint)this.location.clone();
+	public Point2D getLocation (){
+		return new Point2D.Double(this.location.getX(), this.location.getY());//this.location.clone();
+	}
+	
+	public Point2D getWrappedLocation(double width, double height){
+		return new Point2D.Double(Utils.floorMod(this.location.getX(), width), Utils.floorMod(this.location.getY(), height));
 	}
 	
 	public void setLocation(Point2D location){
-		this.location.setLocation(location);
+		this.location = new Point2D.Double(location.getX(), location.getY());//setLocation(location);
 	}
 
 	/** 
@@ -135,29 +130,11 @@ public abstract class GameObject
 	{
 		return this.destroyed;
 	}
-
-// 	/**
-// 	 *	Given some other game object, this method checks whether the current 
-// 	 *	object and the given object collide with each other. It does this by 
-// 	 *	measuring the distance between the objects and checking whether it is 
-// 	 *	larger than the sum of the radii. Furthermore both objects should be 
-// 	 *	allowed to collide.
-// 	 *
-// 	 *	@param other the other object that it may collide with.
-// 	 *	@return true if object collides with given object, false otherwise.
-// 	 */
-// 	public boolean collides (GameObject other) 
-// 	{
-// 		double distX = this.location.getX() - other.getLocation ().getX();
-// 		double distY = this.location.getY() - other.getLocation ().getY();
-// 		double distance = Math.sqrt(distX * distX + distY * distY);
-// 		
-// 		return distance < this.getRadius() + other.getRadius() && this.stepsTilCollide () == 0 && other.stepsTilCollide () == 0;
-// 	}
+	
 	
 	/** An improved version of collides that will also detect collisions through edges */
 	public boolean collidesThroughEdge(GameObject other, double width, double height){
-		Point2D thisLocation = WrappablePoint.wrap(this.location, width, height);
+		Point2D thisLocation = this.getWrappedLocation(width, height);
 		Point2D closestLocation = new Point2D.Double(
 			Utils.getClosestPoint(thisLocation.getX(), other.getLocation().getX(), width),
 			Utils.getClosestPoint(thisLocation.getY(), other.getLocation().getY(), height)
@@ -165,18 +142,6 @@ public abstract class GameObject
 		double minDistance = this.getRadius() + other.getRadius();
 		return thisLocation.distanceSq(closestLocation)<(minDistance*minDistance);
 	}
-
-// 	/**
-// 	 *	Returns the amount of game ticks it takes until this object is allowed 
-// 	 *	to collide.
-// 	 *
-// 	 *	@return the amount of game ticks it takes until this object is allowed 
-// 	 *		to collide.
-// 	 */
-// 	public int stepsTilCollide ()
-// 	{
-// 		return this.stepsTilCollide;
-// 	}
 
 	public JSONArray toJSON(){
 		JSONArray result = new JSONArray();
@@ -196,9 +161,9 @@ public abstract class GameObject
 	
 	public Collection<Point2D> getMirrorLocations(double width, double height){
 		
-		
-		double x = Utils.floorMod(this.location.getX(), width);
-		double y = Utils.floorMod(this.location.getY(), height);
+		Point2D l = this.getWrappedLocation(width, height);
+		double x = l.getX();
+		double y = l.getY();
 		double mirrorX = x;
 		double mirrorY = y;
 		

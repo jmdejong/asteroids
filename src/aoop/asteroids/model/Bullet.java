@@ -60,7 +60,7 @@ public class Bullet extends GameObject
 		this.colour = shooter.getColour();
 	}
 	
-	private Bullet (WrappablePoint location, double velocityX, double velocityY, int colour)
+	private Bullet (Point2D location, double velocityX, double velocityY, int colour)
 	{
 		super (location, velocityX, velocityY, 0);
 		this.stepsLeft = stepsLeft;
@@ -104,7 +104,7 @@ public class Bullet extends GameObject
 		double velocityX = (double) json.get(2);
 		double velocityY = (double) json.get(3);
 		int colour = ((Long) json.get(4)).intValue();
-		return new Bullet(new WrappablePoint(x,y),velocityX, velocityY, colour); //Client is not interested in the shooter.
+		return new Bullet(new Point2D.Double(x,y),velocityX, velocityY, colour); //Client is not interested in the shooter.
 	}
 	
 	public Spaceship getShooter(){

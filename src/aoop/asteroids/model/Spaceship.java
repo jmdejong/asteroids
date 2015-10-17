@@ -61,7 +61,7 @@ public class Spaceship extends GameObject
 	/** Constructs a new spaceship with default values. */
 	public Spaceship (String name)
 	{
-		this (new WrappablePoint(400.0,400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, 0);
+		this (new Point2D.Double(400.0, 400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, 0);
 		
 		this.colour = Color.getHSBColor(new Random(name.hashCode()).nextFloat(), 1, .9f).getRGB();
 	}
@@ -295,7 +295,7 @@ public class Spaceship extends GameObject
 		boolean destroyed = ((long) json.get(7)) == 1;
 		String name = (String) json.get(8);
 		int colour = ((Long) json.get(9)).intValue();
-		return new Spaceship(new WrappablePoint(x,y),velocityX, velocityY, 15, direction, isAccelerating, score, destroyed, Double.POSITIVE_INFINITY, name, colour);
+		return new Spaceship(new Point2D.Double(x,y) ,velocityX, velocityY, 15, direction, isAccelerating, score, destroyed, Double.POSITIVE_INFINITY, name, colour);
 	}
 
 	public double getDestroyTime() {

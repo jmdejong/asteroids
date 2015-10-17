@@ -10,7 +10,6 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.GameMessage;
 import aoop.asteroids.model.GameObject;
 import aoop.asteroids.model.Spaceship;
-import aoop.asteroids.model.WrappablePoint;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
@@ -141,7 +140,7 @@ public class AsteroidsPanel extends JPanel
 		for (Bullet b : this.game.getBullets ()){
 			Color c = new Color(b.getColour());
 			g.setColor(Utils.getComplementColor(c));
-			Point2D location = WrappablePoint.wrap(b.getLocation(), game.getWidth(), game.getHeight());
+			Point2D location = b.getWrappedLocation(game.getWidth(), game.getHeight());
 		    g.fillOval (((int)location.getX()) - 2, ((int)location.getY()) - 2, 5, 5);
 		}
 	}

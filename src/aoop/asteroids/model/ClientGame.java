@@ -60,7 +60,7 @@ public class ClientGame extends Observable implements Runnable{
 	
 	private boolean frozen = false;
 	
-	private Sound sound = Sound.getInstance();
+	private Sound sound = new Sound();
 	
 	private boolean aborted = false;
 	
@@ -274,9 +274,8 @@ public class ClientGame extends Observable implements Runnable{
 			return;
 		}
 		
-		Sound sound = Sound.getInstance();
-		if(!sound.hasBgmStarted()){
-			sound.playSound("background_music_bassline.wav", true);
+		if(!this.sound.hasBgmStarted()){
+			this.sound.playSound("background_music_bassline.wav", true);
 		}
 	}
 	

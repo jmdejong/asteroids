@@ -198,12 +198,8 @@ public class Game extends Observable implements Runnable
 		}
 		
 		
-		
 		this.checkCollisions ();
 		this.removeDestroyedObjects ();
-		
-// 		this.destroyAllShipsOfDisconnectedPlayers();
-		
 		
 		this.setChanged ();
 		this.notifyObservers ();
@@ -219,7 +215,7 @@ public class Game extends Observable implements Runnable
 		Point2D loc;
 		do
 		{
-			loc = new WrappablePoint (Game.rng.nextInt ((int)this.width), Game.rng.nextInt ((int)this.height));
+			loc = new Point2D.Double (Game.rng.nextInt ((int)this.width), Game.rng.nextInt ((int)this.height));
 		}
 		while (pointOverlapsCenterCircle(loc));
 		
@@ -243,7 +239,7 @@ public class Game extends Observable implements Runnable
 		return (x*x+y*y) < radius * radius;
 	}
 	
-	private boolean pointDoesNotOverlapAnySpaceships(WrappablePoint p, int radius){
+	private boolean pointDoesNotOverlapAnySpaceships(Point2D.Double p, int radius){
 		for(Spaceship s : this.getSpaceships()){
 			double x,y;
 			x = p.getX() - s.getLocation().getX();
@@ -296,11 +292,11 @@ public class Game extends Observable implements Runnable
 			
 		}
 
-		for (Asteroid a : this.asteroids)
-		{ // For all asteroids, no cross check with bullets required.
+		for (Asteroid a : this.asteroids){
+			// For all asteroids, no cross check with bullets required.
 			for(Spaceship s : this.ships){
-				if (!s.isDestroyed() && a.collidesThroughEdge(s, this.width, this.height))
-				{ // Collision with player -> destroy both objects.
+				if (!s.isDestroyed() && a.collidesThroughEdge(s, this.width, this.height)){
+					// Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();
 					this.explosions.add(new Explosion(a.getLocation(), 3*a.hashCode()+5*s.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
@@ -383,6 +379,7 @@ public class Game extends Observable implements Runnable
 	
 	protected boolean isThereOnlyOneShipLeft(){
 		if(this.ships.isEmpty()){//This situation happens before a player has joined.
+			// Do we need this if? the rest of the code would do the same
 			return false;
 		}
 		int amount = 0;
@@ -519,7 +516,7 @@ public class Game extends Observable implements Runnable
 			Spaceship s = spaceships.get(i);
 			s.reinit();
 			if(spaceships.size()==1){
-				s.setLocation(new WrappablePoint(this.width/2, this.height/2));
+				s.setLocation(new Point2D.Double(this.width/2, this.height/2));
 			}else{
 				int amount = spaceships.size();
 				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;

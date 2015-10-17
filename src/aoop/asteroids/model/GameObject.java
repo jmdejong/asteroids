@@ -48,11 +48,11 @@ public abstract class GameObject
 	/** Holds true if object collided with another object, false otherwise. */
 	protected boolean destroyed;
 
-	/** 
-	 *	Counts the amount of game ticks left, until this object is allowed to 
-	 *	collide. 
-	 */
-	protected int stepsTilCollide;
+// 	/** 
+// 	 *	Counts the amount of game ticks left, until this object is allowed to 
+// 	 *	collide. 
+// 	 */
+// 	protected int stepsTilCollide;
 
 	/**
 	 *	Constructs a new game object with the specified location, velocity and 
@@ -69,7 +69,7 @@ public abstract class GameObject
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;
 		this.radius = radius;
-		this.stepsTilCollide = 3;
+// 		this.stepsTilCollide = 3;
 	}
 
 	/** Subclasses need to specify their own behaviour. */
@@ -136,24 +136,24 @@ public abstract class GameObject
 		return this.destroyed;
 	}
 
-	/**
-	 *	Given some other game object, this method checks whether the current 
-	 *	object and the given object collide with each other. It does this by 
-	 *	measuring the distance between the objects and checking whether it is 
-	 *	larger than the sum of the radii. Furthermore both objects should be 
-	 *	allowed to collide.
-	 *
-	 *	@param other the other object that it may collide with.
-	 *	@return true if object collides with given object, false otherwise.
-	 */
-	public boolean collides (GameObject other) 
-	{
-		double distX = this.location.getX() - other.getLocation ().getX();
-		double distY = this.location.getY() - other.getLocation ().getY();
-		double distance = Math.sqrt(distX * distX + distY * distY);
-		
-		return distance < this.getRadius() + other.getRadius() && this.stepsTilCollide () == 0 && other.stepsTilCollide () == 0;
-	}
+// 	/**
+// 	 *	Given some other game object, this method checks whether the current 
+// 	 *	object and the given object collide with each other. It does this by 
+// 	 *	measuring the distance between the objects and checking whether it is 
+// 	 *	larger than the sum of the radii. Furthermore both objects should be 
+// 	 *	allowed to collide.
+// 	 *
+// 	 *	@param other the other object that it may collide with.
+// 	 *	@return true if object collides with given object, false otherwise.
+// 	 */
+// 	public boolean collides (GameObject other) 
+// 	{
+// 		double distX = this.location.getX() - other.getLocation ().getX();
+// 		double distY = this.location.getY() - other.getLocation ().getY();
+// 		double distance = Math.sqrt(distX * distX + distY * distY);
+// 		
+// 		return distance < this.getRadius() + other.getRadius() && this.stepsTilCollide () == 0 && other.stepsTilCollide () == 0;
+// 	}
 	
 	/** An improved version of collides that will also detect collisions through edges */
 	public boolean collidesThroughEdge(GameObject other, double width, double height){
@@ -166,17 +166,17 @@ public abstract class GameObject
 		return thisLocation.distanceSq(closestLocation)<(minDistance*minDistance);
 	}
 
-	/**
-	 *	Returns the amount of game ticks it takes until this object is allowed 
-	 *	to collide.
-	 *
-	 *	@return the amount of game ticks it takes until this object is allowed 
-	 *		to collide.
-	 */
-	public int stepsTilCollide ()
-	{
-		return this.stepsTilCollide;
-	}
+// 	/**
+// 	 *	Returns the amount of game ticks it takes until this object is allowed 
+// 	 *	to collide.
+// 	 *
+// 	 *	@return the amount of game ticks it takes until this object is allowed 
+// 	 *		to collide.
+// 	 */
+// 	public int stepsTilCollide ()
+// 	{
+// 		return this.stepsTilCollide;
+// 	}
 
 	public JSONArray toJSON(){
 		JSONArray result = new JSONArray();

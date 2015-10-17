@@ -42,7 +42,7 @@ public class Asteroid extends GameObject
 	public void nextStep () 
 	{
 		super.nextStep();
-		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
+// 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		this.rotation += Math.signum(this.rotation)* .005*(this.velocityX*this.velocityX + this.velocityY*this.velocityY);
 	}

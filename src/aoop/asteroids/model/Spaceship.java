@@ -170,7 +170,7 @@ public class Spaceship extends GameObject
 	{
 		super.nextStep();
 // 		Logging.LOGGER.info(this.getLocation().toString());
-		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
+// 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		// Update direction if turning.
 		if (this.left ) this.setDirection(this.getDirection() - 0.04 * Math.PI);
@@ -186,8 +186,23 @@ public class Spaceship extends GameObject
 		this.velocityY *= 0.99;
 
 		// Decrease firing step counter.
-		if (this.stepsTilFire != 0)
+		if (this.stepsTilFire != 0){
 			this.stepsTilFire--;
+		}
+		
+	}
+	
+	public Bullet makeBulletIfFiring(){
+		if (this.isFiring () && !this.isDestroyed()){
+			double direction = this.getDirection ();
+			double x = this.getLocation().getX() + Math.sin(direction)*(this.radius+1);
+			double y = this.getLocation().getY() - Math.cos(direction)*(this.radius+1);
+			Bullet bullet = new Bullet(new Point2D.Double(x,y), this.getVelocityX () + Math.sin (direction) * 15, this.getVelocityY () - Math.cos (direction) * 15, this);
+			this.setFired ();
+			return bullet;
+		} else {
+			return null;
+		}
 	}
 
 	/**

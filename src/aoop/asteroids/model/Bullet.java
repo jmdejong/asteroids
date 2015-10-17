@@ -77,7 +77,7 @@ public class Bullet extends GameObject
 	public void nextStep () 
 	{
 		super.nextStep();
-		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
+// 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		this.stepsLeft--;
 

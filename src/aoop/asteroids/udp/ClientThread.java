@@ -47,14 +47,6 @@ public class ClientThread extends BaseServerThread {
 				
 				this.client.game.playBGMIfNotAlreadyStarted();
 				break;
-// 			case ROUND_END:
-// 				Logging.LOGGER.fine("C: Round End Packet Received");
-// 				if(!this.client.isSpectator){
-// 					this.client.game.hasLost = false; //TODO: better separation of concerns?
-// 				}
-// 				this.client.game.freeze();
-// 				//TODO: More sophisticated round restart logic?
-// 				break;
 			
 			case MESSAGE_LIST:
 				Logging.LOGGER.fine("C: Message List Packet Received");

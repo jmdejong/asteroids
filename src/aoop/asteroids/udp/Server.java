@@ -22,10 +22,8 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
-import aoop.asteroids.udp.packets.PlayerLosePacket;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
-import aoop.asteroids.udp.packets.RoundEndPacket;
 
 
 public class Server extends Base implements Observer{
@@ -161,29 +159,6 @@ public class Server extends Base implements Observer{
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void sendPlayerLosePacket(int ship_index){
-		if(ship_index < 0 || ship_index > getPlayerConnections().size()){
-			return;
-		}
-		
-		InetSocketAddress connection = getPlayerConnections().get(ship_index).getSocketAddress();
-		
-		PlayerLosePacket playerLosePacket = new PlayerLosePacket();
-		try {
-			super.sendPacket(playerLosePacket.toJsonString(), connection.getAddress(), connection.getPort(), sendSocket);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void sendRoundOverPacket(){
-		try {
-			sendPacketToAll(new RoundEndPacket().toJsonString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

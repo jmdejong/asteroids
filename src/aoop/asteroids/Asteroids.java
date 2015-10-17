@@ -37,6 +37,11 @@ public class Asteroids {
 	
 	
 	
+	
+	public static double worldWidth = 800;
+	public static double worldHeight = 700;
+	
+	
 	/** 
 	 *	Main function.
 	 *

@@ -2,6 +2,7 @@ package aoop.asteroids.model;
 
 import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
+import aoop.asteroids.Asteroids;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -102,8 +103,8 @@ public class Game extends Observable implements Runnable
 	/** Initializes a new game from scratch. */
 	public Game (boolean isSinglePlayer, int roundNumber)
 	{
-		this.width = GameObject.worldWidth;
-		this.height = GameObject.worldHeight;
+		this.width = Asteroids.worldWidth;
+		this.height = Asteroids.worldHeight;
 		Game.rng = new Random ();
 		this.initGameData (roundNumber);
 		this.isSinglePlayer = isSinglePlayer;

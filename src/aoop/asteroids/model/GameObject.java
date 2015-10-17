@@ -22,16 +22,12 @@ public abstract class GameObject
 {
 	
 	/* TODO:
-	 * - move worldWidth and worldHeight somewhere else and avoid using them where possible
-	 * - change all _X and _Y to 2d vectors (for example Point2D.double)
+	 * - maybe change all _X and _Y to 2d vectors (for example Point2D.double)
 	 * DONE:
+	 * - move worldWidth and worldHeight somewhere else and avoid using them where possible
 	 * - make a function getMirrorLocations that returns a list of 1, 2 of 4 points
 	 * - look critically where we actually need WrappablePoint instead of Point2D.double -> nowhere
 	 */
-	
-	public static double worldWidth = 800;
-	public static double worldHeight = 700;
-	
 	
 	private Point2D.Double location;
 	
@@ -56,8 +52,7 @@ public abstract class GameObject
 	 *	@param velocityY velocity in Y direction.
 	 *	@param radius radius of the object.
 	 */
-	protected GameObject (Point2D location, double velocityX, double velocityY, int radius)
-	{
+	protected GameObject (Point2D location, double velocityX, double velocityY, int radius){
 		this.location = new Point2D.Double(location.getX(), location.getY());//, domain.getX(), domain.getY());
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;
@@ -70,8 +65,7 @@ public abstract class GameObject
 	}
 
 	/** Destroys the object by setting the destroyed value to true. */
-	public void destroy ()
-	{
+	public void destroy (){
 		this.destroyed = true;
 	}
 	
@@ -80,8 +74,7 @@ public abstract class GameObject
 	 *
 	 *	@return radius of the object in amount of pixels.
 	 */
-	public int getRadius ()
-	{
+	public int getRadius (){
 		return radius;
 	}
 
@@ -90,7 +83,7 @@ public abstract class GameObject
 	 *  @return the location of the object.
 	 */
 	public Point2D getLocation (){
-		return new Point2D.Double(this.location.getX(), this.location.getY());//this.location.clone();
+		return new Point2D.Double(this.location.getX(), this.location.getY());
 	}
 	
 	public Point2D getWrappedLocation(double width, double height){
@@ -98,7 +91,7 @@ public abstract class GameObject
 	}
 	
 	public void setLocation(Point2D location){
-		this.location = new Point2D.Double(location.getX(), location.getY());//setLocation(location);
+		this.location.setLocation(location);
 	}
 
 	/** 

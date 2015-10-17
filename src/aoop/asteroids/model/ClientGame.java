@@ -35,8 +35,8 @@ public class ClientGame extends Observable implements Runnable{
 	 * - Is this the right place for storing the spaceshipController? -> No. moved it to Client.
 	 */
 	
-	private double width = GameObject.worldWidth;
-	private double height = GameObject.worldHeight;
+	private double width = Asteroids.worldWidth;
+	private double height = Asteroids.worldHeight;
 	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
 	/** List of bullets. */

@@ -166,7 +166,7 @@ public class AsteroidsFrame extends JFrame
 		this.client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
 		addKeyListener(client.getController());
 		
-		ap.observeGame(client.game);
+		ap.observeGame(client.getGame());
 		cardLayout.show(cards, "game card");
 		this.requestFocusInWindow();
 	}

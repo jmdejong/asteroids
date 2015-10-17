@@ -34,7 +34,7 @@ public abstract class GameObject
 	
 	private WrappablePoint location;
 	
-	private Point2D domain = new Point((int)GameObject.worldWidth, (int)GameObject.worldHeight);
+// 	private Point2D domain = new Point((int)GameObject.worldWidth, (int)GameObject.worldHeight);
 
 	/** Velocity in X direction. */
 	protected double velocityX;
@@ -65,7 +65,7 @@ public abstract class GameObject
 	 */
 	protected GameObject (Point2D location, double velocityX, double velocityY, int radius)
 	{
-		this.location = new WrappablePoint(location.getX(), location.getY(), domain.getX(), domain.getY());
+		this.location = new WrappablePoint(location.getX(), location.getY());//, domain.getX(), domain.getY());
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;
 		this.radius = radius;
@@ -196,25 +196,28 @@ public abstract class GameObject
 	
 	public Collection<Point2D> getMirrorLocations(double width, double height){
 		
-		double mirrorX = this.location.getX();
-		double mirrorY = this.location.getY();
 		
-		if(this.location.getX() < (this.radius*2)){
+		double x = Utils.floorMod(this.location.getX(), width);
+		double y = Utils.floorMod(this.location.getY(), height);
+		double mirrorX = x;
+		double mirrorY = y;
+		
+		if(x < (this.radius*2)){
 			mirrorX += width;
-		}else if (this.location.getX() > width - (this.radius*2)){
+		}else if (x > width - (this.radius*2)){
 			mirrorX -= width;
 		}
 		
-		if (this.location.getY() < (this.radius*2)){
+		if (y < (this.radius*2)){
 			mirrorY += height;
-		}else if (this.location.getY() > height - (this.radius*2)){
+		}else if (y > height - (this.radius*2)){
 			mirrorY -= height;
 		}
 		
 		Set<Point2D> mirrorLocations = new HashSet<>();
-		mirrorLocations.add(new Point2D.Double(this.location.getX(),this.location.getY()));
-		mirrorLocations.add(new Point2D.Double(mirrorX,this.location.getY()));
-		mirrorLocations.add(new Point2D.Double(this.location.getX(),mirrorY));
+		mirrorLocations.add(new Point2D.Double(x,y));
+		mirrorLocations.add(new Point2D.Double(mirrorX,y));
+		mirrorLocations.add(new Point2D.Double(x,mirrorY));
 		mirrorLocations.add(new Point2D.Double(mirrorX,mirrorY));
 		
 		return mirrorLocations;

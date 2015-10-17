@@ -10,6 +10,7 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.GameMessage;
 import aoop.asteroids.model.GameObject;
 import aoop.asteroids.model.Spaceship;
+import aoop.asteroids.model.WrappablePoint;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Font;
@@ -50,8 +51,11 @@ public class AsteroidsPanel extends JPanel
 	
 	/* TODO:
 	 * - Consistently use addRotatedPoint or not use it at all
-	 * - Avoid using GameObject.worldWidth or GameObject.worldHeight
+	 * - Make explosions go over edges
 	 * - Show whether hosting/joining/spectating and on what address?
+	 * DONE:
+	 * - Avoid using GameObject.worldWidth or GameObject.worldHeight
+	 * 
 	 */
 	
 	/** serialVersionUID */
@@ -137,7 +141,8 @@ public class AsteroidsPanel extends JPanel
 		for (Bullet b : this.game.getBullets ()){
 			Color c = new Color(b.getColour());
 			g.setColor(Utils.getComplementColor(c));
-		    g.fillOval (((int)b.getLocation().getX()) - 2, ((int)b.getLocation().getY()) - 2, 5, 5);
+			Point2D location = WrappablePoint.wrap(b.getLocation(), game.getWidth(), game.getHeight());
+		    g.fillOval (((int)location.getX()) - 2, ((int)location.getY()) - 2, 5, 5);
 		}
 	}
 
@@ -375,8 +380,8 @@ public class AsteroidsPanel extends JPanel
 			Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
 			Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
 			
-	        finalx = (int)e.getLocation().getX() + x;
-	        finaly = (int)e.getLocation().getY() + y;
+	        finalx = (int)Utils.floorMod(e.getLocation().getX() + x, game.getWidth());
+	        finaly = (int)Utils.floorMod(e.getLocation().getY() + y, game.getHeight());
 	        
 	        
 	        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, endc}, CycleMethod.NO_CYCLE);

@@ -35,6 +35,9 @@ public class ClientGame extends Observable implements Runnable{
 	 * - Is this the right place for storing the spaceshipController? -> No. moved it to Client.
 	 */
 	
+	private double width = GameObject.worldWidth;
+	private double height = GameObject.worldHeight;
+	
 	private List <Spaceship> ships = new ArrayList<Spaceship>();
 	/** List of bullets. */
 	private List <Bullet> bullets = new ArrayList<Bullet>();
@@ -191,11 +194,11 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	public int getWidth(){
-		return (int)GameObject.worldWidth;
+		return (int)this.width;
 	}
 	
 	public int getHeight(){
-		return (int)GameObject.worldHeight;
+		return (int)this.height;
 	}
 
 	public BufferedImage getBgImage(){

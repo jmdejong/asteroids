@@ -167,10 +167,6 @@ public class AsteroidsPanel extends JPanel
 	 */
 	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius, int seed, double rotation){
 		
-		//RadialGradientPaint sunlight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)this.game.getWidth()/2, (int)this.game.getHeight()/2, new float[]{0,1}, new Color[]{new Color(191,191,191,255), new Color(191,191,191,32)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
-		
-		
-		
 		GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 		Random r = new Random(seed);
 		

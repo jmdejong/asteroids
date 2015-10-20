@@ -8,6 +8,9 @@ import java.net.InetAddress;
 import aoop.asteroids.Logging;
 
 public class BaseSender {
+	
+	protected DatagramSocket sendSocket;
+	
 	protected void sendPacket(String packet_string, InetAddress address, int port, DatagramSocket socket) throws IOException{
 		byte[] buf = packet_string.getBytes();
 		

@@ -49,7 +49,10 @@ public class Client extends Base implements Observer{
 	private long lastPacketId = 0;
 	private long lastConnectionCheckTime = 0;
 	
+	protected ClientSender sender;
 	DatagramSocket sendSocket;
+	
+	
 	
 	public Client(String host, int port, boolean isSpectator, String playerName){
 		super();
@@ -62,6 +65,7 @@ public class Client extends Base implements Observer{
 		
 		this.playerName = playerName;
 		
+		this.sender = new ClientSender();
 		this.sendSocket = createSocketOnFirstUnusedPort();
 		
 		this.game = new ClientGame();
@@ -81,8 +85,8 @@ public class Client extends Base implements Observer{
 		this.game.addMessage("Connecting to Host...");
 		
 		try {
-			this.responsesThread =  new ClientReciever(this);
-			this.responsesThread.start();
+			this.reciever =  new ClientReciever(this);
+			this.reciever.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -146,7 +150,7 @@ public class Client extends Base implements Observer{
 	
 	public void stopClient(){
 		this.game.abort();
-		this.responsesThread.stopServer();
+		this.reciever.stopServer();
 	}
 	
 	

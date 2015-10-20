@@ -50,17 +50,20 @@ public class Server extends Base implements Observer{
 	
 	private Game game;
 	
+	protected ServerSender sender;
+	
 	private DatagramSocket sendSocket;
 	
 	
 	public Server(boolean isSinglePlayer) throws SocketException{
 		super();
 		
-		this.sendSocket = new DatagramSocket(Server.UDPPort);
+		this.sender = new ServerSender();
+		//this.sendSocket = new DatagramSocket(Server.UDPPort);
 
 		try {
-			this.responsesThread = new ServerReciever(this, Server.UDPPort, this.sendSocket);
-			this.responsesThread.start();
+			this.reciever = new ServerReciever(this, Server.UDPPort, this.sendSocket);
+			this.reciever.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -80,8 +83,14 @@ public class Server extends Base implements Observer{
 	
 	
 	public void update(Observable o, Object arg){
-		this.sendGameStatePacket();
-		this.sendMessageListPacket();
+		this.sender.sendGameStatePacket(this.roundNumber,
+				this.game.getSpaceships(),
+				this.game.getBullets(),
+				this.game.getAsteroids(),
+				this.game.getExplosions(),
+				this.getPlayerConnections(),
+				this.getSpectatorConnections());
+		this.sender.sendMessageListPacket(this.game.getMessages(),this.playerConnections, this.getSpectatorConnections());
 		this.tagNonrespondingClients();
 		this.destroyAllShipsOfDisconnectedPlayers();
 		if (this.game.isGameOver()){
@@ -150,21 +159,7 @@ public class Server extends Base implements Observer{
 		
 	}
 	
-	public void sendGameStatePacket(){
-		
-		GameStatePacket gameStatePacket = new GameStatePacket(
-				this.roundNumber,
-				game.getSpaceships(),
-				game.getBullets(),
-				game.getAsteroids(),
-				game.getExplosions());
-		
-		try {
-			sendPacketToAll(gameStatePacket.toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
 	
 	public void sendPlayerLosePacket(int ship_index){
 		if(ship_index < 0 || ship_index > getPlayerConnections().size()){
@@ -181,22 +176,7 @@ public class Server extends Base implements Observer{
 		}
 	}
 	
-	public void sendRoundOverPacket(){
-		try {
-			sendPacketToAll(new RoundEndPacket().toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
-	private void sendPacketToAll(String packet_string) throws IOException{
-		for(ClientConnection connection : getPlayerConnections()){
-			super.sendPacket(packet_string, connection.getAddress(), connection.getPort(), sendSocket);
-		}
-		for(ClientConnection connection : spectatorConnections){
-			super.sendPacket(packet_string, connection.getAddress(), connection.getPort(), sendSocket);
-		}
-	}
 
 	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
 		Logging.LOGGER.fine(socketAddress.toString());
@@ -222,13 +202,7 @@ public class Server extends Base implements Observer{
 	
 
 	
-	public void sendMessageListPacket(){
-		try {
-			this.sendPacketToAll(new MessageListPacket(this.game.getMessages()).toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
 	
 	public void restartGame(){
 		++roundNumber;
@@ -358,7 +332,7 @@ public class Server extends Base implements Observer{
 	
 	public void stopServer(){
 		this.game.abort();
-		this.responsesThread.stopServer();
+		this.reciever.stopServer();
 // 		this.sendSocket.close();
 	}
 	

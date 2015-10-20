@@ -4,7 +4,6 @@ import aoop.asteroids.Logging;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Collections;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,7 +12,6 @@ import org.json.simple.JSONValue;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
-import aoop.asteroids.model.Sound;
 
 public class ClientReciever extends BaseReciever {
 	Client client;

@@ -1,23 +1,17 @@
 package aoop.asteroids.udp;
 
 import aoop.asteroids.Logging;
-import java.io.IOException;
-import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
 
 import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.model.*;
-import aoop.asteroids.udp.packets.PlayerJoinPacket;
-import aoop.asteroids.udp.packets.PlayerUpdatePacket;
-import aoop.asteroids.udp.packets.SpectatorPingPacket;
 
 public class Client extends Base implements Observer{
 	
@@ -50,7 +44,6 @@ public class Client extends Base implements Observer{
 	private long lastConnectionCheckTime = 0;
 	
 	protected ClientSender sender;
-	//DatagramSocket sendSocket;
 	
 	
 	
@@ -59,7 +52,6 @@ public class Client extends Base implements Observer{
 		
 		Logging.LOGGER.fine("New Client made.");
 		
-		//this.serverAddress = new InetSocketAddress(host, port);
 		
 		DatagramSocket connectionSocket = createSocketOnFirstUnusedPort();
 		
@@ -78,8 +70,6 @@ public class Client extends Base implements Observer{
 			this.spaceshipController = new SpaceshipController();
 		}
 		
-		
-		//sendPlayerJoinPacket();
 		Thread t = new Thread (game);
 		t.start();
 		
@@ -106,24 +96,6 @@ public class Client extends Base implements Observer{
 		
 	}
 	
-	
-	
-	/*public void sendPlayerJoinPacket(){
-		Logging.LOGGER.fine("sending join packet...");
-		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket(this.playerName);
-		try {
-			this.sendPacket(playerJoinPacket.toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
-	
-	
-	
-	public void checkIfStillConnected(){
-		
-	}
-
 	public boolean hasConnected() {
 		return hasConnected;
 	}
@@ -155,7 +127,7 @@ public class Client extends Base implements Observer{
 	
 	
 	public boolean isConnected(){
-		return this.lastPingTime > System.currentTimeMillis() - Client.MaxNonRespondTime;
+		return this.getLastPingTime() > System.currentTimeMillis() - Client.MaxNonRespondTime;
 	}
 	
 

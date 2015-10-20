@@ -3,7 +3,6 @@ package aoop.asteroids.udp;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.net.SocketException;
 
 import aoop.asteroids.Logging;
 import aoop.asteroids.gui.SpaceshipController;

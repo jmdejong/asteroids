@@ -7,7 +7,7 @@ import java.net.InetAddress;
 
 import aoop.asteroids.Logging;
 
-public class BaseSender {
+public abstract class BaseSender {
 	
 	protected DatagramSocket sendSocket;
 	BaseSender(DatagramSocket socket){

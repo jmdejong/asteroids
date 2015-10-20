@@ -2,43 +2,33 @@ package aoop.asteroids.gui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SpaceshipController implements KeyListener{
-	private boolean up,left,right,fire = false;
+	private Map<Integer,Boolean> keyStates;
+	
+	public SpaceshipController(){
+		this.keyStates = new HashMap<Integer,Boolean>();
+		this.keyStates.put(KeyEvent.VK_UP,    false);
+		this.keyStates.put(KeyEvent.VK_LEFT,  false);
+		this.keyStates.put(KeyEvent.VK_RIGHT, false);
+		this.keyStates.put(KeyEvent.VK_SPACE, false);
+	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch (e.getKeyCode ()) 
-		{
-			case KeyEvent.VK_UP:
-				this.setUp(true);
-				break;
-			case KeyEvent.VK_LEFT:
-				this.setLeft(true);
-				break;
-			case KeyEvent.VK_RIGHT:
-				this.setRight(true);
-				break;
-			case KeyEvent.VK_SPACE:
-				this.setFire(true);
+		if(this.keyStates.containsKey(e.getKeyCode())){
+			this.keyStates.remove(e.getKeyCode());
+			this.keyStates.put(e.getKeyCode(),true);
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		switch (e.getKeyCode ()) 
-		{
-			case KeyEvent.VK_UP:
-				this.setUp(false);
-				break;
-			case KeyEvent.VK_LEFT:
-				this.setLeft(false);
-				break;
-			case KeyEvent.VK_RIGHT:
-				this.setRight(false);
-				break;
-			case KeyEvent.VK_SPACE:
-				this.setFire(false);
+		if(this.keyStates.containsKey(e.getKeyCode())){
+			this.keyStates.remove(e.getKeyCode());
+			this.keyStates.put(e.getKeyCode(),false);
 		}
 		
 	}
@@ -47,35 +37,19 @@ public class SpaceshipController implements KeyListener{
 	public void keyTyped(KeyEvent e) {}
 
 	public boolean isUp() {
-		return up;
+		return keyStates.get(KeyEvent.VK_UP);
 	}
-
-	public void setUp(boolean up) {
-		this.up = up;
-	}
-
+	
 	public boolean isRight() {
-		return right;
-	}
-
-	public void setRight(boolean right) {
-		this.right = right;
+		return keyStates.get(KeyEvent.VK_RIGHT);
 	}
 
 	public boolean isFire() {
-		return fire;
-	}
-
-	public void setFire(boolean fire) {
-		this.fire = fire;
+		return keyStates.get(KeyEvent.VK_SPACE);
 	}
 
 	public boolean isLeft() {
-		return left;
-	}
-
-	public void setLeft(boolean left) {
-		this.left = left;
+		return keyStates.get(KeyEvent.VK_LEFT);
 	}
 
 }

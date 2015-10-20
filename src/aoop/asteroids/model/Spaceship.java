@@ -1,14 +1,11 @@
 package aoop.asteroids.model;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
 import org.json.simple.JSONArray;
 
-import aoop.asteroids.HighScores;
-import aoop.asteroids.Logging;
 
 /**
  *	This class represents the player in the Asteroids game. A spaceship is able 
@@ -272,6 +269,7 @@ public class Spaceship extends GameObject
 		return this.score;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
 // 		Logging.LOGGER.info(result.toString());

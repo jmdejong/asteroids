@@ -1,13 +1,9 @@
 package aoop.asteroids.model;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,9 +13,6 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import aoop.asteroids.Asteroids;
-import aoop.asteroids.Logging;
-import aoop.asteroids.gui.SpaceshipController;
-import aoop.asteroids.udp.Client;
 
 public class ClientGame extends Observable implements Runnable{
 	

@@ -5,18 +5,12 @@ import aoop.asteroids.Logging;
 import aoop.asteroids.Asteroids;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.lang.Runnable;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Observable;
 import java.util.Random;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 /**
  *	The game class is the backbone of all simulations of the asteroid game. It 
@@ -79,9 +73,6 @@ public class ServerGame extends Observable implements Runnable
 	/** Random number generator. */
 	private static Random rng;
 
-	/** Game tick counter for spawning random asteroids. */
-	private int numberOfSpawnedAsteroids;
-
 	/** Asteroid limit. */
 	private int asteroidsLimit;
 	
@@ -113,7 +104,6 @@ public class ServerGame extends Observable implements Runnable
 	/** Sets all game data to hold the values of a new game. */
 	public void initGameData (int roundNumber){
 		this.aborted = false;
-		this.numberOfSpawnedAsteroids = 0;
 		this.asteroidsLimit = roundNumber == 0 ? 0 : Math.max(1, roundNumber / 3);
 		Logging.LOGGER.fine("round number:"+roundNumber);
 		this.bullets = new ArrayList <> ();
@@ -240,19 +230,6 @@ public class ServerGame extends Observable implements Runnable
 		return (x*x+y*y) < radius * radius;
 	}
 	
-	private boolean pointDoesNotOverlapAnySpaceships(Point2D.Double p, int radius){
-		for(Spaceship s : this.getSpaceships()){
-			double x,y;
-			x = p.getX() - s.getLocation().getX();
-			y = p.getY() - s.getLocation().getY();
-			
-			if((x*x+y*y) < radius*radius){
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/** 
 	 *	Checks all objects for collisions and marks them as destroyed upon col-
 	 *	lision. All objects can collide with objects of a different type, but 

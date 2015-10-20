@@ -101,7 +101,7 @@ public class AsteroidsFrame extends JFrame
 		this.setJMenuBar (mb);
 		
 		cards = new JPanel(cardLayout);
-		cards.setPreferredSize(new Dimension(800,700));
+		cards.setPreferredSize(new Dimension(Asteroids.worldWidth,Asteroids.worldHeight));
 		
 		
 		ap = new AsteroidsPanel ();

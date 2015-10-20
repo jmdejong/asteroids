@@ -59,9 +59,9 @@ public class Spaceship extends GameObject
 	private double destroyTime = Double.POSITIVE_INFINITY;
 
 	/** Constructs a new spaceship with default values. */
-	public Spaceship (String name)
+	public Spaceship (String name, double xpos, double ypos)
 	{
-		this (new Point2D.Double(400.0, 400.0), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, 0);
+		this (new Point2D.Double(xpos, ypos), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, 0);
 		
 		this.colour = Color.getHSBColor(new Random(name.hashCode()).nextFloat(), 1, .9f).getRGB();
 	}
@@ -101,9 +101,9 @@ public class Spaceship extends GameObject
 	/** 
 	 *	Resets all parameters to default values, so a new game can be started. 
 	 */
-	public void reinit ()
+	public void reinit (double xpos,double ypos)
 	{
-		this.setLocation(new Point(400,400));
+		this.setLocation(new Point2D.Double(xpos,ypos));
 		this.velocityX      = 0;
 		this.velocityY      = 0;
 		this.setDirection(0);

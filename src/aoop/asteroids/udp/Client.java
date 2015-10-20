@@ -150,7 +150,7 @@ public class Client extends Base implements Observer{
 	
 	public void stopClient(){
 		this.game.abort();
-		this.reciever.stopServer();
+		this.reciever.stopReciever();
 	}
 	
 	

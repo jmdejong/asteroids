@@ -58,11 +58,12 @@ public class Server extends Base implements Observer{
 	public Server(boolean isSinglePlayer) throws SocketException{
 		super();
 		
-		this.sender = new ServerSender();
-		//this.sendSocket = new DatagramSocket(Server.UDPPort);
+		
+		DatagramSocket connectionSocket = new DatagramSocket(Server.UDPPort);
+		this.sender = new ServerSender(connectionSocket);
 
 		try {
-			this.reciever = new ServerReciever(this, Server.UDPPort, this.sendSocket);
+			this.reciever = new ServerReciever(this, Server.UDPPort, connectionSocket);
 			this.reciever.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -90,7 +91,7 @@ public class Server extends Base implements Observer{
 				this.game.getExplosions(),
 				this.getPlayerConnections(),
 				this.getSpectatorConnections());
-		this.sender.sendMessageListPacket(this.game.getMessages(),this.playerConnections, this.getSpectatorConnections());
+		this.sender.sendMessageListPacket(this.game.getMessages(),this.getPlayerConnections(), this.getSpectatorConnections());
 		this.tagNonrespondingClients();
 		this.destroyAllShipsOfDisconnectedPlayers();
 		if (this.game.isGameOver()){
@@ -148,8 +149,6 @@ public class Server extends Base implements Observer{
 	public void addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
 		long packetId = ((Long) packetData.get("r"));
 		
-		
-		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
 		c.setName(PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d")));
 		c.setLastPingTime(System.currentTimeMillis());
@@ -161,20 +160,6 @@ public class Server extends Base implements Observer{
 	
 	
 	
-	public void sendPlayerLosePacket(int ship_index){
-		if(ship_index < 0 || ship_index > getPlayerConnections().size()){
-			return;
-		}
-		
-		InetSocketAddress connection = getPlayerConnections().get(ship_index).getSocketAddress();
-		
-		PlayerLosePacket playerLosePacket = new PlayerLosePacket();
-		try {
-			super.sendPacket(playerLosePacket.toJsonString(), connection.getAddress(), connection.getPort(), sendSocket);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	
 
@@ -308,20 +293,10 @@ public class Server extends Base implements Observer{
 	}
 
 	public List<ClientConnection> getPlayerConnections() {
-		/*List <ClientConnection> pcs = new ArrayList <> ();
-		for (ClientConnection pc : this.playerConnections) {
-			pcs.add (pc.clone ());
-		}
-		return pcs;*/
 		return this.playerConnections;
 	}
 	
 	public List<ClientConnection> getSpectatorConnections() {
-		/*List <ClientConnection> pcs = new ArrayList <> ();
-		for (ClientConnection pc : this.spectatorConnections) {
-			pcs.add (pc.clone ());
-		}
-		return pcs;*/
 		return this.spectatorConnections;
 	}
 	
@@ -332,7 +307,7 @@ public class Server extends Base implements Observer{
 	
 	public void stopServer(){
 		this.game.abort();
-		this.reciever.stopServer();
+		this.reciever.stopReciever();
 // 		this.sendSocket.close();
 	}
 	

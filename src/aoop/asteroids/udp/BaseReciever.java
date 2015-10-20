@@ -38,12 +38,12 @@ public abstract class BaseReciever extends Thread {
 				e.printStackTrace();
 			}
 		}
-// 		socket.close();
+
 	}
 	
 	protected abstract void parsePacket(String packet_string, DatagramPacket packet);
 	
-	public void stopServer(){
+	public void stopReciever(){
 		socket.close();
 	}
 	

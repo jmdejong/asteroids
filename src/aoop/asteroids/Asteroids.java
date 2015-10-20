@@ -28,8 +28,12 @@ public class Asteroids {
 	
 	/* TODO: general
 	 * - add/update documentation
-	 * - make an interface for all object that we can serialize to json
+	 * 
 	 * - use decorator pattern more
+	 * 
+	 * 
+	 * DONE:
+	 * - make an interface for all object that we can serialize to json -> GameObject
 	 * - move global constants to this class
 	 * - move sound functions to its own (singleton?) class
 	 * - for all large classes, see if we can split them up across multiple domains

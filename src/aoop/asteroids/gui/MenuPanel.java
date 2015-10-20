@@ -304,6 +304,7 @@ public class MenuPanel extends JPanel {
 	 * These are then formatted to be a nice list.
 	 * @return the edited container
 	 */
+
 	private JPanel addHighScores(String scoreListName, List<PlayerScore> scores, JPanel container){
 		
 		container.setBorder(new TitledBorder(BorderFactory.createLineBorder(MenuPanel.BORDERCOLOR, MenuPanel.BORDERWIDTH), scoreListName, TitledBorder.CENTER, TitledBorder.TOP, container.getFont(), MenuPanel.TEXTCOLOR));
@@ -347,6 +348,7 @@ public class MenuPanel extends JPanel {
 	 * @see #makeButton(String, ActionListener)
 	 * @see #makeButton(JPanel, String, ActionListener)
 	 */
+
 	public void setButtonAction(String button_name, ActionListener action){
 		JButton button = buttons.get(button_name);
 		if(button == null){

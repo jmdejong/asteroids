@@ -32,7 +32,6 @@ public class SpaceshipController implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(this.keyStates.containsKey(e.getKeyCode())){
-			this.keyStates.remove(e.getKeyCode());
 			this.keyStates.put(e.getKeyCode(),true);
 		}
 	}
@@ -43,7 +42,6 @@ public class SpaceshipController implements KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if(this.keyStates.containsKey(e.getKeyCode())){
-			this.keyStates.remove(e.getKeyCode());
 			this.keyStates.put(e.getKeyCode(),false);
 		}
 		

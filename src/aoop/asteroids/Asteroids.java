@@ -38,8 +38,8 @@ public class Asteroids {
 	
 	
 	
-	public static int worldWidth = 1600;
-	public static int worldHeight = 960;
+	public static int worldWidth = 800;
+	public static int worldHeight = 700;
 	
 	
 	/** 

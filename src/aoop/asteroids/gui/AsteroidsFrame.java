@@ -44,8 +44,9 @@ public class AsteroidsFrame extends JFrame
 {
 	
 	/* TODO:
-	 * - reload highscores after going back to menu
 	 * - more menu options?
+	 * DONE:
+	 * - reload highscores after going back to menu
 	 * 
 	 */
 	/** serialVersionUID */
@@ -96,6 +97,7 @@ public class AsteroidsFrame extends JFrame
 			if (AsteroidsFrame.this.client != null){
 				AsteroidsFrame.this.client.stopClient();
 			}
+			AsteroidsFrame.this.mp.reloadHighScores();
 			showMenu();
 		}});
 		this.setJMenuBar (mb);

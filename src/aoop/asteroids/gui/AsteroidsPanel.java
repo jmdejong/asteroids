@@ -50,10 +50,10 @@ public class AsteroidsPanel extends JPanel
 	
 	/* TODO:
 	 * - Consistently use addRotatedPoint or not use it at all
-	 * - Make explosions go over edges
 	 * - Show whether hosting/joining/spectating and on what address?
 	 * DONE:
 	 * - Avoid using GameObject.worldWidth or GameObject.worldHeight
+	 * - Make explosions go over edges
 	 * 
 	 */
 	

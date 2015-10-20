@@ -4,8 +4,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class SpaceshipController implements KeyListener{
-	private boolean up,left,right,fire = false;
-
+	private boolean up = false;
+	private boolean left = false;
+	private boolean right = false;
+	private boolean fire = false;
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode ()) 
@@ -50,7 +53,7 @@ public class SpaceshipController implements KeyListener{
 		return up;
 	}
 
-	public void setUp(boolean up) {
+	private void setUp(boolean up) {
 		this.up = up;
 	}
 
@@ -58,7 +61,7 @@ public class SpaceshipController implements KeyListener{
 		return right;
 	}
 
-	public void setRight(boolean right) {
+	private void setRight(boolean right) {
 		this.right = right;
 	}
 
@@ -66,7 +69,7 @@ public class SpaceshipController implements KeyListener{
 		return fire;
 	}
 
-	public void setFire(boolean fire) {
+	private void setFire(boolean fire) {
 		this.fire = fire;
 	}
 
@@ -74,7 +77,7 @@ public class SpaceshipController implements KeyListener{
 		return left;
 	}
 
-	public void setLeft(boolean left) {
+	private void setLeft(boolean left) {
 		this.left = left;
 	}
 

@@ -37,11 +37,12 @@ public class MenuPanel extends JPanel {
 	 * TODO:
 	 * - Give highscores a fixed width (enough for a name of 12 chars)
 	 * - Make hightscores align to the top
+	 * DONE:
 	 * - Make a function to update the highscores
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	// why are these capitalized? they're not classes. I would use either all caps or start with a lowercase letter
+	
 	private static Color BORDERCOLOR = Color.GREEN;
 	private static Color TEXTCOLOR = Color.GREEN;
 	private static Color BACKCOLOR = Color.BLACK;

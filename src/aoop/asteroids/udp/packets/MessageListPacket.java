@@ -1,13 +1,11 @@
 package aoop.asteroids.udp.packets;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.json.simple.JSONArray;
 
 import aoop.asteroids.model.GameMessage;
-import aoop.asteroids.model.Spaceship;
 
 
 public class MessageListPacket extends Packet {

@@ -29,17 +29,17 @@ public class Client extends Base implements Observer{
 	 * - find out why message "connection with host lost" shows up at the beginning and fix
 	 */
 	
-	public InetSocketAddress serverAddress;
+	private InetSocketAddress serverAddress;
 	
 	
 	private SpaceshipController spaceshipController;
 	
-	public ClientGame game;
+	private ClientGame game;
 	
 	public static int UDPPort = 8091;
 	
 	/** if set to true, Client is in Spectator mode, and will not send any input packets.*/
-	public boolean isSpectator = false;
+	private boolean isSpectator = false;
 	
 	private String playerName;
 	
@@ -49,7 +49,8 @@ public class Client extends Base implements Observer{
 	private long lastPacketId = 0;
 	private long lastConnectionCheckTime = 0;
 	
-	DatagramSocket sendSocket;
+	
+	private DatagramSocket sendSocket;
 	
 	public Client(String host, int port, boolean isSpectator, String playerName){
 		super();
@@ -81,7 +82,7 @@ public class Client extends Base implements Observer{
 		this.game.addMessage("Connecting to Host...");
 		
 		try {
-			this.responsesThread =  new ClientThread(this);
+			this.responsesThread =  new ClientThread(this, sendSocket, game);
 			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -220,5 +221,9 @@ public class Client extends Base implements Observer{
 	public boolean hasLost(){
 		Spaceship s = game.getSpaceship(this.playerName);
 		return s!=null && s.isDestroyed();
+	}
+	
+	public ClientGame getGame(){
+		return this.game;
 	}
 }

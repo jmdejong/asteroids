@@ -141,10 +141,10 @@ public class Game extends Observable implements Runnable
 	}
 	
 	public void addSpaceship(String name, boolean startDestroyed){
-		Spaceship s = new Spaceship(name);
+		Spaceship s = new Spaceship(name, this.width/2, this.height/2);
 		
 		this.ships.add(s);
-		s.reinit();
+		s.reinit(this.width/2, this.height/2);
 		
 		if(startDestroyed){
 			s.destroy();
@@ -515,7 +515,7 @@ public class Game extends Observable implements Runnable
 		this.ships = spaceships;
 		for(int i=0;i<spaceships.size();i++){
 			Spaceship s = spaceships.get(i);
-			s.reinit();
+			s.reinit(this.width/2,this.height/2);
 			if(spaceships.size()==1){
 				s.setLocation(new Point2D.Double(this.width/2, this.height/2));
 			}else{

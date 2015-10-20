@@ -369,7 +369,7 @@ public class AsteroidsPanel extends JPanel
 			int x,y,radius, finalx, finaly;
 			x =(int)  (Math.sin(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
 			y =(int)  (Math.cos(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
-			radius = (int) (e.getRadius() + (time *.02));
+			radius = (int) (/*e.getRadius() +*/20+ (time *.02));
 			
 			int alpha = Math.max(0,255-(int)fade);
 			if(alpha > 255){
@@ -379,16 +379,23 @@ public class AsteroidsPanel extends JPanel
 			Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
 			Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
 			
-	        finalx = (int)Utils.floorMod(e.getLocation().getX() + x, game.getWidth());
-	        finaly = (int)Utils.floorMod(e.getLocation().getY() + y, game.getHeight());
+	        //finalx = (int)Utils.floorMod(e.getLocation().getX() + x, game.getWidth());
+	        //finaly = (int)Utils.floorMod(e.getLocation().getY() + y, game.getHeight());
+	        
+	        for(Point2D el : e.getMirrorLocations(game.getWidth(), game.getHeight(), radius)){
+	        	finalx =(int)(el.getX()) + x;
+	        	finaly =(int)(el.getY()) + y;
+	        	
+
+		        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, endc}, CycleMethod.NO_CYCLE);
+				g.setPaint(roundGradientPaint);
+				
+				
+				ell.setFrame (finalx - radius, finaly - radius, 2 * radius, 2 * radius);
+				g.fill(ell);
+	        }
 	        
 	        
-	        RadialGradientPaint roundGradientPaint = new RadialGradientPaint(finalx, finaly, radius, finalx, finaly, new float[]{0, 1}, new Color[]{c, endc}, CycleMethod.NO_CYCLE);
-			g.setPaint(roundGradientPaint);
-			
-			
-			ell.setFrame (finalx - radius, finaly - radius, 2 * radius, 2 * radius);
-			g.fill(ell);
 	    }
 	}
 	    

@@ -152,7 +152,13 @@ public abstract class GameObject
 	}
 	
 	
+	
 	public Collection<Point2D> getMirrorLocations(double width, double height){
+		return getMirrorLocations(width,height,this.radius);
+	
+	}
+		
+	public Collection<Point2D> getMirrorLocations(double width, double height, double radius){
 		
 		Point2D l = this.getWrappedLocation(width, height);
 		double x = l.getX();
@@ -160,15 +166,15 @@ public abstract class GameObject
 		double mirrorX = x;
 		double mirrorY = y;
 		
-		if(x < (this.radius*2)){
+		if(x < (radius*2)){
 			mirrorX += width;
-		}else if (x > width - (this.radius*2)){
+		}else if (x > width - (radius*2)){
 			mirrorX -= width;
 		}
 		
-		if (y < (this.radius*2)){
+		if (y < (radius*2)){
 			mirrorY += height;
-		}else if (y > height - (this.radius*2)){
+		}else if (y > height - (radius*2)){
 			mirrorY -= height;
 		}
 		

@@ -74,7 +74,7 @@ public class ServerGame extends Observable implements Runnable
 	private List <Explosion> explosions;
 	 
 	/** List of all messages */
-	private List <GameMessage> messages;
+	private List <Message> messages;
 
 	/** Random number generator. */
 	private static Random rng;
@@ -279,7 +279,7 @@ public class ServerGame extends Observable implements Runnable
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
 					if(/*b.getShooter() != null && */b.getShooter() != s){
 						//b.getShooter().increaseScore();
-						messages.add(new GameMessage(s.getName() + " was shot by " + b.getShooter().getName()));
+						messages.add(new Message(s.getName() + " was shot by " + b.getShooter().getName()));
 					}
 					
 					b.destroy ();
@@ -313,7 +313,7 @@ public class ServerGame extends Observable implements Runnable
 	}
 	
 	public void addMessage(String message){
-		messages.add(new GameMessage(message));
+		messages.add(new Message(message));
 	}
 
 	/**
@@ -539,12 +539,12 @@ public class ServerGame extends Observable implements Runnable
 	}
 	
 	/**
-	 * @return all currently existing GameMessages.
+	 * @return all currently existing Messages.
 	 */
 	//TODO: Why use subList() instead of just returning this.messages?
-	public List<GameMessage> getMessages(){
+	public List<Message> getMessages(){
 		checkMessages();
-		// GameMessage is immutable anyways so no need to clone the messages
+		// Message is immutable anyways so no need to clone the messages
 		return messages.subList(0, messages.size());
 	}
 	
@@ -554,7 +554,7 @@ public class ServerGame extends Observable implements Runnable
 	 */
 	public void checkMessages(){
 		for(int i=messages.size()-1;i >= 0;i--){
-			if(messages.get(i).isOver()){
+			if(messages.get(i).isDestroyed()){
 				messages.remove(i);
 			}
 		}

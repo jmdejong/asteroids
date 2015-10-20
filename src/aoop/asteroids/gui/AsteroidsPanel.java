@@ -6,7 +6,7 @@ import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Explosion;
-import aoop.asteroids.model.GameMessage;
+import aoop.asteroids.model.Message;
 import aoop.asteroids.model.Spaceship;
 import java.awt.Color;
 import java.awt.Font;
@@ -305,9 +305,9 @@ public class AsteroidsPanel extends JPanel
 	 * @param g reference to the Graphics2D object.
 	 * @param messages list of GameMessage objects to draw.
 	 */
-	private void paintGameMessages(Graphics2D g, List<GameMessage> messages){
+	private void paintGameMessages(Graphics2D g, List<Message> messages){
 		for(int i=0;i<messages.size();i++){
-			GameMessage m = messages.get(i);
+			Message m = messages.get(i);
 			String str = m.toString();
 			Logging.LOGGER.fine("opacity:"+m.getOpacity());
 			g.setFont(new Font(g.getFont().getFamily(), Font.PLAIN, 18));

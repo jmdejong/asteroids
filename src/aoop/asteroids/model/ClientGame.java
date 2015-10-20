@@ -49,7 +49,7 @@ public class ClientGame extends Observable implements Runnable{
 	private List <Explosion> explosions = new ArrayList<Explosion>();
 	
 	/** List of game messages. */
-	private List <GameMessage> messages = new ArrayList<GameMessage>();
+	private List <Message> messages = new ArrayList<Message>();
 	
 	
 	private int roundNumber = 1;
@@ -133,16 +133,12 @@ public class ClientGame extends Observable implements Runnable{
 		
 		while (!this.aborted)
 		{
-			if (true)
-			{
-				executionTime = System.currentTimeMillis ();
-				
-				
-				this.update ();
-				executionTime -= System.currentTimeMillis ();
-				sleepTime = 40 - executionTime;
-			}
-			else sleepTime = 100;
+			executionTime = System.currentTimeMillis ();
+			
+			
+			this.update ();
+			executionTime -= System.currentTimeMillis ();
+			sleepTime = 40 - executionTime;
 
 			try
 			{
@@ -177,16 +173,16 @@ public class ClientGame extends Observable implements Runnable{
 		return null;
 	}
 		
-	public List<GameMessage> getMessages() {
+	public List<Message> getMessages() {
 		return messages;
 	}
 	
 	public void addMessage(String message){
-		this.messages.add(new GameMessage(message));
+		this.messages.add(new Message(message));
 	}
 	
-	public void addPossiblyNewMessages(List<GameMessage> newMessages){
-		for(GameMessage m : newMessages){
+	public void addPossiblyNewMessages(List<Message> newMessages){
+		for(Message m : newMessages){
 			if(!this.messages.contains(m)){
 				this.messages.add(m);
 			}

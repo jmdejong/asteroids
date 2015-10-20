@@ -9,7 +9,7 @@ import java.util.Collection;
 import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.Explosion;
-import aoop.asteroids.model.GameMessage;
+import aoop.asteroids.model.Message;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
@@ -28,7 +28,7 @@ public class ServerSender extends BaseSender {
 		}
 	}
 	
-	public void sendMessageListPacket(List<GameMessage> messages, Collection<ClientConnection> playerConnections, Collection<ClientConnection> spectatorConnections){
+	public void sendMessageListPacket(List<Message> messages, Collection<ClientConnection> playerConnections, Collection<ClientConnection> spectatorConnections){
 		try {
 			this.sendPacketToAll(new MessageListPacket(messages).toJsonString(), playerConnections, spectatorConnections);
 		} catch (IOException e) {

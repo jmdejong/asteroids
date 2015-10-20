@@ -524,7 +524,7 @@ public class Game extends Observable implements Runnable
 				int radius = 50;
 				int dx = 0;
 				int dy = 0;
-				s.setLocation(new WrappablePoint(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
+				s.setLocation(new Point2D.Double(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
 				s.setDirection(Math.PI-rotation);
 			}
 			

@@ -5,8 +5,8 @@ import java.awt.geom.Point2D;
 
 public class Explosion extends GameObject {
 	
-	//public static int radius = 20;
-	public static int particleAmount = 25;
+	//public static int radius = 50;
+	public static int particleAmount = 10;
 	public static int maxTimeUntilFadeout = 2000;
 	
 	

@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import aoop.asteroids.model.Game;
+import aoop.asteroids.model.ServerGame;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
@@ -33,7 +33,7 @@ public class Server extends Base implements Observer{
 	private boolean singlePlayerMode = false;
 	private int roundNumber = 0;
 	
-	private Game game;
+	private ServerGame game;
 	
 	protected ServerSender sender;
 	
@@ -60,7 +60,7 @@ public class Server extends Base implements Observer{
 	}
 	
 	public void startFirstGame(){
-		this.game = new Game(this.isSinglePlayerMode(),roundNumber);
+		this.game = new ServerGame(this.isSinglePlayerMode(),roundNumber);
 		game.addObserver(this);
 		Thread t = new Thread (game);
 		t.start();
@@ -78,7 +78,7 @@ public class Server extends Base implements Observer{
 		this.sender.sendMessageListPacket(this.game.getMessages(),this.getPlayerConnections(), this.getSpectatorConnections());
 		this.tagNonrespondingClients();
 		this.destroyAllShipsOfDisconnectedPlayers();
-		if (this.game.isGameOver()){
+		if (this.game.hasGameRoundEnded()){
 			this.restartGame();
 		}
 	}
@@ -177,7 +177,7 @@ public class Server extends Base implements Observer{
 		++roundNumber;
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
 		this.game.deleteObserver(this);
-		this.game = new Game(this.isSinglePlayerMode(), roundNumber); //DONE: Rename Lobby
+		this.game = new ServerGame(this.isSinglePlayerMode(), roundNumber); //DONE: Rename Lobby
 		this.game.addObserver(this);
 		for(int i=this.playerConnections.size()-1;i>=0;i--){
 			ClientConnection c = playerConnections.get(i);
@@ -186,7 +186,7 @@ public class Server extends Base implements Observer{
 				spaceships.remove(i);
 			}
 		}
-		this.game.addSpaceships(spaceships);
+		this.game.setSpaceships(spaceships);
 		
 		Thread t = new Thread (game);
 		t.start();
@@ -241,8 +241,8 @@ public class Server extends Base implements Observer{
 				}
 			}
 			this.roundNumber = 0;
-			this.game = new Game(this.isSinglePlayerMode(),0);
-			this.game.addSpaceships(spaceships);
+			this.game = new ServerGame(this.isSinglePlayerMode(),0);
+			this.game.setSpaceships(spaceships);
 			Thread t = new Thread (game);
 			t.start();
 			

@@ -374,7 +374,7 @@ public class AsteroidsPanel extends JPanel
 			if(alpha > 255){
 				alpha = 0;
 			}
-			Color oc = new Color(e.getColor());
+			Color oc = new Color(e.getColour());
 			Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
 			Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
 				        

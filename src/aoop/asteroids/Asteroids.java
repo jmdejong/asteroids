@@ -7,7 +7,7 @@ import org.json.simple.JSONValue;
 
 import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.model.ClientGame;
-import aoop.asteroids.model.Game;
+import aoop.asteroids.model.ServerGame;
 import aoop.asteroids.udp.Server;
 
 import java.awt.Point;

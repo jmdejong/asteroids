@@ -82,6 +82,14 @@ public class Asteroid extends GameObject
 		return new Asteroid (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.getRotation());
 	}
 	
+	
+	/**
+	 * @return a JSONArray containing the important characteristics of this Asteroid
+	 * (Besides the spatial information, this is the radius and the rotation)
+	 * @see GameObject#toJSON()
+	 * @see Asteroid#fromJSON()
+	 */
+	@SuppressWarnings("unchecked")
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
 		result.add(this.radius);
@@ -89,6 +97,10 @@ public class Asteroid extends GameObject
 		return result;
 	}
 	
+	/**
+	 * Reconstructs an Asteroid from the given JSONArray.
+	 * @see Asteroid#toJSON()
+	 */
 	public static Asteroid fromJSON(JSONArray json){
 		double x = (double) json.get(0);
 		double y = (double) json.get(1);
@@ -99,10 +111,16 @@ public class Asteroid extends GameObject
 		return new Asteroid(new Point2D.Double(x,y) ,velocityX, velocityY, radius, rotation);
 	}
 
+	/**
+	 * @return the current rotation of this Asteroid.
+	 */
 	public double getRotation() {
 		return rotation;
 	}
 
+	/**
+	 * @param rotation The rotation that this Asteroid should have.
+	 */
 	public void setRotation(double rotation) {
 		this.rotation = rotation;
 	}

@@ -6,19 +6,14 @@ import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.ClientGame;
 import aoop.asteroids.model.Explosion;
-import aoop.asteroids.model.Game;
 import aoop.asteroids.model.GameMessage;
-import aoop.asteroids.model.GameObject;
 import aoop.asteroids.model.Spaceship;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.MultipleGradientPaint.CycleMethod;
-import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
@@ -29,11 +24,9 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.awt.FontMetrics;
 import javax.swing.JPanel;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,9 +34,9 @@ import java.util.Random;
 
 /**
  *	AsteroidsPanel extends JPanel and thus provides the actual graphical 
- *	representation of the game model.
+ *	representation of the game state.
  *
- *	@author Yannick Stoffers
+ *	@author qqwy
  */
 public class AsteroidsPanel extends JPanel
 {
@@ -86,6 +79,7 @@ public class AsteroidsPanel extends JPanel
 	
 	/**
 	 *	Method for refreshing the GUI.
+	 *  Paints the current game state on the screen.
 	 *
 	 *	@param g graphics instance to use.
 	 */
@@ -110,7 +104,6 @@ public class AsteroidsPanel extends JPanel
 		g2.fillRect(0, 0, (int)this.game.getWidth(), (int)this.game.getHeight());
 		
 		
-		//this.paintSun(g2);
 
 		this.paintBullets (g2);
 		this.paintSpaceships (g2);
@@ -130,8 +123,8 @@ public class AsteroidsPanel extends JPanel
 	}
 
 	/**
-	 *	Draws all bullets in the GUI as a yellow circle.
-	 *
+	 *	Draws all bullets in the GUI as a circle.
+	 *  The colour of the circle is the complement of the shooter's colour.
 	 *	@param g graphics instance to use.
 	 */
 	private void paintBullets (Graphics2D g)
@@ -139,15 +132,15 @@ public class AsteroidsPanel extends JPanel
 		
 		for (Bullet b : this.game.getBullets ()){
 			Color c = new Color(b.getColour());
-			g.setColor(Utils.getComplementColor(c));
+			g.setColor(Utils.getComplementColour(c));
 			Point2D location = b.getWrappedLocation(game.getWidth(), game.getHeight());
 		    g.fillOval (((int)location.getX()) - 2, ((int)location.getY()) - 2, 5, 5);
 		}
 	}
 
 	/**
-	 *	Draws all asteroids in the GUI as a filled polygon.
-	 *
+	 *	Draws all asteroids in the GUI as filled polygons.
+	 *  Wraps around the screen edges, by drawing objects that are close at both sides of the screen.
 	 *	@param g graphics instance to use.
 	 */
 	private void paintAsteroids (Graphics2D g)
@@ -163,12 +156,18 @@ public class AsteroidsPanel extends JPanel
 		}
 	}
 	
+	/**
+	 * Draws an asteroid at a certain screen location
+	 * @param g reference to the graphics object
+	 * @param x x-location on screen
+	 * @param y y-location on screen
+	 * @param radius of the asteroid
+	 * @param seed Seeds the Random Number Generator, determining the actual Asteroid's shape. This is synchronized between clients.
+	 * @param rotation The current rotation of the asteroid.
+	 */
 	private void paintAsteroidPart(Graphics2D g, int x, int y, int radius, int seed, double rotation){
-		//Ellipse2D.Double e = new Ellipse2D.Double ();
-		//e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
 		
-		
-		RadialGradientPaint sunlight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)this.game.getWidth()/2, (int)this.game.getHeight()/2, new float[]{0,1}, new Color[]{new Color(191,191,191,255), new Color(191,191,191,32)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
+		//RadialGradientPaint sunlight = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)this.game.getWidth()/2, (int)this.game.getHeight()/2, new float[]{0,1}, new Color[]{new Color(191,191,191,255), new Color(191,191,191,32)/*DARK_GRAY*/}, CycleMethod.NO_CYCLE);
 		
 		
 		
@@ -201,10 +200,7 @@ public class AsteroidsPanel extends JPanel
 				continue;
 			}
 			
-			// get the closest spaceship location
-// 			double mx = x - this.game.getWidth()/2;
 			double spaceshipX = Utils.getClosestPoint(x, s.getLocation().getX(), this.game.getWidth());
-// 			double my = y - this.game.getHeight()/2;
 			double spaceshipY = Utils.getClosestPoint(y, s.getLocation().getY(), this.game.getHeight());
 			
 			
@@ -220,28 +216,13 @@ public class AsteroidsPanel extends JPanel
 			g.setPaint(playerLight);
 			g.fill(polygon);
 		}
-		
-// 		g.setPaint(sunlight);
-// 		g.fill(polygon);
 	}
 	
-	
-	private void paintSun(Graphics2D g){
-		Ellipse2D.Double e = new Ellipse2D.Double ();
-		int radius = 100;
-		int x = (int) (this.game.getWidth() / 2);
-		int y = (int) (this.game.getHeight() / 2);
-		e.setFrame (x - radius, y - radius, 2 * radius, 2 * radius);
-		RadialGradientPaint roundGradientPaint = new RadialGradientPaint(x, y, (int) (radius*1.2), (int)this.game.getWidth()/2, (int)this.game.getHeight()/2, new float[]{0, 0.05f, 0.2f, 1}, new Color[]{Color.WHITE, new Color(0,40,41, 191), new Color(0,10,10, 0), new Color(0,0,0,0)}, CycleMethod.NO_CYCLE);
-		g.setPaint(roundGradientPaint);
-		g.fill (e);
-	}
+
 
 	/**
-	 *	Draws the player in the GUI as a see-through white triangle. If the 
-	 *	player is accelerating a yellow triangle is drawn as a simple represen-
-	 *	tation of flames from the exhaust.
-	 *
+	 *  Draws all spaceships as triangles, filled with a gradient.
+	 *  Wraps around the screen edges, by drawing objects that are close at both sides of the screen.
 	 *	@param g graphics instance to use.
 	 */
 	private void paintSpaceships (Graphics2D g)
@@ -264,6 +245,17 @@ public class AsteroidsPanel extends JPanel
 		polygon.addPoint((int)(centerX + Utils.imagMultI(dx,dy,rotationX,rotationY)), (int)(centerY + Utils.imagMultR(dx,dy,rotationX,rotationY)));
 	}
 	
+	/**
+	 *  Draws a spaceship at a certain screen position.
+	 *  A spaceship is represented by a triangle, filled with a gradient.
+	 *  If a spaceship is accelerating, it's exhaust, which has the opposite colour of the spaceship, is also drawn. 
+	 * @param g reference to the graphics object
+	 * @param x x-location on screen
+	 * @param y y-location on screen
+	 * @param direction The direction the ship is facing (in radians)
+	 * @param isAccelerating if true, the exhaust will be drawn
+	 * @param c the colour to use for this ship
+	 */
 	private void paintSpaceshipPart(Graphics2D g, int x, int y, double direction, boolean isAccelerating, Color c){
 		
 		//Draw spaceship glow
@@ -285,8 +277,7 @@ public class AsteroidsPanel extends JPanel
 			p.addPoint ((int)(x - Math.sin (direction			     ) * (25+exhaustLength)), (int)(y + Math.cos (direction			       ) * (25+exhaustLength)));
 			p.addPoint ((int)(x + Math.sin (direction + 0.9 * Math.PI) * 15 ), (int)(y - Math.cos (direction + 0.9 * Math.PI) * 15));
 			p.addPoint ((int)(x + Math.sin (direction + 1.1 * Math.PI) * 15), (int)(y - Math.cos (direction + 1.1 * Math.PI) * 15));
-			g.setColor(Utils.getComplementColor(c));
-			//g.setColor(Color.YELLOW);
+			g.setColor(Utils.getComplementColour(c));
 			g.fill(p);
 		}
 		
@@ -299,16 +290,9 @@ public class AsteroidsPanel extends JPanel
 			addRotatedPoint(p, x,y, 0,20, directionX,directionY);
 			addRotatedPoint(p, x,y, i,-16, directionX,directionY);
 			addRotatedPoint(p, x,y, -i,-16, directionX,directionY);
-			/*p.addPoint ((int)(x + Utils.imagMultI(0,20,direction_x,direction_y)), (int)(y + Utils.imagMultR(0,20,direction_x,direction_y)));
-			p.addPoint ((int)(x + Utils.imagMultI(11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(11,-16,direction_x,direction_y)));
-			p.addPoint ((int)(x + Utils.imagMultI(-11,-16,direction_x,direction_y)), (int)(y + Utils.imagMultR(-11,-16,direction_x,direction_y)))*/;
-			float ratio =.1f+.9f*(1-((float)i/11));
 			float ratio2 =.2f+1f*(1-((float)i/11));
-			Color pc = c;//.brighter().brighter();
+			Color pc = c;
 			int red,blue,green;
-			//red = Math.min(pc.getRed()/2, (int)(pc.getRed()*ratio));
-			//green = Math.min(pc.getGreen()/2, (int)(pc.getGreen()*ratio));
-			//blue = Math.min(pc.getBlue()/2, (int)(pc.getBlue()*ratio));
 			red = Math.max(0,Math.min(255,(int)(pc.getRed()*ratio2)));
 			green = Math.max(0,Math.min(255,(int)(pc.getGreen()*ratio2)));
 			blue = Math.max(0,Math.min(255,(int)(pc.getBlue()*ratio2)));
@@ -319,6 +303,12 @@ public class AsteroidsPanel extends JPanel
 		
 	}
 
+	/**
+	 * Paints GameMessage's as text-strings on top of the game.
+	 * These fade in and later fade-out, depending on their opacity.
+	 * @param g reference to the Graphics2D object.
+	 * @param messages list of GameMessage objects to draw.
+	 */
 	private void paintGameMessages(Graphics2D g, List<GameMessage> messages){
 		for(int i=0;i<messages.size();i++){
 			GameMessage m = messages.get(i);
@@ -334,6 +324,13 @@ public class AsteroidsPanel extends JPanel
 			g.drawString(str, ((int)this.game.getWidth()/2)-(stringWidth/2), ((int)this.game.getHeight()/2)+(stringHeight*i));
 		}
 	}
+	
+	/**
+	 * Paints the current player names + scores in the top right.
+	 * Scores have the same colour as the corresponding player (and ship).
+	 * Scores are ordered high-to-low (top to bottom).
+	 * @param g reference to the Graphics2D object.
+	 */
 	private void paintScores(Graphics2D g) {
 		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		FontMetrics fm = g.getFontMetrics();
@@ -356,7 +353,13 @@ public class AsteroidsPanel extends JPanel
 		}
 	}
 	
-	
+	/**
+	 * Draws an explosion on the screen.
+	 * An explosion internally has a seed, a position, a color and a current time.
+	 * From this, a pseudorandom list of particle positions are generated, and these are then drawn as circular gradients.
+	 * @param g
+	 * @param e
+	 */
 	private void paintExplosion(Graphics2D g, Explosion e){
 		Random r = new Random(e.getSeed());
 		float time = e.getTime();
@@ -367,9 +370,9 @@ public class AsteroidsPanel extends JPanel
 			double fade=(i/128.0)*time;
 			fade /= 1 - (time/(Explosion.maxTimeUntilFadeout));
 			int x,y,radius, finalx, finaly;
-			x =(int)  (Math.sin(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
-			y =(int)  (Math.cos(d)*(time*r.nextDouble())*.1);//(r.nextInt(10) - 5);
-			radius = (int) (/*e.getRadius() +*/20+ (time *.02));
+			x =(int)  (Math.sin(d)*(time*r.nextDouble())*.1);
+			y =(int)  (Math.cos(d)*(time*r.nextDouble())*.1);
+			radius = (int) (20+ (time *.02));
 			
 			int alpha = Math.max(0,255-(int)fade);
 			if(alpha > 255){
@@ -378,10 +381,7 @@ public class AsteroidsPanel extends JPanel
 			Color oc = new Color(e.getColor());
 			Color c = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(),alpha);
 			Color endc = new Color(oc.getRed(), oc.getGreen(), oc.getBlue(), 0);
-			
-	        //finalx = (int)Utils.floorMod(e.getLocation().getX() + x, game.getWidth());
-	        //finaly = (int)Utils.floorMod(e.getLocation().getY() + y, game.getHeight());
-	        
+				        
 	        for(Point2D el : e.getMirrorLocations(game.getWidth(), game.getHeight(), radius)){
 	        	finalx =(int)(el.getX()) + x;
 	        	finaly =(int)(el.getY()) + y;
@@ -398,7 +398,15 @@ public class AsteroidsPanel extends JPanel
 	        
 	    }
 	}
-	    
+	   
+	/**
+	 * Paints the background image on the screen.
+	 * This image is tiled(repeating )in both directions, and slowly moves.
+	 * @param g reference to the Graphics2D object.
+	 * @param i the image to draw
+	 * @param xoffset the amount to move it in the x-direction
+	 * @param yoffset the amount to move it in the y-direction
+	 */
     private void paintBackground(Graphics2D g, BufferedImage i, int xoffset, int yoffset){
     	int iw, ih;
     	iw = i.getWidth();

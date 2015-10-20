@@ -29,7 +29,7 @@ public class Client extends Base implements Observer{
 	 * - find out why message "connection with host lost" shows up at the beginning and fix
 	 */
 	
-	public InetSocketAddress serverAddress;
+	//public InetSocketAddress serverAddress;
 	
 	
 	private SpaceshipController spaceshipController;
@@ -50,7 +50,7 @@ public class Client extends Base implements Observer{
 	private long lastConnectionCheckTime = 0;
 	
 	protected ClientSender sender;
-	DatagramSocket sendSocket;
+	//DatagramSocket sendSocket;
 	
 	
 	
@@ -59,14 +59,15 @@ public class Client extends Base implements Observer{
 		
 		Logging.LOGGER.fine("New Client made.");
 		
-		this.serverAddress = new InetSocketAddress(host, port);
+		//this.serverAddress = new InetSocketAddress(host, port);
+		
+		DatagramSocket connectionSocket = createSocketOnFirstUnusedPort();
 		
 		this.isSpectator = isSpectator;
 		
 		this.playerName = playerName;
 		
-		this.sender = new ClientSender();
-		this.sendSocket = createSocketOnFirstUnusedPort();
+		this.sender = new ClientSender(new InetSocketAddress(host, port), connectionSocket);
 		
 		this.game = new ClientGame();
 		game.addObserver(this);
@@ -85,7 +86,7 @@ public class Client extends Base implements Observer{
 		this.game.addMessage("Connecting to Host...");
 		
 		try {
-			this.reciever =  new ClientReciever(this);
+			this.reciever =  new ClientReciever(this, connectionSocket);
 			this.reciever.start();
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -105,11 +106,9 @@ public class Client extends Base implements Observer{
 		
 	}
 	
-	private void sendPacket(String packet_string) throws IOException{
-		super.sendPacket(packet_string,serverAddress.getAddress(), serverAddress.getPort(), sendSocket); 	
-	}
 	
-	public void sendPlayerJoinPacket(){
+	
+	/*public void sendPlayerJoinPacket(){
 		Logging.LOGGER.fine("sending join packet...");
 		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket(this.playerName);
 		try {
@@ -117,24 +116,9 @@ public class Client extends Base implements Observer{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
-	public void sendPlayerUpdatePacket(SpaceshipController sc){
-		PlayerUpdatePacket playerUpdatePacket = new PlayerUpdatePacket(sc.isUp(), sc.isLeft(), sc.isRight(), sc.isFire());
-		try {
-			this.sendPacket(playerUpdatePacket.toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
-	public void sendSpectatorPingPacket(){
-		try {
-			this.sendPacket(new SpectatorPingPacket().toJsonString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public void checkIfStillConnected(){
 		
@@ -196,8 +180,8 @@ public class Client extends Base implements Observer{
 		
 		//Re-send join packets until joining succeeds.
 		long executionTime = System.currentTimeMillis();
-		if(!this.hasConnected() && this.lastConnectionCheckTime + 3000 < executionTime){
-			this.sendPlayerJoinPacket();
+		if(!this.hasConnected() && this.lastConnectionCheckTime + 1000 < executionTime){
+			this.sender.sendPlayerJoinPacket(this.playerName);
 			this.lastConnectionCheckTime = executionTime;
 		}
 		
@@ -210,9 +194,9 @@ public class Client extends Base implements Observer{
 		
 		//Otherwise, send update to server.
 		if(!this.isSpectator && !this.hasLost()){
-			this.sendPlayerUpdatePacket(this.spaceshipController);
+			this.sender.sendPlayerUpdatePacket(this.spaceshipController);
 		}else{
-			this.sendSpectatorPingPacket();
+			this.sender.sendSpectatorPingPacket();
 		}
 		
 	}

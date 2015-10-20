@@ -16,8 +16,7 @@ import aoop.asteroids.udp.packets.MessageListPacket;
 
 public class ServerSender extends BaseSender {
 	public ServerSender(DatagramSocket socket) throws SocketException{
-		super();
-		this.sendSocket = socket;
+		super(socket);
 	}
 	
 	private void sendPacketToAll(String packet_string, Collection<ClientConnection> playerConnections, Collection<ClientConnection> spectatorConnections) throws IOException{

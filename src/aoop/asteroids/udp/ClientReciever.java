@@ -2,6 +2,7 @@ package aoop.asteroids.udp;
 
 import aoop.asteroids.Logging;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Collections;
 
@@ -17,8 +18,8 @@ import aoop.asteroids.model.Sound;
 public class ClientReciever extends BaseReciever {
 	Client client;
 	
-	public ClientReciever(Client client) throws SocketException{
-		super("asteroids.udp.ClientThread",Client.UDPPort, client.sendSocket);
+	public ClientReciever(Client client, DatagramSocket socket) throws SocketException{
+		super("asteroids.udp.ClientThread",Client.UDPPort, socket);
 		this.client = client;
 	}
 

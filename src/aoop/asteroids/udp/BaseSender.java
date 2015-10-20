@@ -10,6 +10,9 @@ import aoop.asteroids.Logging;
 public class BaseSender {
 	
 	protected DatagramSocket sendSocket;
+	BaseSender(DatagramSocket socket){
+		this.sendSocket = socket;
+	}
 	
 	protected void sendPacket(String packet_string, InetAddress address, int port, DatagramSocket socket) throws IOException{
 		byte[] buf = packet_string.getBytes();

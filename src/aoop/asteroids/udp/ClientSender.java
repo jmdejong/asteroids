@@ -1,25 +1,58 @@
 package aoop.asteroids.udp;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
+
+import aoop.asteroids.Logging;
+import aoop.asteroids.gui.SpaceshipController;
+import aoop.asteroids.udp.packets.PlayerJoinPacket;
+import aoop.asteroids.udp.packets.PlayerUpdatePacket;
+import aoop.asteroids.udp.packets.SpectatorPingPacket;
 
 public class ClientSender extends BaseSender {
 	
-	ClientSender(){
-		super();
-		this.sendSocket = createSocketOnFirstUnusedPort();
+	public InetSocketAddress serverAddress;
+	
+	
+	ClientSender(InetSocketAddress serverAddress, DatagramSocket socket){
+		super(socket);
+		this.serverAddress = serverAddress;
 	}
 	
-	private DatagramSocket createSocketOnFirstUnusedPort(){
-		int port = Client.UDPPort;
-		while(port < Client.UDPPort + 100){
-			try{
-				return new DatagramSocket(port);
-			}catch(SocketException b){
-				port++;
-			}
-		}
-		return null;
-		
+	
+	private void sendPacket(String packet_string) throws IOException{
+		super.sendPacket(packet_string,serverAddress.getAddress(), serverAddress.getPort(), sendSocket); 	
 	}
+	
+
+	public void sendPlayerJoinPacket(String playerName){
+		Logging.LOGGER.fine("sending join packet...");
+		PlayerJoinPacket playerJoinPacket = new PlayerJoinPacket(playerName);
+		try {
+			this.sendPacket(playerJoinPacket.toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendPlayerUpdatePacket(SpaceshipController sc){
+		PlayerUpdatePacket playerUpdatePacket = new PlayerUpdatePacket(sc.isUp(), sc.isLeft(), sc.isRight(), sc.isFire());
+		try {
+			this.sendPacket(playerUpdatePacket.toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendSpectatorPingPacket(){
+		try {
+			this.sendPacket(new SpectatorPingPacket().toJsonString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 }

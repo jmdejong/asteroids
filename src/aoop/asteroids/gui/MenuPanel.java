@@ -63,6 +63,10 @@ public class MenuPanel extends JPanel {
 // 	private JButton connectButton;
 
 	private JTextField addressField;
+
+	private JPanel allTimeHighScores;
+	private JPanel lastHourHighScores;
+	
 	
 	public MenuPanel() {
 		
@@ -107,14 +111,14 @@ public class MenuPanel extends JPanel {
 		
 		this.add(
 			makeCompositePanel(null, BoxLayout.X_AXIS,
-				addHighScores("All Time High Scores",HighScores.getInstance().getHighScores()),
+				allTimeHighScores = addHighScores("All Time High Scores",HighScores.getInstance().getHighScores()),
 				makeCompositePanel(null, BoxLayout.Y_AXIS,
 					switchable,
 					makeCompositePanel(new Dimension(200, 300), BoxLayout.Y_AXIS, 
 							makeButton("Quit")
 					)
 				),
-				addHighScores("Last Hour High Scores",HighScores.getInstance().getLastHourHighScores())
+				lastHourHighScores = addHighScores("Last Hour High Scores",HighScores.getInstance().getLastHourHighScores())
 			)
 		);
 		
@@ -230,6 +234,10 @@ public class MenuPanel extends JPanel {
 	
 	private JPanel addHighScores(String scoreListName, List<PlayerScore> scores){
 		JPanel container = makeBox(null, BoxLayout.Y_AXIS);
+		return addHighScores(scoreListName, scores, container);
+	}
+	private JPanel addHighScores(String scoreListName, List<PlayerScore> scores, JPanel container){
+		
 		container.setBorder(new TitledBorder(BorderFactory.createLineBorder(MenuPanel.BORDERCOLOR, MenuPanel.BORDERWIDTH), scoreListName, TitledBorder.CENTER, TitledBorder.TOP, container.getFont(), MenuPanel.TEXTCOLOR));
 		container.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		
@@ -252,6 +260,13 @@ public class MenuPanel extends JPanel {
 			container.add(scoreLabel);
 		}
 		return container;
+	}
+	
+	public void reloadHighScores(){
+		this.allTimeHighScores.removeAll();
+		this.lastHourHighScores.removeAll();
+		addHighScores("All Time High Scores",HighScores.getInstance().getHighScores(), this.allTimeHighScores);
+		addHighScores("Last Hour High Scores",HighScores.getInstance().getLastHourHighScores(), this.lastHourHighScores);
 	}
 	
 	public void setButtonAction(String button_name, ActionListener action){

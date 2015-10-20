@@ -81,7 +81,7 @@ public class Client extends Base implements Observer{
 		this.game.addMessage("Connecting to Host...");
 		
 		try {
-			this.responsesThread =  new ClientThread(this);
+			this.responsesThread =  new ClientReciever(this);
 			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();

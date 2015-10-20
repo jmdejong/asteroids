@@ -13,11 +13,11 @@ import org.json.simple.JSONValue;
 import aoop.asteroids.udp.packets.Packet;
 import aoop.asteroids.udp.packets.Packet.PacketType;
 
-public class ServerThread extends BaseServerThread{
+public class ServerReciever extends BaseReciever{
 	
 	Server server;
 	
-	public ServerThread(Server server, int port, DatagramSocket socket) throws SocketException{
+	public ServerReciever(Server server, int port, DatagramSocket socket) throws SocketException{
 		super("asteroids.udp.ServerThread",port, socket);
 		this.server = server;
 	}

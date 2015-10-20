@@ -14,10 +14,10 @@ import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
 import aoop.asteroids.model.Sound;
 
-public class ClientThread extends BaseServerThread {
+public class ClientReciever extends BaseReciever {
 	Client client;
 	
-	public ClientThread(Client client) throws SocketException{
+	public ClientReciever(Client client) throws SocketException{
 		super("asteroids.udp.ClientThread",Client.UDPPort, client.sendSocket);
 		this.client = client;
 	}

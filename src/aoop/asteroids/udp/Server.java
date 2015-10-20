@@ -59,7 +59,7 @@ public class Server extends Base implements Observer{
 		this.sendSocket = new DatagramSocket(Server.UDPPort);
 
 		try {
-			this.responsesThread = new ServerThread(this, Server.UDPPort, this.sendSocket);
+			this.responsesThread = new ServerReciever(this, Server.UDPPort, this.sendSocket);
 			this.responsesThread.start();
 		} catch (SocketException e) {
 			e.printStackTrace();

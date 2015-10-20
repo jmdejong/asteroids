@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import aoop.asteroids.Logging;
 
 public class Base {
-	BaseServerThread responsesThread = null;
+	BaseReciever responsesThread = null;
 	
 	public static int MaxNonRespondTime = 5000;
 	

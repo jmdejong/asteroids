@@ -11,6 +11,7 @@
         <javac srcdir="src/" destdir="bin" debug="on">
             <classpath path="lib/javax.persistence_2.0.0.jar"/>
             <classpath path="lib/objectdb.jar"/>
+            <classpath path="lib/json_simple.jar"/>
         </javac>
     </target>
     <target name="dist" depends="compile" description="generate the distribution">

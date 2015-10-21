@@ -42,7 +42,7 @@ public class GameStatePacket extends Packet {
 	public static void decodePacket(JSONArray data, ClientGame currentGameState){
 		
 		int roundNumber =((Long)( data.get(0))).intValue();
-		currentGameState.checkIfRoundHasEndedAndUpdateRoundnumber(roundNumber);
+		currentGameState.checkIfRoundHasEndedAndUpdateRoundNumber(roundNumber);
 		
 		JSONArray jsonSpaceships = (JSONArray) data.get(1);
 		JSONArray jsonBullets = (JSONArray) data.get(2);

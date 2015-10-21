@@ -29,7 +29,7 @@ public abstract class BaseGame extends Observable{
 	protected int roundNumber = 1;
 	
 	/** 
-	 *	Indicates whether the a new game is about to be started. 
+	 *	Indicates whether the current game is about to be terminated.
 	 *
 	 *	@see #run()
 	 */

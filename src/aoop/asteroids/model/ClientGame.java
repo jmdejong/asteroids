@@ -15,8 +15,9 @@ import aoop.asteroids.Logging;
 public final class ClientGame extends BaseGame implements Runnable{
 	
 	/* TODO:
-	 * - Make this class more readable
+
 	 * Done:
+	 * - Make this class more readable
 	 * - All collections of GameObjects are now lists.
 	 * - Maybe do the sound stuff somewhere else.
 	 *   This is the model part and the sound would be the view part
@@ -27,21 +28,42 @@ public final class ClientGame extends BaseGame implements Runnable{
 	 */
 	
 	
-	
+	/**
+	 * A reference to the current image that is used as background-image.
+	 */
 	private BufferedImage bgimage;
 	
+	/**
+	 * The current offset of this background-image, as it should slowly move.
+	 */
 	private Point2D.Double bgPos = new Point2D.Double();
 	
+	/**
+	 * When set to true, the ClientGame will not run its update function; the game state will remain exactly as it is and thus the graphical output on the screen will remain the same.<br/>
+	 * This is used to `freeze` the game when the connection with the Server has been lost.
+	 */
 	private boolean frozen = false;
 	
+	/**
+	 * A reference to the Sound class, to play sounds with.
+	 */
 	private Sound sound = new Sound();
 	
-	
+	/**
+	 * The starting constructor only needs to set the round number.
+	 * The rest of the objects is filled in as soon as GameState packets are received from the Server.
+	 */
 	public ClientGame(){
 		
 		setBackgroundImage(this.roundNumber);
 	}
 	
+	/**
+	 * The background-image is chosen from a list of `tscapeN.jpg` images, where N is in the range (0..7).
+	 * The actual image used is dependent on the current round number.
+	 * The used images are tiling (repeating) in both the horizontal and the vertical direction.
+	 * @param index
+	 */
 	public void setBackgroundImage(int index){
 		try {
 			this.bgimage = ImageIO.read(new File("images/tscape"+(index%7)+".jpg"));
@@ -50,22 +72,21 @@ public final class ClientGame extends BaseGame implements Runnable{
 		}
 	}
 	
+	/**
+	 * This function is run every game tick, and updates the game state (using the predictions from calling GameObject#nextStep() on all objects), unless {@link ClientGame#isFrozen()} is true.
+	 */
 	protected void update(){
 		
 		
 		
-		for(int i = messages.size()-1; i>=0; i--){
-			if(messages.get(i).isDestroyed()){
-				messages.remove(i);
-			}
-		}
+		removeDestroyedMessages();
 		
-		if(!frozen){
+		if(!this.isFrozen()){
 			for (Asteroid a : this.asteroids) a.nextStep ();
 			for (Bullet b : this.bullets) b.nextStep ();
 			for (Spaceship s : this.spaceships) s.nextStep();
 			
-
+			
 			Random r = new Random(113*this.roundNumber);
 			double xVelocity = 3 * (r.nextDouble() - .5);
 			double yVelocity = 3 * (r.nextDouble() - .5);
@@ -77,11 +98,41 @@ public final class ClientGame extends BaseGame implements Runnable{
 		
 	}
 	
-	public void setSpaceships(List<Spaceship> ships){
-		this.spaceships = ships;
+	/**
+	 * @param ships the new spaceships to use. Also plays a `player death` sound when a spaceship has been destroyed.
+	 */
+	public void setSpaceships(List<Spaceship> spaceships){
+		int oldLivingShipsSize = 0;
+		for(Spaceship s : this.spaceships){
+			if(!s.isDestroyed()){
+				++oldLivingShipsSize;
+			}
+		}
+		int newLivingShipsSize = 0;
+		for(Spaceship s : spaceships){
+			if(!s.isDestroyed()){
+				++newLivingShipsSize;
+			}
+		}
+		if(newLivingShipsSize < oldLivingShipsSize){
+			this.sound.playSound("PlayerDeathNew0.wav");
+		}
+		
+		
+		this.spaceships = spaceships;
+	}
+	
+	/**
+	 * @param asteroids the new asteroids to use.
+	 */
+	public void setAsteroids(List<Asteroid> asteroids){
+		this.asteroids = asteroids;
 	}
 	
 	
+	/**
+	 * @param bullets the new bullets to use. Plays a `shoot` sound when a new bullet is added.
+	 */
 	public void setBullets(List<Bullet> bullets){
 		int bulletsSize = this.bullets.size();
 		
@@ -93,64 +144,10 @@ public final class ClientGame extends BaseGame implements Runnable{
 		this.bullets = bullets;
 	}
 	
-	public void setAsteroids(List<Asteroid> asteroids){
-		this.asteroids = asteroids;
-	}
-
 	
-	
-	public String toString(){
-		return "Bullets:\n" + this.bullets.toString() + "\nShips:" + this.spaceships.toString()+"\nAsteroids:"+this.asteroids.toString();
-	}
-
-	
-	
-	public Spaceship getSpaceship(String name){
-		for(Spaceship s : spaceships){
-			if(s.getName().equals(name)){
-				return s;
-			}
-		}
-		return null;
-	}
-		
-	
-	
-	
-	public void addPossiblyNewMessages(List<Message> newMessages){
-		for(Message m : newMessages){
-			if(!this.messages.contains(m)){
-				this.messages.add(m);
-			}
-		}
-	}
-	
-	
-
-	public BufferedImage getBgImage(){
-		return bgimage;
-	}
-	
-	public Point2D getBgPos(){
-		return (Point2D.Double)this.bgPos.clone();
-	}
-	
-
-	
-	public void freeze(){
-		this.frozen = true;
-		
-	}
-	public void unFreeze(){
-		if(this.frozen){
-			sound.playSound("NextLevelNew0.wav");
-			setBackgroundImage(this.roundNumber);
-		}
-		this.frozen = false;
-	}
-
-
-
+	/**
+	 * @param explosions the new explosions to use. Plays an `explosion` sound when a new explosion is added.
+	 */
 	public void setExplosions(List<Explosion> explosions) {
 		
 		int explosionsSize = this.explosions.size();
@@ -164,31 +161,88 @@ public final class ClientGame extends BaseGame implements Runnable{
 		this.explosions = explosions;
 	}
 	
+	/**
+	 * Returns a reference to the spaceship with a given name, or `null` if it does not exist in the spaceships list.
+	 * @param name the name the spaceship should have
+	 */
+	public Spaceship getSpaceship(String name){
+		for(Spaceship s : spaceships){
+			if(s.getName().equals(name)){
+				return s;
+			}
+		}
+		return null;
+	}
+		
+	/**
+	 * Adds all mesages from the list newMessages, but only if they do not yet exist in the current list of messages.
+	 */
+	public void addPossiblyNewMessages(List<Message> newMessages){
+		for(Message m : newMessages){
+			if(!this.messages.contains(m)){
+				this.messages.add(m);
+			}
+		}
+	}
+	
+	
+	/**
+	 * @return the image that should currently be used as background image.
+	 */
+	public BufferedImage getBgImage(){
+		return bgimage;
+	}
+	
+	
+	/**
+	 * @return the position that should be used as offset to draw the background image.
+	 */
+	public Point2D getBgPos(){
+		return (Point2D.Double)this.bgPos.clone();
+	}
+	
+	/**
+	 * When called, will freeze the ClientGame. All drawing and updates to GameObject positions will cease, until {@link ClientGame#unFreeze()} is called.
+	 * @see this.frozen
+	 */
+	public void freeze(){
+		this.frozen = true;
+		
+	}
+	
+	/**
+	 * Unfreezes the game.
+	 * @see ClientGame#freeze()
+	 */
+	public void unFreeze(){
+		
+		this.frozen = false;
+	}
+
+
+	/**
+	 * After calling this, this Thread will quit itself.
+	 */
 	public void abort(){
 		this.aborted = true;
 	}
 	
 	
-	/** Check if the round has ended and update round number
+	/** 
+	 * Check if the round has ended and update round number
 	 */
-	// Wow! Such name! :D
-	public void checkIfRoundHasEndedAndUpdateRoundnumber(int roundnumber){
-		if(this.roundNumber != roundnumber){
+	public void checkIfRoundHasEndedAndUpdateRoundNumber(int roundNumber){
+		if(this.roundNumber != roundNumber){
 			sound.playSound("NextLevelNew0.wav");
-			this.roundNumber = roundnumber;
-// 			this.hasLost = false;
+			this.roundNumber = roundNumber;
 			setBackgroundImage(this.roundNumber);
 			this.bgPos = new Point2D.Double(0,0);
 		}
 	}
 	
-	
-// 	public void hasLost(){
-// 		this.hasLost = true;
-// 		sound.playSound("PlayerDeathNew0.wav");
-// 	}
-	
-	
+	/**
+	 * Starts playing the Background Music if this has not already started.
+	 */
 	public void playBGMIfNotAlreadyStarted(){
 		
 		//Do not play music while waiting for a connection, to synchronize audio between multiple PC's in close physical proximity.
@@ -201,10 +255,16 @@ public final class ClientGame extends BaseGame implements Runnable{
 		}
 	}
 	
+	/**
+	 * @return true if the ClientGame is currently frozen, i.e. {@link ClientGame#freeze()} has been called before.
+	 */
 	public boolean isFrozen(){
 		return frozen;
 	}
 	
+	/**
+	 * Never true for this child class of BaseGame.
+	 */
 	public boolean hasEnded(){
 		return false;
 	}

@@ -8,6 +8,7 @@ import aoop.asteroids.model.*;
 
 public class GameStatePacket extends Packet {
 	
+	@SuppressWarnings("unchecked")
 	public GameStatePacket(
 			int roundNumber,
 			List<Spaceship> spaceships, 

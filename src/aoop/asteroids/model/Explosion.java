@@ -62,6 +62,13 @@ public class Explosion extends GameObject {
 		this.colour=colour;
 		this.creationTime = creationTime;
 	}
+	
+	/** Clones the bullet into an exact copy. */
+	@Override
+	public Explosion clone ()
+	{
+		return new Explosion (this.getLocation (), this.seed, this.radius, this.colour, this.creationTime);
+	}
 
 	
 	/**

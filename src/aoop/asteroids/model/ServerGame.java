@@ -7,6 +7,7 @@ import aoop.asteroids.Asteroids;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.lang.Runnable;
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -119,9 +120,7 @@ public class ServerGame extends Observable implements Runnable
 	}
 	
 	/** 
-	 *	Returns a clone of the ships set, preserving encapsulation.
-	 *
-	 *	@return a clone of the asteroid set.
+	 *	@return a clone of the spaceships list, preserving encapsulation.
 	 */
 	public List <Spaceship> getSpaceships(){
 		
@@ -140,11 +139,36 @@ public class ServerGame extends Observable implements Runnable
 			s.destroy();
 		}
 	}
+	
+	/**
+	 * Replaces this game's spaceships with the new list of spaceships,<br/>
+	 * Afterwards, these are all reset (set to 'alive') and positioned at the center of the screen.<br/>
+	 * Used when starting a new game round.<br/>
+	 * -> In singleplayer mode, the single ship is rendered in the middle of the screen, pointing up.<br/>
+	 * -> In multiplayer, ships are set in a circle, pointing outward.<br/>
+	 * @param spaceships the list to replace this game's spaceships with.
+	 */
+	public void setSpaceships(List<Spaceship> spaceships) {
+		this.spaceships = spaceships;
+		for(int i=0;i<spaceships.size();i++){
+			Spaceship s = spaceships.get(i);
+			s.reinit(this.width/2,this.height/2);
+			if(spaceships.size()==1){
+				s.setLocation(new Point2D.Double(this.width/2, this.height/2));
+			}else{
+				int amount = spaceships.size();
+				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
+				int radius = 50;
+				s.setLocation(new Point2D.Double(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
+				s.setDirection(Math.PI-rotation);
+			}
+			
+		}
+		
+	}
 
 	/** 
-	 *	Returns a clone of the asteroid set, preserving encapsulation.
-	 *
-	 *	@return a clone of the asteroid set.
+	 *	@return a clone of the asteroids  list, preserving encapsulation.
 	 */
 	public List <Asteroid> getAsteroids ()
 	{
@@ -154,15 +178,46 @@ public class ServerGame extends Observable implements Runnable
 	}
 
 	/** 
-	 *	Returns a clone of the bullet set, preserving encapsulation.
-	 *
-	 *	@return a clone of the bullet set.
+	 *	@return a clone of the bullets list, preserving encapsulation.
 	 */
 	public List <Bullet> getBullets ()
 	{
 		List <Bullet> c = new ArrayList <> ();
 		for (Bullet b : this.bullets) c.add (b.clone ());
 		return c;
+	}
+	
+	/**
+	 * 
+	 * @return all currently existing Explosions.
+	 */
+	public List <Explosion> getExplosions() {
+		List <Explosion> c = new ArrayList <> ();
+		for (Explosion e: this.explosions) c.add (e.clone ());
+		return c;
+	}
+	
+	/**
+	 * A cloned list is returned but as Messages are themselves immutable, this new list contains references to the actual Message objects.
+	 * <br/>
+	 * Note that checkMessages() is executed beforehand. As Messages are only used outside of ServerGame, this ensures that only messages that should still be used are returned, but they are only removed whenever we need the up-to-date message list.
+	 * @return all currently existing Messages.
+	 */
+	public List<Message> getMessages(){
+		removeDestroyedMessages();
+		return messages.subList(0, messages.size());
+	}
+	
+	/** 
+	 * Check whether each of the currently existing messages should still be shown and
+	 * removes the messages that are no longer relevant.
+	 */
+	public void removeDestroyedMessages(){
+		for(int i=messages.size()-1;i >= 0;i--){
+			if(messages.get(i).isDestroyed()){
+				messages.remove(i);
+			}
+		}
 	}
 
 	/**
@@ -190,7 +245,7 @@ public class ServerGame extends Observable implements Runnable
 		
 		
 		this.checkCollisions ();
-		this.removeDestroyedObjects ();
+		this.removeAllDestroyedObjects ();
 		
 		this.setChanged ();
 		this.notifyObservers ();
@@ -299,10 +354,10 @@ public class ServerGame extends Observable implements Runnable
 	 *	asteroids are faster than their predecessor and travel in opposite 
 	 *	direction.
 	 */
-	private void removeDestroyedObjects ()
+	private void removeAllDestroyedObjects ()
 	{
 		
-		List <Asteroid> newAsts = new ArrayList <> ();
+		/*List <Asteroid> newAsts = new ArrayList <> ();
 		for (Asteroid a : this.asteroids)
 		{
 			if (a.isDestroyed ())
@@ -327,7 +382,25 @@ public class ServerGame extends Observable implements Runnable
 			if(explosions.get(i).isDestroyed()){
 				explosions.remove(i);
 			}
+		}*/
+		this.asteroids = removeDestroyedObjects(this.asteroids);
+		this.bullets = removeDestroyedObjects(this.bullets);
+		this.explosions = removeDestroyedObjects(this.explosions);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <GO extends GameObject> List<GO> removeDestroyedObjects(List<GO> objects){
+		List<GO> newObjects = new ArrayList<>();
+		
+		for(GO object : objects){
+			if(object.isDestroyed()){
+				newObjects.addAll((Collection<? extends GO>) object.getSuccessors());
+			}else{
+				newObjects.add(object);
+			}
 		}
+		
+		return newObjects;
 	}
 
 	/**
@@ -480,62 +553,9 @@ public class ServerGame extends Observable implements Runnable
 		}
 	}
 	
-	/**
-	 * Replaces this game's spaceships with the new list of spaceships,<br/>
-	 * Afterwards, these are all reset (set to 'alive') and positioned at the center of the screen.<br/>
-	 * Used when starting a new game round.<br/>
-	 * -> In singleplayer mode, the single ship is rendered in the middle of the screen, pointing up.<br/>
-	 * -> In multiplayer, ships are set in a circle, pointing outward.<br/>
-	 * @param spaceships the list to replace this game's spaceships with.
-	 */
-	public void setSpaceships(List<Spaceship> spaceships) {
-		this.spaceships = spaceships;
-		for(int i=0;i<spaceships.size();i++){
-			Spaceship s = spaceships.get(i);
-			s.reinit(this.width/2,this.height/2);
-			if(spaceships.size()==1){
-				s.setLocation(new Point2D.Double(this.width/2, this.height/2));
-			}else{
-				int amount = spaceships.size();
-				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
-				int radius = 50;
-				s.setLocation(new Point2D.Double(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
-				s.setDirection(Math.PI-rotation);
-			}
-			
-		}
-		
-	}
+	
 
-	/**
-	 * 
-	 * @return all currently existing Explosions.
-	 */
-	public List <Explosion> getExplosions() {
-		return explosions;
-	}
-	
-	/**
-	 * @return all currently existing Messages.
-	 */
-	//TODO: Why use subList() instead of just returning this.messages?
-	public List<Message> getMessages(){
-		checkMessages();
-		// Message is immutable anyways so no need to clone the messages
-		return messages.subList(0, messages.size());
-	}
-	
-	/** 
-	 * Check whether each of the currently existing messages should still be shown and
-	 * removes the messages that are no longer relevant.
-	 */
-	public void checkMessages(){
-		for(int i=messages.size()-1;i >= 0;i--){
-			if(messages.get(i).isDestroyed()){
-				messages.remove(i);
-			}
-		}
-	}
+
 
 	
 	/**

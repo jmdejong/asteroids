@@ -15,9 +15,7 @@ import org.json.simple.JSONArray;
  */
 public class Bullet extends GameObject
 {
-	/* TODO:
-	 * - don't use the number of steps, but the distance traveled
-	 */
+
 	/** 
 	 *	The amount of steps this bullet still is allowed to live. When this 
 	 *	value drops below 0, the bullet is removed from the game model.
@@ -97,6 +95,7 @@ public class Bullet extends GameObject
 	}
 
 	/** Clones the bullet into an exact copy. */
+	@Override
 	public Bullet clone ()
 	{
 		return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.stepsLeft, this.shooter);

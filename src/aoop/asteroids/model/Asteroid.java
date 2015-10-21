@@ -3,6 +3,7 @@ package aoop.asteroids.model;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import org.json.simple.JSONArray;
@@ -51,7 +52,8 @@ public class Asteroid extends GameObject
 	 *
 	 *	@return a collection of the successors.
 	 */
-	public Collection <Asteroid> getSuccessors ()
+	@Override
+	public List<? extends GameObject> getSuccessors ()
 	{
 		Collection <Asteroid> list = new ArrayList <> ();
 		Random r = new Random();
@@ -72,7 +74,7 @@ public class Asteroid extends GameObject
 				r.nextDouble()*Math.PI*2 - Math.PI
 			));
 		}
-		return list;
+		return (List<? extends GameObject>) list;
 	}
 
 

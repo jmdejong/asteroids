@@ -4,6 +4,8 @@ package aoop.asteroids.model;
 import aoop.asteroids.Utils;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Collection;
@@ -131,6 +133,16 @@ public abstract class GameObject
 		return this.destroyed;
 	}
 	
+	/**
+	 * The default implementation of getSuccessors is to return an empty list.
+	 * Note that specifically Asteroid overrides this functionality.
+	 * @see Asteroid#getSuccessors()
+	 * @return an empty list.
+	 */
+	public List<? extends GameObject> getSuccessors(){
+		return new ArrayList<>();
+	}
+	
 	
 	/** 
 	 * An improved version of the collision detection that will also detect collisions through world-wrap edges 
@@ -161,11 +173,6 @@ public abstract class GameObject
 		
 		
 		return result;
-	}
-	
-	//TODO: This method was used for testing. Maybe remove now? 
-	public String toString(){
-		return this.getClass().toString() + "destroyed?"+this.isDestroyed()+";x="+this.location.getX()+";y="+this.location.getY()+";vX="+this.velocityX+";vY="+this.velocityY;
 	}
 	
 	

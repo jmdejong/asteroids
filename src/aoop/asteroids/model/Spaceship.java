@@ -208,6 +208,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@return an exact copy of the spaceship.
 	 */
+	@Override
 	public Spaceship clone ()
 	{
 		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.getDirection(), this.up, this.score, this.isDestroyed(), this.destroyTime, this.getName(), this.getColour());

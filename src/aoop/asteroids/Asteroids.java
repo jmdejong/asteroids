@@ -29,10 +29,11 @@ public class Asteroids {
 	/* TODO: general
 	 * - add/update documentation
 	 * - make an interface for all object that we can serialize to json
-	 * - use decorator pattern more
 	 * - move global constants to this class
-	 * - move sound functions to its own (singleton?) class
 	 * - for all large classes, see if we can split them up across multiple domains
+	 * DONE:
+	 * - use decorator pattern more
+	 * - move sound functions to its own (singleton?) class
 	 */
 	
 	

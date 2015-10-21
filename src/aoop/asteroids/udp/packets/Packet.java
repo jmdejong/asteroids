@@ -23,6 +23,7 @@ public class Packet {
 		this.timestamp = System.currentTimeMillis();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String toJsonString(){
 		JSONObject obj = new JSONObject();
 		obj.put("t",type.ordinal());

@@ -23,7 +23,7 @@ import aoop.asteroids.udp.Server;
  *	AsteroidsFrame is a class that extends JFrame and thus provides a game 
  *	window for the Asteroids game.
  *
- *	@author Yannick Stoffers
+ *	@author Yannick Stoffers, qqwy
  */
 public class AsteroidsFrame extends JFrame
 {
@@ -159,15 +159,18 @@ public class AsteroidsFrame extends JFrame
 		this.requestFocusInWindow();
 	}
 	
+	/**
+	 * Shows the menu (and hides the game).
+	 */
 	private void showMenu(){
 		
 		cardLayout.show(cards, "menu card");
 		this.pack();
 	}
 	
-	/** Starts a new game as a client. 
+	/** Starts a new game as a client, and shows it in the layout.
 	 * @param address the address of the server
-	 * @param isSpectator whether the player should be only a spectator
+	 * @param isSpectator whether the player should be only a spectator(true) or an actual player(false)
 	 */
 	public void startGame(String address, Boolean isSpectator){
 		

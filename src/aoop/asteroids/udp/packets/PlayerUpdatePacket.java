@@ -5,6 +5,7 @@ import org.json.simple.JSONArray;
 import aoop.asteroids.model.Spaceship;
 
 public class PlayerUpdatePacket extends Packet {
+	@SuppressWarnings("unchecked")
 	public PlayerUpdatePacket(boolean up, boolean left, boolean right, boolean fire){
 		super(Packet.PacketType.PLAYER_UPDATE, new JSONArray());
 		this.data.add(up ? 1 : 0);

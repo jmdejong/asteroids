@@ -10,6 +10,7 @@ import aoop.asteroids.model.Message;
 
 public class MessageListPacket extends Packet {
 
+	@SuppressWarnings("unchecked")
 	public MessageListPacket(List<Message> messages){
 		super(Packet.PacketType.MESSAGE_LIST, new JSONArray());
 		

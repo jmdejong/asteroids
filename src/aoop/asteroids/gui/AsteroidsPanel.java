@@ -331,7 +331,7 @@ public class AsteroidsPanel extends JPanel
 		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
 		FontMetrics fm = g.getFontMetrics();
 		int yPos = 5;
-		List<Spaceship> spaceships = new ArrayList(this.game.getSpaceships());
+		List<Spaceship> spaceships = new ArrayList<Spaceship>(this.game.getSpaceships());
 		Collections.sort(spaceships, new Comparator<Spaceship>(){public int compare(Spaceship s0, Spaceship s1){
 			return s0.getScore() - s1.getScore();
 		}});

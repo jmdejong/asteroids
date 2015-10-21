@@ -9,9 +9,10 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
-
-// import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
+/*
+ * TODO: 
+ * - Maybe think of a way to re-try highscores loading if application started twice in quick succession (while other instance has locked database).
+ */
 public class HighScores {
 	
 	private static HighScores instance = null;
@@ -20,8 +21,6 @@ public class HighScores {
 	
 	
 	private HighScores(){
-        
-		
 	}
 	
 
@@ -34,13 +33,10 @@ public class HighScores {
 	}
 	
 	public void saveScore(String name, long score){
-		//long oldScore = getScore(name);
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory(dbname);
 		EntityManager em = emf.createEntityManager();
 		PlayerScore ps = getScoreObj(em, name);
 		
-		// please don't use severe all the time
-		// or if you do, change it back afterwards
 		Logging.LOGGER.fine("name: "+name+ " score:"+score+" oldScore:"+ps);
 		
 		if(ps == null || score > ps.getScore()){

@@ -377,9 +377,6 @@ public final class ServerGame extends BaseGame implements Runnable
 	}
 	
 	
-
-
-
 	
 	/**
 	 * In this function, all victory conditions are checked.<br/>

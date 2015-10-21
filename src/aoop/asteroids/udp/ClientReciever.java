@@ -41,23 +41,15 @@ public class ClientReciever extends BaseReciever {
 				Logging.LOGGER.fine("C: Gamestate Packet Received");
 				Logging.LOGGER.fine(packetData.toString());
 				this.client.confirmConnectionExistance();
-				this.client.game.unFreeze();
-				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), client.game);
+				this.client.getGame().unFreeze();
+				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), client.getGame());
 				
-				this.client.game.playBGMIfNotAlreadyStarted();
+				this.client.getGame().playBGMIfNotAlreadyStarted();
 				break;
-// 			case ROUND_END:
-// 				Logging.LOGGER.fine("C: Round End Packet Received");
-// 				if(!this.client.isSpectator){
-// 					this.client.game.hasLost = false; //TODO: better separation of concerns?
-// 				}
-// 				this.client.game.freeze();
-// 				//TODO: More sophisticated round restart logic?
-// 				break;
 			
 			case MESSAGE_LIST:
 				Logging.LOGGER.fine("C: Message List Packet Received");
-				client.game.addPossiblyNewMessages(MessageListPacket.decodePacket((JSONArray) packetData.get("d")));
+				this.client.getGame().addPossiblyNewMessages(MessageListPacket.decodePacket((JSONArray) packetData.get("d")));
 				break;
 			default:
 				Logging.LOGGER.fine("C: packet received with type: "+packet_type);

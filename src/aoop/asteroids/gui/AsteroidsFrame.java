@@ -44,8 +44,9 @@ public class AsteroidsFrame extends JFrame
 {
 	
 	/* TODO:
-	 * - reload highscores after going back to menu
 	 * - more menu options?
+	 * DONE:
+	 * - reload highscores after going back to menu
 	 * 
 	 */
 	/** serialVersionUID */
@@ -96,6 +97,7 @@ public class AsteroidsFrame extends JFrame
 			if (AsteroidsFrame.this.client != null){
 				AsteroidsFrame.this.client.stopClient();
 			}
+			AsteroidsFrame.this.mp.reloadHighScores();
 			showMenu();
 		}});
 		this.setJMenuBar (mb);
@@ -166,7 +168,7 @@ public class AsteroidsFrame extends JFrame
 		this.client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
 		addKeyListener(client.getController());
 		
-		ap.observeGame(client.game);
+		ap.observeGame(client.getGame());
 		cardLayout.show(cards, "game card");
 		this.requestFocusInWindow();
 	}

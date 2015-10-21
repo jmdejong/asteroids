@@ -23,7 +23,7 @@ public class Client extends Base implements Observer{
 	 * - find out why message "connection with host lost" shows up at the beginning and fix
 	 */
 	
-	//public InetSocketAddress serverAddress;
+	//private InetSocketAddress serverAddress;
 	
 	/**
 	 * Reference to the SpaceshipController, that implements KeyListener so we know how the player want to move their spaceship.
@@ -33,7 +33,7 @@ public class Client extends Base implements Observer{
 	/**
 	 * Reference to the ClientGame, which contains the last game state we recieved from the server, and after this attempts to move this game state visually forward by predicting the movement of the game objects (assuming no change in ship controlling or collisions).
 	 */
-	public ClientGame game;
+	private ClientGame game;
 	
 	/**
 	 * The port that the Client will try to create a Socket on, by default.
@@ -45,7 +45,8 @@ public class Client extends Base implements Observer{
 	/** if set to true, Client is in Spectator mode, and will not send any PlayerInput packets.
 	 * Instead, SpectatorPing packets are sent, to let the server know that this client is still connected and watching.
 	 * */
-	public boolean isSpectator = false;
+	private boolean isSpectator = false;
+
 	
 	/**
 	 * The name the player chose for themselves. This is used for determining the high scores.
@@ -77,7 +78,6 @@ public class Client extends Base implements Observer{
 	 * A reference to the ClientSender that is in charge of creating and sending the actual packets of the data we provide it with.
 	 */
 	protected ClientSender sender;
-	
 	
 	
 	public Client(String host, int port, boolean isSpectator, String playerName){
@@ -213,5 +213,9 @@ public class Client extends Base implements Observer{
 	public boolean hasLost(){
 		Spaceship s = game.getSpaceship(this.playerName);
 		return s!=null && s.isDestroyed();
+	}
+	
+	public ClientGame getGame(){
+		return this.game;
 	}
 }

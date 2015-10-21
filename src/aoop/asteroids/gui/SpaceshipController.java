@@ -13,6 +13,7 @@ import java.util.Map;
  *
  */
 public class SpaceshipController implements KeyListener{
+	
 	private Map<Integer,Boolean> keyStates;
 	
 	/**
@@ -67,7 +68,7 @@ public class SpaceshipController implements KeyListener{
 	public boolean isRight() {
 		return keyStates.get(KeyEvent.VK_RIGHT);
 	}
-
+	
 	/**
 	 * @return if the 'left' key is currently pressed, which makes the spaceship rotate left.
 	 */
@@ -81,7 +82,5 @@ public class SpaceshipController implements KeyListener{
 	public boolean isFire() {
 		return keyStates.get(KeyEvent.VK_SPACE);
 	}
-
-	
 
 }

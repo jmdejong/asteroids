@@ -18,10 +18,10 @@ import org.json.simple.JSONArray;
 public class Message {
 	
 	/* TODO:
-	 * - find some way to annotate that GameMessage objects are immutable
-	
 	 * DONE:
 	 * - rename to Message?
+	 * not needed:
+	 * - find some way to annotate that GameMessage objects are immutable
 	 */
 	
 	/**

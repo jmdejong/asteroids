@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import aoop.asteroids.model.ServerGame;
 import aoop.asteroids.model.Spaceship;
+
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 
@@ -143,10 +144,6 @@ public class Server extends Base implements Observer{
 	}
 	
 	
-	
-	
-	
-
 	public void updatePlayerShip(JSONArray packet_data, SocketAddress socketAddress) {
 		Logging.LOGGER.fine(socketAddress.toString());
 		int index = getPlayerConnections().indexOf(new ClientConnection((InetSocketAddress)socketAddress));

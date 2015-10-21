@@ -6,11 +6,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-public abstract class BaseServerThread extends Thread {
+public abstract class BaseReciever extends Thread {
 	boolean stopServer = false;
 	protected DatagramSocket socket = null;
 	
-	public BaseServerThread(String name, int port, DatagramSocket socket) throws SocketException{
+	public BaseReciever(String name, int port, DatagramSocket socket) throws SocketException{
 		super(name);
 		this.socket = socket;//new DatagramSocket(port);
 		
@@ -38,12 +38,12 @@ public abstract class BaseServerThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-// 		socket.close();
+
 	}
 	
 	protected abstract void parsePacket(String packet_string, DatagramPacket packet);
 	
-	public void stopServer(){
+	public void stopReciever(){
 		socket.close();
 	}
 	

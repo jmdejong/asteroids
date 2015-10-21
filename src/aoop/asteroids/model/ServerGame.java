@@ -5,18 +5,13 @@ import aoop.asteroids.Logging;
 import aoop.asteroids.Asteroids;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.lang.Runnable;
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Observable;
 import java.util.Random;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 /**
  *	The game class is the backbone of all simulations of the asteroid game. It 
@@ -36,7 +31,7 @@ import org.json.simple.JSONValue;
  *		<li> Destroying an asteroid spawns two smaller asteroids. I.e. large 
  *			asteroids spawn two medium asteroids and medium asteroids spawn two 
  *			small asteroids upon destruction. </li>
- *		<li> The player dies upon colliding with either a buller or an 
+ *		<li> The player dies upon colliding with either a bullet or an 
  *			asteroid. </li>
  *		<li> Destroying every 5th asteroid increases the asteroid limit by 1, 
  *			increasing the difficulty. </li>
@@ -48,7 +43,7 @@ import org.json.simple.JSONValue;
  *
  *	@author Yannick Stoffers
  */
-public class Game extends Observable implements Runnable
+public class ServerGame extends Observable implements Runnable
 {
 	
 	/* TODO:
@@ -62,7 +57,7 @@ public class Game extends Observable implements Runnable
 	public static long waitingTime = 3000;
 	
 	/** List of spaceships. */
-	private List<Spaceship> ships;
+	private List<Spaceship> spaceships;
 
 	/** List of bullets. */
 	private List <Bullet> bullets;
@@ -74,13 +69,10 @@ public class Game extends Observable implements Runnable
 	private List <Explosion> explosions;
 	 
 	/** List of all messages */
-	private List <GameMessage> messages;
+	private List <Message> messages;
 
 	/** Random number generator. */
 	private static Random rng;
-
-	/** Game tick counter for spawning random asteroids. */
-	private int numberOfSpawnedAsteroids;
 
 	/** Asteroid limit. */
 	private int asteroidsLimit;
@@ -101,11 +93,11 @@ public class Game extends Observable implements Runnable
 	private long startCountdownTime = 0;
 
 	/** Initializes a new game from scratch. */
-	public Game (boolean isSinglePlayer, int roundNumber)
+	public ServerGame (boolean isSinglePlayer, int roundNumber)
 	{
 		this.width = Asteroids.worldWidth;
 		this.height = Asteroids.worldHeight;
-		Game.rng = new Random ();
+		ServerGame.rng = new Random ();
 		this.initGameData (roundNumber);
 		this.isSinglePlayer = isSinglePlayer;
 	}
@@ -113,12 +105,11 @@ public class Game extends Observable implements Runnable
 	/** Sets all game data to hold the values of a new game. */
 	public void initGameData (int roundNumber){
 		this.aborted = false;
-		this.numberOfSpawnedAsteroids = 0;
 		this.asteroidsLimit = roundNumber == 0 ? 0 : Math.max(1, roundNumber / 3);
 		Logging.LOGGER.fine("round number:"+roundNumber);
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();
-		this.ships = new ArrayList<> ();
+		this.spaceships = new ArrayList<> ();
 		this.explosions = new ArrayList<> ();
 		this.messages = new ArrayList<>();
 		//this.ship.reinit ();
@@ -129,32 +120,55 @@ public class Game extends Observable implements Runnable
 	}
 	
 	/** 
-	 *	Returns a clone of the ships set, preserving encapsulation.
-	 *
-	 *	@return a clone of the asteroid set.
+	 *	@return a clone of the spaceships list, preserving encapsulation.
 	 */
 	public List <Spaceship> getSpaceships(){
 		
 		List <Spaceship> c = new ArrayList <> ();
-		for (Spaceship s : this.ships) c.add (s.clone ());
+		for (Spaceship s : this.spaceships) c.add (s.clone ());
 		return c;
 	}
 	
 	public void addSpaceship(String name, boolean startDestroyed){
 		Spaceship s = new Spaceship(name, this.width/2, this.height/2);
 		
-		this.ships.add(s);
+		this.spaceships.add(s);
 		s.reinit(this.width/2, this.height/2);
 		
 		if(startDestroyed){
 			s.destroy();
 		}
 	}
+	
+	/**
+	 * Replaces this game's spaceships with the new list of spaceships,<br/>
+	 * Afterwards, these are all reset (set to 'alive') and positioned at the center of the screen.<br/>
+	 * Used when starting a new game round.<br/>
+	 * -> In singleplayer mode, the single ship is rendered in the middle of the screen, pointing up.<br/>
+	 * -> In multiplayer, ships are set in a circle, pointing outward.<br/>
+	 * @param spaceships the list to replace this game's spaceships with.
+	 */
+	public void setSpaceships(List<Spaceship> spaceships) {
+		this.spaceships = spaceships;
+		for(int i=0;i<spaceships.size();i++){
+			Spaceship s = spaceships.get(i);
+			s.reinit(this.width/2,this.height/2);
+			if(spaceships.size()==1){
+				s.setLocation(new Point2D.Double(this.width/2, this.height/2));
+			}else{
+				int amount = spaceships.size();
+				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
+				int radius = 50;
+				s.setLocation(new Point2D.Double(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
+				s.setDirection(Math.PI-rotation);
+			}
+			
+		}
+		
+	}
 
 	/** 
-	 *	Returns a clone of the asteroid set, preserving encapsulation.
-	 *
-	 *	@return a clone of the asteroid set.
+	 *	@return a clone of the asteroids  list, preserving encapsulation.
 	 */
 	public List <Asteroid> getAsteroids ()
 	{
@@ -164,15 +178,46 @@ public class Game extends Observable implements Runnable
 	}
 
 	/** 
-	 *	Returns a clone of the bullet set, preserving encapsulation.
-	 *
-	 *	@return a clone of the bullet set.
+	 *	@return a clone of the bullets list, preserving encapsulation.
 	 */
 	public List <Bullet> getBullets ()
 	{
 		List <Bullet> c = new ArrayList <> ();
 		for (Bullet b : this.bullets) c.add (b.clone ());
 		return c;
+	}
+	
+	/**
+	 * 
+	 * @return all currently existing Explosions.
+	 */
+	public List <Explosion> getExplosions() {
+		List <Explosion> c = new ArrayList <> ();
+		for (Explosion e: this.explosions) c.add (e.clone ());
+		return c;
+	}
+	
+	/**
+	 * A cloned list is returned but as Messages are themselves immutable, this new list contains references to the actual Message objects.
+	 * <br/>
+	 * Note that checkMessages() is executed beforehand. As Messages are only used outside of ServerGame, this ensures that only messages that should still be used are returned, but they are only removed whenever we need the up-to-date message list.
+	 * @return all currently existing Messages.
+	 */
+	public List<Message> getMessages(){
+		removeDestroyedMessages();
+		return messages.subList(0, messages.size());
+	}
+	
+	/** 
+	 * Check whether each of the currently existing messages should still be shown and
+	 * removes the messages that are no longer relevant.
+	 */
+	public void removeDestroyedMessages(){
+		for(int i=messages.size()-1;i >= 0;i--){
+			if(messages.get(i).isDestroyed()){
+				messages.remove(i);
+			}
+		}
 	}
 
 	/**
@@ -190,7 +235,7 @@ public class Game extends Observable implements Runnable
 		for (Bullet b : this.bullets){
 			b.nextStep ();
 		}
-		for (Spaceship s : this.ships) {
+		for (Spaceship s : this.spaceships) {
 			s.nextStep ();
 			Bullet bullet = s.makeBulletIfFiring();
 			if (bullet!=null){
@@ -200,7 +245,7 @@ public class Game extends Observable implements Runnable
 		
 		
 		this.checkCollisions ();
-		this.removeDestroyedObjects ();
+		this.removeAllDestroyedObjects ();
 		
 		this.setChanged ();
 		this.notifyObservers ();
@@ -212,11 +257,11 @@ public class Game extends Observable implements Runnable
 	 */
 	private void addRandomAsteroid ()
 	{
-		int prob = Game.rng.nextInt (3000);
+		int prob = ServerGame.rng.nextInt (3000);
 		Point2D loc;
 		do
 		{
-			loc = new Point2D.Double (Game.rng.nextInt ((int)this.width), Game.rng.nextInt ((int)this.height));
+			loc = new Point2D.Double (ServerGame.rng.nextInt ((int)this.width), ServerGame.rng.nextInt ((int)this.height));
 		}
 		while (pointOverlapsCenterCircle(loc));
 		
@@ -229,7 +274,7 @@ public class Game extends Observable implements Runnable
 			size = 10;
 		}
 		
-		this.asteroids.add (new Asteroid  (loc, Game.rng.nextDouble () * 6 - 3, Game.rng.nextDouble () * 6 - 3, size, Game.rng.nextDouble()*2*Math.PI- Math.PI));
+		this.asteroids.add (new Asteroid  (loc, ServerGame.rng.nextDouble () * 6 - 3, ServerGame.rng.nextDouble () * 6 - 3, size, ServerGame.rng.nextDouble()*2*Math.PI- Math.PI));
 	}
 	
 	private boolean pointOverlapsCenterCircle(Point2D p){
@@ -240,19 +285,6 @@ public class Game extends Observable implements Runnable
 		return (x*x+y*y) < radius * radius;
 	}
 	
-	private boolean pointDoesNotOverlapAnySpaceships(Point2D.Double p, int radius){
-		for(Spaceship s : this.getSpaceships()){
-			double x,y;
-			x = p.getX() - s.getLocation().getX();
-			y = p.getY() - s.getLocation().getY();
-			
-			if((x*x+y*y) < radius*radius){
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/** 
 	 *	Checks all objects for collisions and marks them as destroyed upon col-
 	 *	lision. All objects can collide with objects of a different type, but 
@@ -272,14 +304,14 @@ public class Game extends Observable implements Runnable
 					this.explosions.add(new Explosion(a.getLocation(), 3*a.hashCode()+5*b.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
 				}
 			}
-			for(Spaceship s : this.ships){
+			for(Spaceship s : this.spaceships){
 				if (!s.isDestroyed() && b.collidesThroughEdge(s, this.width, this.height))
 				{ // Collision with playerß -> destroy both objects
 					
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
 					if(/*b.getShooter() != null && */b.getShooter() != s){
 						//b.getShooter().increaseScore();
-						messages.add(new GameMessage(s.getName() + " was shot by " + b.getShooter().getName()));
+						messages.add(new Message(s.getName() + " was shot by " + b.getShooter().getName()));
 					}
 					
 					b.destroy ();
@@ -295,7 +327,7 @@ public class Game extends Observable implements Runnable
 
 		for (Asteroid a : this.asteroids){
 			// For all asteroids, no cross check with bullets required.
-			for(Spaceship s : this.ships){
+			for(Spaceship s : this.spaceships){
 				if (!s.isDestroyed() && a.collidesThroughEdge(s, this.width, this.height)){
 					// Collision with player -> destroy both objects.
 					a.destroy ();
@@ -313,7 +345,7 @@ public class Game extends Observable implements Runnable
 	}
 	
 	public void addMessage(String message){
-		messages.add(new GameMessage(message));
+		messages.add(new Message(message));
 	}
 
 	/**
@@ -322,10 +354,10 @@ public class Game extends Observable implements Runnable
 	 *	asteroids are faster than their predecessor and travel in opposite 
 	 *	direction.
 	 */
-	private void removeDestroyedObjects ()
+	private void removeAllDestroyedObjects ()
 	{
 		
-		List <Asteroid> newAsts = new ArrayList <> ();
+		/*List <Asteroid> newAsts = new ArrayList <> ();
 		for (Asteroid a : this.asteroids)
 		{
 			if (a.isDestroyed ())
@@ -350,7 +382,25 @@ public class Game extends Observable implements Runnable
 			if(explosions.get(i).isDestroyed()){
 				explosions.remove(i);
 			}
+		}*/
+		this.asteroids = removeDestroyedObjects(this.asteroids);
+		this.bullets = removeDestroyedObjects(this.bullets);
+		this.explosions = removeDestroyedObjects(this.explosions);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <GO extends GameObject> List<GO> removeDestroyedObjects(List<GO> objects){
+		List<GO> newObjects = new ArrayList<>();
+		
+		for(GO object : objects){
+			if(object.isDestroyed()){
+				newObjects.addAll((Collection<? extends GO>) object.getSuccessors());
+			}else{
+				newObjects.add(object);
+			}
 		}
+		
+		return newObjects;
 	}
 
 	/**
@@ -360,10 +410,10 @@ public class Game extends Observable implements Runnable
 	 */ 
 	protected boolean areAllShipsDestroyed ()
 	{
-		if(this.ships.isEmpty()){//This situation happens before a player has joined.
+		if(this.spaceships.isEmpty()){//This situation happens before a player has joined.
 			return false;
 		}
-		for(Spaceship s : this.ships){
+		for(Spaceship s : this.spaceships){
 			if(!s.isDestroyed()){
 				return false;
 			}
@@ -379,12 +429,12 @@ public class Game extends Observable implements Runnable
 	}
 	
 	protected boolean isThereOnlyOneShipLeft(){
-		if(this.ships.isEmpty()){//This situation happens before a player has joined.
+		if(this.spaceships.isEmpty()){//This situation happens before a player has joined.
 			// Do we need this if? the rest of the code would do the same
 			return false;
 		}
 		int amount = 0;
-		for(Spaceship s : this.ships){
+		for(Spaceship s : this.spaceships){
 			if(!s.isDestroyed()){
 				++amount;
 			}
@@ -408,7 +458,7 @@ public class Game extends Observable implements Runnable
 		double latestDestroyTime = 0;
 		List<Spaceship> result = new ArrayList<Spaceship>();
 		
-		for(Spaceship s : this.ships){
+		for(Spaceship s : this.spaceships){
 			if(s.getDestroyTime() > latestDestroyTime){
 				result = new ArrayList<Spaceship>();
 				result.add(s);
@@ -463,7 +513,7 @@ public class Game extends Observable implements Runnable
 		long executionTime, sleepTime;
 		do
 		{
-			if (!this.isGameOver ())
+			if (!this.hasGameRoundEnded ())
 			{
 				executionTime = System.currentTimeMillis ();
 				this.update ();
@@ -490,10 +540,10 @@ public class Game extends Observable implements Runnable
 	}
 
 	public Spaceship getSpaceshipRef(int index) {
-		if(this.ships.size() <= index){
+		if(this.spaceships.size() <= index){
 			return null;
 		}
-		return this.ships.toArray(new Spaceship[this.ships.size()])[index];
+		return this.spaceships.toArray(new Spaceship[this.spaceships.size()])[index];
 	}
 	
 	public void destroySpaceship(int index) {
@@ -503,58 +553,21 @@ public class Game extends Observable implements Runnable
 		}
 	}
 	
+	
+	
 	/**
-	 * Adds multiple spaceships at once to the game.
-	 * Used when starting a new game round.
-	 * In singleplayer mode, ship is rendered in the middle of the screen, pointing up.
-	 * In multiplayer, ships are set in a circle, pointing outward.
-	 * @param spaceships
+	 * In this function, all victory conditions are checked.<br/>
+	 * If they are triggered, corresponding messages are added to this game.<br/>
+	 * Afterwards, the time until the game is over is returned as a number.<br/>
+	 * <br/>
+	 * <b>Victory Conditions:</b></br>
+	 * Singleplayer: All asteroids are destroyed.
+	 * Multiplayer: Only one ship is left, or all asteroids are destroyed.
+	 * @return the time until the game round will end, or Double.POSITIVE_INFINITY if this is not yet known.
+	 * 
+	 * @see ServerGame#hasGameRoundEnded()
 	 */
-	/* ehmm, this also removes all spaceships currently in the game*/
-	public void addSpaceships(List<Spaceship> spaceships) {
-		this.ships = spaceships;
-		for(int i=0;i<spaceships.size();i++){
-			Spaceship s = spaceships.get(i);
-			s.reinit(this.width/2,this.height/2);
-			if(spaceships.size()==1){
-				s.setLocation(new Point2D.Double(this.width/2, this.height/2));
-			}else{
-				int amount = spaceships.size();
-				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
-				int radius = 50;
-				int dx = 0;
-				int dy = 0;
-				s.setLocation(new Point2D.Double(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
-				s.setDirection(Math.PI-rotation);
-			}
-			
-		}
-		
-	}
-
-	public List <Explosion> getExplosions() {
-		return explosions;
-	}
-	
-	public List<GameMessage> getMessages(){
-		checkMessages();
-		// return a clone of the message list
-		// GameMessage is immutable anyways so no need to clone the messages
-		return messages.subList(0, messages.size());
-	}
-	
-	/** check whether the messages should still be shown
-	 * removes the messages that are no longer relevant
-	 */
-	public void checkMessages(){
-		for(int i=messages.size()-1;i >= 0;i--){
-			if(messages.get(i).isOver()){
-				messages.remove(i);
-			}
-		}
-	}
-
-	public double timeUntilOver() {
+	public double checkVictoryConditionsAndReturnTimeUntilRoundEnd() {
 	
 		if(( this.isSinglePlayer && ((!this.getSpaceships().isEmpty() && this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed()))
 			|| (!this.isSinglePlayer && (this.getSpaceships().size() > 1) && ((this.areAllAsteroidsDestroyed()) || this.areAllShipsDestroyed() || this.isThereOnlyOneShipLeft() ))){
@@ -583,16 +596,20 @@ public class Game extends Observable implements Runnable
 				this.addMessage("Starting Next Round in "+(waitingTime/1000)+" seconds");
 			}
 			double time = System.currentTimeMillis() - this.startCountdownTime;
-			return Game.waitingTime - time;
+			return ServerGame.waitingTime - time;
 		}else{
 			return Double.POSITIVE_INFINITY;
 		}
 		
 	}
 
-	public boolean isGameOver() {
-		Logging.LOGGER.fine("Time until next level:"+this.timeUntilOver());
-		return this.timeUntilOver() <= 0;
+	/**
+	 * @return true if the game should restart, false otherwise.
+	 */
+	public boolean hasGameRoundEnded() {
+		double time = this.checkVictoryConditionsAndReturnTimeUntilRoundEnd();
+		Logging.LOGGER.fine("Time until next level:"+time);
+		return time <= 0;
 	}
     
 	

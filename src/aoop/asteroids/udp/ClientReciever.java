@@ -4,7 +4,6 @@ import aoop.asteroids.Logging;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Collections;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,17 +12,13 @@ import org.json.simple.JSONValue;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
-import aoop.asteroids.model.ClientGame;
 
-public class ClientThread extends BaseServerThread {
+public class ClientReciever extends BaseReciever {
 	Client client;
-	ClientGame game;
 	
-	
-	public ClientThread(Client client, DatagramSocket socket, ClientGame game) throws SocketException{
+	public ClientReciever(Client client, DatagramSocket socket) throws SocketException{
 		super("asteroids.udp.ClientThread",Client.UDPPort, socket);
 		this.client = client;
-		this.game = game;
 	}
 
 	@Override
@@ -46,15 +41,15 @@ public class ClientThread extends BaseServerThread {
 				Logging.LOGGER.fine("C: Gamestate Packet Received");
 				Logging.LOGGER.fine(packetData.toString());
 				this.client.confirmConnectionExistance();
-				this.game.unFreeze();
-				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), this.game);
+				this.client.getGame().unFreeze();
+				GameStatePacket.decodePacket((JSONArray) packetData.get("d"), client.getGame());
 				
-				this.game.playBGMIfNotAlreadyStarted();
+				this.client.getGame().playBGMIfNotAlreadyStarted();
 				break;
 			
 			case MESSAGE_LIST:
 				Logging.LOGGER.fine("C: Message List Packet Received");
-				this.game.addPossiblyNewMessages(MessageListPacket.decodePacket((JSONArray) packetData.get("d")));
+				this.client.getGame().addPossiblyNewMessages(MessageListPacket.decodePacket((JSONArray) packetData.get("d")));
 				break;
 			default:
 				Logging.LOGGER.fine("C: packet received with type: "+packet_type);

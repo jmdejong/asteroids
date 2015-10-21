@@ -55,7 +55,7 @@ public class Utils {
 		return name;
 	}
 	
-	public static Color getComplementColor(Color c){
+	public static Color getComplementColour(Color c){
 		return new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue()).brighter().brighter();
 	}
 	

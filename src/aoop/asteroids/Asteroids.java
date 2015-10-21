@@ -7,7 +7,7 @@ import org.json.simple.JSONValue;
 
 import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.model.ClientGame;
-import aoop.asteroids.model.Game;
+import aoop.asteroids.model.ServerGame;
 import aoop.asteroids.udp.Server;
 
 import java.awt.Point;
@@ -28,10 +28,11 @@ public class Asteroids {
 	
 	/* TODO: general
 	 * - add/update documentation
-	 * - make an interface for all object that we can serialize to json
-	 * - move global constants to this class
+	 * - make an interface for all object that we can serialize to json -> GameObject -> that's not an interface and not all we can serialize
 	 * - for all large classes, see if we can split them up across multiple domains
+	 * - make use of this consequent (always for field, not for own methods)
 	 * DONE:
+	 * - move global constants to this class
 	 * - use decorator pattern more
 	 * - move sound functions to its own (singleton?) class
 	 */

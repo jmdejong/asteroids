@@ -1,11 +1,11 @@
 package aoop.asteroids.model;
 
 
-import aoop.asteroids.Logging;
 import aoop.asteroids.Utils;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Collection;
@@ -13,22 +13,25 @@ import java.util.Collection;
 import org.json.simple.JSONArray;
 
 /**
- *	GameObject is the abstract superclass for all game objects. I.e. bullets, 
+ *	GameObject is the abstract superclass for all spatial game objects. I.e. bullets, 
  *	asteroids and spaceships. This class provides some of the basic mechanics, 
- *	such as collision detection, and the desctruction mechanism.
+ *	such as movement and collision detection, and the destruction mechanism.
  *
  */
 public abstract class GameObject 
 {
 	
 	/* TODO:
-	 * - maybe change all _X and _Y to 2d vectors (for example Point2D.double)
 	 * DONE:
+	 * - maybe change all _X and _Y to 2d vectors (for example Point2D.double) -> Decided against it.
 	 * - move worldWidth and worldHeight somewhere else and avoid using them where possible
 	 * - make a function getMirrorLocations that returns a list of 1, 2 of 4 points
 	 * - look critically where we actually need WrappablePoint instead of Point2D.double -> nowhere
 	 */
 	
+	/**
+	 * Location of this GameObject in the two-dimensional plane.
+	 */
 	private Point2D.Double location;
 	
 	/** Velocity in X direction. */
@@ -59,12 +62,18 @@ public abstract class GameObject
 		this.radius = radius;
 	}
 
-	/** Subclasses need to specify their own behaviour. */
+	/** 
+	 * This function determines how this GameObject moves from one frame to the next.
+	 * Subclasses might want to specify their own behaviour.
+	 */
 	public void nextStep (){
 		this.location.setLocation(this.location.getX()+this.velocityX,this.location.getY()+this.velocityY);
 	}
 
-	/** Destroys the object by setting the destroyed value to true. */
+	/** Marks the object for destruction by setting the destroyed value to true. 
+	 *  Destruction happens in the Game class that has a reference to this GameObject, by removing this reference.
+	 *  Afterwards it can be safely garbage collected.
+	 * */
 	public void destroy (){
 		this.destroyed = true;
 	}
@@ -85,18 +94,22 @@ public abstract class GameObject
 	public Point2D getLocation (){
 		return new Point2D.Double(this.location.getX(), this.location.getY());
 	}
-	
+	/**
+	 * @return The location of the object, modulo the given `width` (for the x-position) and `height` (for the y-position)
+	 */
 	public Point2D getWrappedLocation(double width, double height){
 		return new Point2D.Double(Utils.floorMod(this.location.getX(), width), Utils.floorMod(this.location.getY(), height));
 	}
 	
+	/**
+	 * 
+	 * @param location The new two-dimensional location the GameObject should be at.
+	 */
 	public void setLocation(Point2D location){
 		this.location.setLocation(location);
 	}
 
 	/** 
-	 *	Returns the velocity in X direction.
-	 *
 	 *	@return the velocity in X direction.
 	 */
 	public double getVelocityX ()
@@ -105,8 +118,6 @@ public abstract class GameObject
 	}
 
 	/** 
-	 *	Returns the velocity in Y direction.
-	 *
 	 *	@return the velocity in Y direction.
 	 */
 	public double getVelocityY ()
@@ -115,17 +126,30 @@ public abstract class GameObject
 	}
 
 	/**
-	 *	Returns whether the object is destroyed.
-	 *
-	 *	@return true if the object is destroyed, false otherwise.
+	 *	@return true if the object is marked for destruction, false otherwise.
 	 */
 	public boolean isDestroyed ()
 	{
 		return this.destroyed;
 	}
 	
+	/**
+	 * The default implementation of getSuccessors is to return an empty list.
+	 * Note that specifically Asteroid overrides this functionality.
+	 * @see Asteroid#getSuccessors()
+	 * @return an empty list.
+	 */
+	public List<? extends GameObject> getSuccessors(){
+		return new ArrayList<>();
+	}
 	
-	/** An improved version of collides that will also detect collisions through edges */
+	
+	/** 
+	 * An improved version of the collision detection that will also detect collisions through world-wrap edges 
+	 * @param other The GameObject to check collision against.
+	 * @param width The width at which the world wraps horizontally
+	 * @param height The height at which the world wraps vertically
+	 * */
 	public boolean collidesThroughEdge(GameObject other, double width, double height){
 		Point2D thisLocation = this.getWrappedLocation(width, height);
 		Point2D closestLocation = new Point2D.Double(
@@ -136,6 +160,10 @@ public abstract class GameObject
 		return thisLocation.distanceSq(closestLocation)<(minDistance*minDistance);
 	}
 
+	/**
+	 * @return a JSONArray containing the important spatial information of this GameObject (x,y, velocityX, velocityY).
+	 */
+	@SuppressWarnings("unchecked")
 	public JSONArray toJSON(){
 		JSONArray result = new JSONArray();
 		result.add(this.location.getX());
@@ -147,17 +175,25 @@ public abstract class GameObject
 		return result;
 	}
 	
-	public String toString(){
-		return this.getClass().toString() + "destroyed?"+this.isDestroyed()+";x="+this.location.getX()+";y="+this.location.getY()+";vX="+this.velocityX+";vY="+this.velocityY;
-	}
 	
-	
-	
+	/**
+	 * This function returns a Collection of possibly multiple locations at which a graphical representation of this GameObject should be drawn.<br/>By drawing each of these, we ensure that objects that are half across the screen edge will draw their other half at the other side of the screen.
+	 * @param width The width at which the world wraps horizontally
+	 * @param height The height at which the world wraps vertically
+	 * @return A list of one or more locations at which the object might appear
+	 */
 	public Collection<Point2D> getMirrorLocations(double width, double height){
 		return getMirrorLocations(width,height,this.radius);
 	
 	}
-		
+	/**
+	 * This function returns a Collection of possibly multiple locations at which a graphical representation of this GameObject should be drawn.<br/>By drawing each of these, we ensure that objects that are half across the screen edge will draw their other half at the other side of the screen.
+	 * <br/> In this case, a radius other than the radius defined inside the GameObject itself is used.
+	 * @param width The width at which the world wraps horizontally
+	 * @param height The height at which the world wraps vertically
+	 * @param radius The radius to use.
+	 * @return A list of one or more locations at which the object might appear
+	 */	
 	public Collection<Point2D> getMirrorLocations(double width, double height, double radius){
 		
 		Point2D l = this.getWrappedLocation(width, height);

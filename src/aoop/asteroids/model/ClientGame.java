@@ -1,13 +1,9 @@
 package aoop.asteroids.model;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,9 +13,6 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import aoop.asteroids.Asteroids;
-import aoop.asteroids.Logging;
-import aoop.asteroids.gui.SpaceshipController;
-import aoop.asteroids.udp.Client;
 
 public class ClientGame extends Observable implements Runnable{
 	
@@ -49,7 +42,7 @@ public class ClientGame extends Observable implements Runnable{
 	private List <Explosion> explosions = new ArrayList<Explosion>();
 	
 	/** List of game messages. */
-	private List <GameMessage> messages = new ArrayList<GameMessage>();
+	private List <Message> messages = new ArrayList<Message>();
 	
 	
 	private int roundNumber = 1;
@@ -133,16 +126,12 @@ public class ClientGame extends Observable implements Runnable{
 		
 		while (!this.aborted)
 		{
-			if (true)
-			{
-				executionTime = System.currentTimeMillis ();
-				
-				
-				this.update ();
-				executionTime -= System.currentTimeMillis ();
-				sleepTime = 40 - executionTime;
-			}
-			else sleepTime = 100;
+			executionTime = System.currentTimeMillis ();
+			
+			
+			this.update ();
+			executionTime -= System.currentTimeMillis ();
+			sleepTime = 40 - executionTime;
 
 			try
 			{
@@ -177,16 +166,16 @@ public class ClientGame extends Observable implements Runnable{
 		return null;
 	}
 		
-	public List<GameMessage> getMessages() {
+	public List<Message> getMessages() {
 		return messages;
 	}
 	
 	public void addMessage(String message){
-		this.messages.add(new GameMessage(message));
+		this.messages.add(new Message(message));
 	}
 	
-	public void addPossiblyNewMessages(List<GameMessage> newMessages){
-		for(GameMessage m : newMessages){
+	public void addPossiblyNewMessages(List<Message> newMessages){
+		for(Message m : newMessages){
 			if(!this.messages.contains(m)){
 				this.messages.add(m);
 			}

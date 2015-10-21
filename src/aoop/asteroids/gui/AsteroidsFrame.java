@@ -4,7 +4,7 @@ package aoop.asteroids.gui;
 import aoop.asteroids.Logging;
 import aoop.asteroids.Asteroids;
 import aoop.asteroids.model.ClientGame;
-import aoop.asteroids.model.Game;
+import aoop.asteroids.model.ServerGame;
 
 
 import java.awt.event.ActionEvent;

@@ -1,22 +1,12 @@
 package aoop.asteroids.udp.packets;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
 import org.json.simple.JSONArray;
 
-
-import aoop.asteroids.Logging;
 import aoop.asteroids.model.*;
 
 public class GameStatePacket extends Packet {
-	
-	/* TODO:
-	 * 
-	 * DONE:
-	 * - move messages part to MessageListPacket
-	 */
 	
 	public GameStatePacket(
 			int roundNumber,

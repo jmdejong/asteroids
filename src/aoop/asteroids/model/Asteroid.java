@@ -1,9 +1,9 @@
 package aoop.asteroids.model;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import org.json.simple.JSONArray;
@@ -42,7 +42,6 @@ public class Asteroid extends GameObject
 	public void nextStep () 
 	{
 		super.nextStep();
-// 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		this.rotation += Math.signum(this.rotation)* .005*(this.velocityX*this.velocityX + this.velocityY*this.velocityY);
 	}
@@ -53,7 +52,8 @@ public class Asteroid extends GameObject
 	 *
 	 *	@return a collection of the successors.
 	 */
-	public Collection <Asteroid> getSuccessors ()
+	@Override
+	public List<? extends GameObject> getSuccessors ()
 	{
 		Collection <Asteroid> list = new ArrayList <> ();
 		Random r = new Random();
@@ -74,7 +74,7 @@ public class Asteroid extends GameObject
 				r.nextDouble()*Math.PI*2 - Math.PI
 			));
 		}
-		return list;
+		return (List<? extends GameObject>) list;
 	}
 
 
@@ -83,6 +83,14 @@ public class Asteroid extends GameObject
 		return new Asteroid (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.getRotation());
 	}
 	
+	
+	/**
+	 * @return a JSONArray containing the important characteristics of this Asteroid
+	 * (Besides the spatial information, this is the radius and the rotation)
+	 * @see GameObject#toJSON()
+	 * @see Asteroid#fromJSON()
+	 */
+	@SuppressWarnings("unchecked")
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
 		result.add(this.radius);
@@ -90,6 +98,10 @@ public class Asteroid extends GameObject
 		return result;
 	}
 	
+	/**
+	 * Reconstructs an Asteroid from the given JSONArray.
+	 * @see Asteroid#toJSON()
+	 */
 	public static Asteroid fromJSON(JSONArray json){
 		double x = (double) json.get(0);
 		double y = (double) json.get(1);
@@ -100,10 +112,16 @@ public class Asteroid extends GameObject
 		return new Asteroid(new Point2D.Double(x,y) ,velocityX, velocityY, radius, rotation);
 	}
 
+	/**
+	 * @return the current rotation of this Asteroid.
+	 */
 	public double getRotation() {
 		return rotation;
 	}
 
+	/**
+	 * @param rotation The rotation that this Asteroid should have.
+	 */
 	public void setRotation(double rotation) {
 		this.rotation = rotation;
 	}

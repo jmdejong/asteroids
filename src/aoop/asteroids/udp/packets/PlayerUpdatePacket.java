@@ -2,7 +2,7 @@ package aoop.asteroids.udp.packets;
 
 import org.json.simple.JSONArray;
 
-import aoop.asteroids.model.Spaceship;
+import aoop.asteroids.model.gameobjects.Spaceship;
 
 /**
  * Sent by a Player multiple time per second. It contains keypresses of the different keys that control a spaceship.<br>

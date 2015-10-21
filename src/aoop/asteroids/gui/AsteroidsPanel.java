@@ -2,12 +2,13 @@ package aoop.asteroids.gui;
 
 import aoop.asteroids.Logging;
 import aoop.asteroids.Utils;
-import aoop.asteroids.model.Asteroid;
-import aoop.asteroids.model.Bullet;
-import aoop.asteroids.model.ClientGame;
-import aoop.asteroids.model.Explosion;
 import aoop.asteroids.model.Message;
-import aoop.asteroids.model.Spaceship;
+import aoop.asteroids.model.game.ClientGame;
+import aoop.asteroids.model.gameobjects.Asteroid;
+import aoop.asteroids.model.gameobjects.Bullet;
+import aoop.asteroids.model.gameobjects.Explosion;
+import aoop.asteroids.model.gameobjects.Spaceship;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;

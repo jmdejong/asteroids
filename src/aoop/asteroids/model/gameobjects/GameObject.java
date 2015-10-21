@@ -1,4 +1,4 @@
-package aoop.asteroids.model;
+package aoop.asteroids.model.gameobjects;
 
 
 import aoop.asteroids.Utils;

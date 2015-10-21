@@ -1,4 +1,4 @@
-package aoop.asteroids.model;
+package aoop.asteroids.model.game;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -10,6 +10,12 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import aoop.asteroids.Logging;
+import aoop.asteroids.model.Message;
+import aoop.asteroids.model.Sound;
+import aoop.asteroids.model.gameobjects.Asteroid;
+import aoop.asteroids.model.gameobjects.Bullet;
+import aoop.asteroids.model.gameobjects.Explosion;
+import aoop.asteroids.model.gameobjects.Spaceship;
 
 public final class ClientGame extends BaseGame implements Runnable{
 	

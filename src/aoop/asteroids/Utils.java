@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import aoop.asteroids.model.GameObject;
+import aoop.asteroids.model.gameobjects.GameObject;
 
 /**
  * This Utils class contains a couple of useful functions that are used in multiple places of the program.

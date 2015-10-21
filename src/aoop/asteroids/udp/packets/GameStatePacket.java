@@ -5,6 +5,11 @@ import java.util.List;
 import org.json.simple.JSONArray;
 
 import aoop.asteroids.model.*;
+import aoop.asteroids.model.game.ClientGame;
+import aoop.asteroids.model.gameobjects.Asteroid;
+import aoop.asteroids.model.gameobjects.Bullet;
+import aoop.asteroids.model.gameobjects.Explosion;
+import aoop.asteroids.model.gameobjects.Spaceship;
 
 /**
  * The GameStatePacket is sent by the Server whenever the game-state has changed.

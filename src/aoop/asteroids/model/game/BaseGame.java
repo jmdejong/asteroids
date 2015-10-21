@@ -1,4 +1,4 @@
-package aoop.asteroids.model;
+package aoop.asteroids.model.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,16 @@ import java.util.Observable;
 
 import aoop.asteroids.Asteroids;
 import aoop.asteroids.Utils;
+import aoop.asteroids.model.Message;
+import aoop.asteroids.model.gameobjects.Asteroid;
+import aoop.asteroids.model.gameobjects.Bullet;
+import aoop.asteroids.model.gameobjects.Explosion;
+import aoop.asteroids.model.gameobjects.Spaceship;
 
 public abstract class BaseGame extends Observable{
 
-	protected double width = Asteroids.worldWidth;
-	protected double height = Asteroids.worldHeight;
+	private double width = Asteroids.worldWidth;
+	private double height = Asteroids.worldHeight;
 	
 	protected List <Spaceship> spaceships = new ArrayList<Spaceship>();
 	/** List of bullets. */

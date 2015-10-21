@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import aoop.asteroids.Logging;
+import aoop.asteroids.model.gameobjects.Explosion;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;

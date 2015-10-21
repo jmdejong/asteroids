@@ -1,7 +1,13 @@
-package aoop.asteroids.model;
+package aoop.asteroids.model.game;
 
 import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
+import aoop.asteroids.model.Message;
+import aoop.asteroids.model.gameobjects.Asteroid;
+import aoop.asteroids.model.gameobjects.Bullet;
+import aoop.asteroids.model.gameobjects.Explosion;
+import aoop.asteroids.model.gameobjects.GameObject;
+import aoop.asteroids.model.gameobjects.Spaceship;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -88,10 +94,10 @@ public final class ServerGame extends BaseGame implements Runnable
 
 	
 	public void addSpaceship(String name, boolean startDestroyed){
-		Spaceship s = new Spaceship(name, this.width/2, this.height/2);
+		Spaceship s = new Spaceship(name, this.getWidth()/2, this.getHeight()/2);
 		
 		this.spaceships.add(s);
-		s.reinit(this.width/2, this.height/2);
+		s.reinit(this.getWidth()/2, this.getHeight()/2);
 		
 		if(startDestroyed){
 			s.destroy();
@@ -110,14 +116,14 @@ public final class ServerGame extends BaseGame implements Runnable
 		this.spaceships = spaceships;
 		for(int i=0;i<spaceships.size();i++){
 			Spaceship s = spaceships.get(i);
-			s.reinit(this.width/2,this.height/2);
+			s.reinit(this.getWidth()/2,this.getHeight()/2);
 			if(spaceships.size()==1){
-				s.setLocation(new Point2D.Double(this.width/2, this.height/2));
+				s.setLocation(new Point2D.Double(this.getWidth()/2, this.getHeight()/2));
 			}else{
 				int amount = spaceships.size();
 				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
 				int radius = 50;
-				s.setLocation(new Point2D.Double(this.width/2 + radius*Math.sin(rotation), this.height/2 + radius*Math.cos(rotation)));
+				s.setLocation(new Point2D.Double(this.getWidth()/2 + radius*Math.sin(rotation), this.getHeight()/2 + radius*Math.cos(rotation)));
 				s.setDirection(Math.PI-rotation);
 			}
 			
@@ -168,7 +174,7 @@ public final class ServerGame extends BaseGame implements Runnable
 		Point2D loc;
 		do
 		{
-			loc = new Point2D.Double (rng.nextInt ((int)this.width), rng.nextInt ((int)this.height));
+			loc = new Point2D.Double (rng.nextInt ((int)this.getWidth()), rng.nextInt ((int)this.getHeight()));
 		}
 		while (pointOverlapsCenterCircle(loc));
 		
@@ -187,8 +193,8 @@ public final class ServerGame extends BaseGame implements Runnable
 	private boolean pointOverlapsCenterCircle(Point2D p){
 		int radius = 100;
 		double x,y;
-		x = p.getX() - this.width/2;
-		y = p.getY() - this.height/2;
+		x = p.getX() - this.getWidth()/2;
+		y = p.getY() - this.getHeight()/2;
 		return (x*x+y*y) < radius * radius;
 	}
 	
@@ -204,7 +210,7 @@ public final class ServerGame extends BaseGame implements Runnable
 		{ // For all bullets.
 			for (Asteroid a : this.asteroids)
 			{ // Check all bullet/asteroid combinations.
-				if (a.collidesThroughEdge(b, this.width, this.height))
+				if (a.collidesThroughEdge(b, this.getWidth(), this.getHeight()))
 				{ // Collision -> destroy both objects.
 					b.destroy ();
 					a.destroy ();
@@ -212,7 +218,7 @@ public final class ServerGame extends BaseGame implements Runnable
 				}
 			}
 			for(Spaceship s : this.spaceships){
-				if (!s.isDestroyed() && b.collidesThroughEdge(s, this.width, this.height))
+				if (!s.isDestroyed() && b.collidesThroughEdge(s, this.getWidth(), this.getHeight()))
 				{ // Collision with playerß -> destroy both objects
 					
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
@@ -235,7 +241,7 @@ public final class ServerGame extends BaseGame implements Runnable
 		for (Asteroid a : this.asteroids){
 			// For all asteroids, no cross check with bullets required.
 			for(Spaceship s : this.spaceships){
-				if (!s.isDestroyed() && a.collidesThroughEdge(s, this.width, this.height)){
+				if (!s.isDestroyed() && a.collidesThroughEdge(s, this.getWidth(), this.getHeight())){
 					// Collision with player -> destroy both objects.
 					a.destroy ();
 					s.destroy ();

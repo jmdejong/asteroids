@@ -13,8 +13,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import aoop.asteroids.model.ServerGame;
-import aoop.asteroids.model.Spaceship;
+import aoop.asteroids.model.game.ServerGame;
+import aoop.asteroids.model.gameobjects.Spaceship;
 
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;

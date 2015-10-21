@@ -5,7 +5,18 @@ import java.util.List;
 import org.json.simple.JSONArray;
 
 import aoop.asteroids.model.*;
+import aoop.asteroids.model.game.ClientGame;
+import aoop.asteroids.model.gameobjects.Asteroid;
+import aoop.asteroids.model.gameobjects.Bullet;
+import aoop.asteroids.model.gameobjects.Explosion;
+import aoop.asteroids.model.gameobjects.Spaceship;
 
+/**
+ * The GameStatePacket is sent by the Server whenever the game-state has changed.
+ * Besides the current roundNumber, it contains lists of all GameObjects.
+ * @author qqwy
+ *
+ */
 public class GameStatePacket extends Packet {
 	
 	@SuppressWarnings("unchecked")
@@ -40,6 +51,11 @@ public class GameStatePacket extends Packet {
 		
 	}
 	
+	/**
+	 * Decodes a given GameStatePacket, and sets the corresponding fields on the passed ClientGame to their updated value.
+	 * @param data
+	 * @param currentGameState
+	 */
 	public static void decodePacket(JSONArray data, ClientGame currentGameState){
 		
 		int roundNumber =((Long)( data.get(0))).intValue();

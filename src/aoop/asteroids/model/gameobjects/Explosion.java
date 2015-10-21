@@ -1,4 +1,4 @@
-package aoop.asteroids.model;
+package aoop.asteroids.model.gameobjects;
 
 import org.json.simple.JSONArray;
 import java.awt.geom.Point2D;

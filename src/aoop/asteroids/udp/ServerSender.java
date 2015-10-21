@@ -6,11 +6,11 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Collection;
 
-import aoop.asteroids.model.Asteroid;
-import aoop.asteroids.model.Bullet;
-import aoop.asteroids.model.Explosion;
 import aoop.asteroids.model.Message;
-import aoop.asteroids.model.Spaceship;
+import aoop.asteroids.model.gameobjects.Asteroid;
+import aoop.asteroids.model.gameobjects.Bullet;
+import aoop.asteroids.model.gameobjects.Explosion;
+import aoop.asteroids.model.gameobjects.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
 

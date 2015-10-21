@@ -2,18 +2,11 @@ package aoop.asteroids;
 
 
 
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 import aoop.asteroids.gui.AsteroidsFrame;
-import aoop.asteroids.model.ClientGame;
-import aoop.asteroids.model.ServerGame;
 import aoop.asteroids.udp.Server;
 
-import java.awt.Point;
 import java.net.SocketException;
 
-import java.util.logging.Level;
 
 /**
  *	Main class of the Asteroids program.
@@ -54,11 +47,9 @@ public class Asteroids {
 		
 		Logging.LOGGER.setLevel(Logging.loggerLevel);
 		
-// 		HighScores h = HighScores.getInstance();
-		
 		
 		if (args.length == 0){
-			AsteroidsFrame frame = new AsteroidsFrame ();
+			new AsteroidsFrame ();
 		} else {
 			if (args[0] == "server"){
 				try {

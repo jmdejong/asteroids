@@ -1,9 +1,6 @@
 package aoop.asteroids;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.*;
 
 import javax.persistence.EntityManager;
@@ -12,8 +9,6 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
 
 // import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 

@@ -6,6 +6,12 @@ import org.json.simple.JSONArray;
 
 import aoop.asteroids.model.*;
 
+/**
+ * The GameStatePacket is sent by the Server whenever the game-state has changed.
+ * Besides the current roundNumber, it contains lists of all GameObjects.
+ * @author qqwy
+ *
+ */
 public class GameStatePacket extends Packet {
 	
 	@SuppressWarnings("unchecked")
@@ -40,6 +46,11 @@ public class GameStatePacket extends Packet {
 		
 	}
 	
+	/**
+	 * Decodes a given GameStatePacket, and sets the corresponding fields on the passed ClientGame to their updated value.
+	 * @param data
+	 * @param currentGameState
+	 */
 	public static void decodePacket(JSONArray data, ClientGame currentGameState){
 		
 		int roundNumber =((Long)( data.get(0))).intValue();

@@ -7,13 +7,28 @@ import java.util.Random;
 
 import aoop.asteroids.model.GameObject;
 
-public class Utils {
+/**
+ * This Utils class contains a couple of useful functions that are used in multiple places of the program.
+ * @author qqwy
+ *
+ */
+public final class Utils {
 	
-	
+	/**
+	 * Returns the remainder of dividing a by b. (rounded towards zero. This will never return a negative number)<br/>
+	 * In Java 8, this functionality is built-in in the Math library. But, as we use Java 7, we have to make it ourselves.
+	 * @return the result of the floorMod operation: (a % b)
+	 * @see Utils#floorMod(double, double)
+	 */
 	public static int floorMod(int a, int b){
 		return (a%b+b)%b;
 	}
 	
+	/**
+	 * Returns the remainder of dividing a by b. (rounded towards zero. This will never return a negative number)<br/>
+	 * If `b` is infinite, simply returns `a`.
+	 * @see Utils#floorMod(int, int)
+	 */
 	public static double floorMod(double a, double b){
 		if (Double.isInfinite(b)){
 			return a;
@@ -22,6 +37,14 @@ public class Utils {
 		}
 	}
 	
+	/**
+	 * Multiplies two imaginary numbers, and returns the 'real' part of the result.
+	 * @param a Real part of the first 
+	 * @param b
+	 * @param c
+	 * @param d
+	 * @return
+	 */
 	public static double imagMultR(double a, double b, double c, double d){
 		return a*c-b*d;
 	}

@@ -4,17 +4,15 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Observable;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import aoop.asteroids.Asteroids;
+import aoop.asteroids.Logging;
 
-public class ClientGame extends Observable implements Runnable{
+public final class ClientGame extends BaseGame implements Runnable{
 	
 	/* TODO:
 	 * - Make this class more readable
@@ -28,24 +26,7 @@ public class ClientGame extends Observable implements Runnable{
 	 * - Is this the right place for storing the spaceshipController? -> No. moved it to Client.
 	 */
 	
-	private double width = Asteroids.worldWidth;
-	private double height = Asteroids.worldHeight;
 	
-	private List <Spaceship> ships = new ArrayList<Spaceship>();
-	/** List of bullets. */
-	private List <Bullet> bullets = new ArrayList<Bullet>();
-
-	/** List of asteroids. */
-	private List <Asteroid> asteroids = new ArrayList<Asteroid>();
-	
-	/** List of explosions. */
-	private List <Explosion> explosions = new ArrayList<Explosion>();
-	
-	/** List of game messages. */
-	private List <Message> messages = new ArrayList<Message>();
-	
-	
-	private int roundNumber = 1;
 	
 	private BufferedImage bgimage;
 	
@@ -54,8 +35,6 @@ public class ClientGame extends Observable implements Runnable{
 	private boolean frozen = false;
 	
 	private Sound sound = new Sound();
-	
-	private boolean aborted = false;
 	
 	
 	public ClientGame(){
@@ -67,11 +46,11 @@ public class ClientGame extends Observable implements Runnable{
 		try {
 			this.bgimage = ImageIO.read(new File("images/tscape"+(index%7)+".jpg"));
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logging.LOGGER.warning("The image `images/tscape"+(index%7)+".jpg` could not be loaded.");
 		}
 	}
 	
-	private void update(){
+	protected void update(){
 		
 		
 		
@@ -84,7 +63,7 @@ public class ClientGame extends Observable implements Runnable{
 		if(!frozen){
 			for (Asteroid a : this.asteroids) a.nextStep ();
 			for (Bullet b : this.bullets) b.nextStep ();
-			for (Spaceship s : this.ships) s.nextStep();
+			for (Spaceship s : this.spaceships) s.nextStep();
 			
 
 			Random r = new Random(113*this.roundNumber);
@@ -99,7 +78,7 @@ public class ClientGame extends Observable implements Runnable{
 	}
 	
 	public void setSpaceships(List<Spaceship> ships){
-		this.ships = ships;
+		this.spaceships = ships;
 	}
 	
 	
@@ -118,47 +97,16 @@ public class ClientGame extends Observable implements Runnable{
 		this.asteroids = asteroids;
 	}
 
-	@Override
-	public void run() {
-		long executionTime, sleepTime;
-		
-		
-		
-		while (!this.aborted)
-		{
-			executionTime = System.currentTimeMillis ();
-			
-			
-			this.update ();
-			executionTime -= System.currentTimeMillis ();
-			sleepTime = 40 - executionTime;
-
-			try
-			{
-				Thread.sleep (sleepTime);
-			}
-			catch (InterruptedException e)
-			{
-				System.err.println ("Could not perfrom action: Thread.sleep(...)");
-				System.err.println ("The thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).");
-				e.printStackTrace ();
-			}
-		}
-	}
+	
 	
 	public String toString(){
-		return "Bullets:\n" + this.bullets.toString() + "\nShips:" + this.ships.toString()+"\nAsteroids:"+this.asteroids.toString();
+		return "Bullets:\n" + this.bullets.toString() + "\nShips:" + this.spaceships.toString()+"\nAsteroids:"+this.asteroids.toString();
 	}
 
-	public Collection<Bullet> getBullets() {
-		return bullets;
-	}
-	public List<Spaceship> getSpaceships() {
-		return ships;
-	}
+	
 	
 	public Spaceship getSpaceship(String name){
-		for(Spaceship s : ships){
+		for(Spaceship s : spaceships){
 			if(s.getName().equals(name)){
 				return s;
 			}
@@ -166,13 +114,8 @@ public class ClientGame extends Observable implements Runnable{
 		return null;
 	}
 		
-	public List<Message> getMessages() {
-		return messages;
-	}
 	
-	public void addMessage(String message){
-		this.messages.add(new Message(message));
-	}
+	
 	
 	public void addPossiblyNewMessages(List<Message> newMessages){
 		for(Message m : newMessages){
@@ -182,13 +125,7 @@ public class ClientGame extends Observable implements Runnable{
 		}
 	}
 	
-	public int getWidth(){
-		return (int)this.width;
-	}
 	
-	public int getHeight(){
-		return (int)this.height;
-	}
 
 	public BufferedImage getBgImage(){
 		return bgimage;
@@ -198,9 +135,7 @@ public class ClientGame extends Observable implements Runnable{
 		return (Point2D.Double)this.bgPos.clone();
 	}
 	
-	public Collection<Asteroid> getAsteroids() {
-		return asteroids;
-	}
+
 	
 	public void freeze(){
 		this.frozen = true;
@@ -214,9 +149,7 @@ public class ClientGame extends Observable implements Runnable{
 		this.frozen = false;
 	}
 
-	public Collection <Explosion> getExplosions() {
-		return explosions;
-	}
+
 
 	public void setExplosions(List<Explosion> explosions) {
 		
@@ -270,5 +203,9 @@ public class ClientGame extends Observable implements Runnable{
 	
 	public boolean isFrozen(){
 		return frozen;
+	}
+	
+	public boolean hasEnded(){
+		return false;
 	}
 }

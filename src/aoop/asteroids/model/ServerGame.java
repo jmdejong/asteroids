@@ -2,7 +2,6 @@ package aoop.asteroids.model;
 
 import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
-import aoop.asteroids.Asteroids;
 import aoop.asteroids.Utils;
 
 import java.awt.Color;
@@ -11,7 +10,6 @@ import java.lang.Runnable;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.Random;
 
 /**
@@ -44,7 +42,7 @@ import java.util.Random;
  *
  *	@author Yannick Stoffers
  */
-public class ServerGame extends Observable implements Runnable
+public final class ServerGame extends BaseGame implements Runnable
 {
 	
 	/* TODO:
@@ -57,48 +55,16 @@ public class ServerGame extends Observable implements Runnable
 	
 	public static long waitingTime = 3000;
 	
-	/** List of spaceships. */
-	private List<Spaceship> spaceships;
-
-	/** List of bullets. */
-	private List <Bullet> bullets;
-
-	/** List of asteroids. */
-	private List <Asteroid> asteroids;
-	
-	/** List of explosions. */
-	private List <Explosion> explosions;
-	 
-	/** List of all messages */
-	private List <Message> messages;
-
-	/** Random number generator. */
-	private static Random rng;
-
 	/** Asteroid limit. */
 	private int asteroidsLimit;
 	
 	private boolean isSinglePlayer;
-	
-	private double width;
-	private double height;
-	
-	
-	/** 
-	 *	Indicates whether the a new game is about to be started. 
-	 *
-	 *	@see #run()
-	 */
-	private boolean aborted;
 
 	private long startCountdownTime = 0;
 
 	/** Initializes a new game from scratch. */
 	public ServerGame (boolean isSinglePlayer, int roundNumber)
 	{
-		this.width = Asteroids.worldWidth;
-		this.height = Asteroids.worldHeight;
-		ServerGame.rng = new Random ();
 		this.initGameData (roundNumber);
 		this.isSinglePlayer = isSinglePlayer;
 	}
@@ -120,13 +86,7 @@ public class ServerGame extends Observable implements Runnable
 		}
 	}
 	
-	/** 
-	 *	@return a clone of the spaceships list, preserving encapsulation.
-	 */
-	public List <Spaceship> getSpaceships(){
-		
-		return Utils.deepCloneList(this.spaceships);
-	}
+
 	
 	public void addSpaceship(String name, boolean startDestroyed){
 		Spaceship s = new Spaceship(name, this.width/2, this.height/2);
@@ -166,52 +126,6 @@ public class ServerGame extends Observable implements Runnable
 		
 	}
 
-	/** 
-	 *	@return a clone of the asteroids  list, preserving encapsulation.
-	 */
-	public List <Asteroid> getAsteroids ()
-	{
-		return Utils.deepCloneList(this.asteroids);
-	}
-
-	/** 
-	 *	@return a clone of the bullets list, preserving encapsulation.
-	 */
-	public List <Bullet> getBullets ()
-	{
-		return Utils.deepCloneList(this.bullets);
-	}
-	
-	/**
-	 * 
-	 * @return all currently existing Explosions.
-	 */
-	public List <Explosion> getExplosions() {
-		return Utils.deepCloneList(this.explosions);
-	}
-	
-	/**
-	 * A cloned list is returned but as Messages are themselves immutable, this new list contains references to the actual Message objects.
-	 * <br/>
-	 * Note that checkMessages() is executed beforehand. As Messages are only used outside of ServerGame, this ensures that only messages that should still be used are returned, but they are only removed whenever we need the up-to-date message list.
-	 * @return all currently existing Messages.
-	 */
-	public List<Message> getMessages(){
-		removeDestroyedMessages();
-		return messages.subList(0, messages.size());
-	}
-	
-	/** 
-	 * Check whether each of the currently existing messages should still be shown and
-	 * removes the messages that are no longer relevant.
-	 */
-	public void removeDestroyedMessages(){
-		for(int i=messages.size()-1;i >= 0;i--){
-			if(messages.get(i).isDestroyed()){
-				messages.remove(i);
-			}
-		}
-	}
 
 	/**
 	 *	Method invoked at every game tick. It updates all game objects first. 
@@ -220,7 +134,7 @@ public class ServerGame extends Observable implements Runnable
 	 *	game tick counter is updated and a new asteroid is spawn upon every 
 	 *	200th game tick.
 	 */
-	private void update ()
+	public void update ()
 	{
 		for (Asteroid a : this.asteroids){
 			a.nextStep ();
@@ -250,11 +164,12 @@ public class ServerGame extends Observable implements Runnable
 	 */
 	private void addRandomAsteroid ()
 	{
-		int prob = ServerGame.rng.nextInt (3000);
+		Random rng = new Random();
+		int prob = rng.nextInt (3000);
 		Point2D loc;
 		do
 		{
-			loc = new Point2D.Double (ServerGame.rng.nextInt ((int)this.width), ServerGame.rng.nextInt ((int)this.height));
+			loc = new Point2D.Double (rng.nextInt ((int)this.width), rng.nextInt ((int)this.height));
 		}
 		while (pointOverlapsCenterCircle(loc));
 		
@@ -267,7 +182,7 @@ public class ServerGame extends Observable implements Runnable
 			size = 10;
 		}
 		
-		this.asteroids.add (new Asteroid  (loc, ServerGame.rng.nextDouble () * 6 - 3, ServerGame.rng.nextDouble () * 6 - 3, size, ServerGame.rng.nextDouble()*2*Math.PI- Math.PI));
+		this.asteroids.add (new Asteroid  (loc, rng.nextDouble () * 6 - 3, rng.nextDouble () * 6 - 3, size, rng.nextDouble()*2*Math.PI- Math.PI));
 	}
 	
 	private boolean pointOverlapsCenterCircle(Point2D p){
@@ -337,10 +252,7 @@ public class ServerGame extends Observable implements Runnable
 		
 	}
 	
-	public void addMessage(String message){
-		messages.add(new Message(message));
-	}
-
+	
 	/**
 	 *	Removes all destroyed objects. Destroyed asteroids increase the score 
 	 *	and spawn two smaller asteroids if it wasn't a small asteroid. New 
@@ -437,14 +349,6 @@ public class ServerGame extends Observable implements Runnable
 		return result;
 	}
 	
-	
-	public double getWidth(){
-		return this.width;
-	}
-	
-	public double getHeight(){
-		return this.height;
-	}
 
 	/** 
 	 *	Aborts the game. 
@@ -456,54 +360,7 @@ public class ServerGame extends Observable implements Runnable
 		this.aborted = true;
 	}
 
-	/**
-	 *	This method allows this object to run in its own thread, making sure 
-	 *	that the same thread will not perform non essential computations for 
-	 *	the game. The thread will not stop running until the program is quit. 
-	 *	If the game is aborted or the player died, it will wait 100 
-	 *	milliseconds before reevaluating and continuing the simulation. 
-	 *	<p>
-	 *	While the game is not aborted and the player is still alive, it will 
-	 *	measure the time it takes the program to perform a game tick and wait 
-	 *	40 minus execution time milliseconds to do it all over again. This 
-	 *	allows the game to update every 40th millisecond, thus keeping a steady 
-	 *	25 frames per second. 
-	 *	<p>
-	 *	Decrease waiting time to increase fps. Note 
-	 *	however, that all game mechanics will be faster as well. I.e. asteroids 
-	 *	will travel faster, bullets will travel faster and the spaceship may 
-	 *	not be as easy to control.
-	 */
-	public void run ()
-	{ // Update -> sleep -> update -> sleep -> etc...
-		long executionTime, sleepTime;
-		do
-		{
-			if (!this.hasGameRoundEnded ())
-			{
-				executionTime = System.currentTimeMillis ();
-				this.update ();
-				executionTime -= System.currentTimeMillis ();
-				sleepTime = 40 - executionTime;
-			}
-			else {
-				this.setChanged();
-				this.notifyObservers();
-				return;
-			}
-
-			try
-			{
-				Thread.sleep (sleepTime);
-			}
-			catch (InterruptedException e)
-			{
-				System.err.println ("Could not perform action: Thread.sleep(...)");
-				System.err.println ("The thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).");
-				e.printStackTrace ();
-			}
-		}while  (!this.aborted);
-	}
+	
 
 	public Spaceship getSpaceshipRef(int index) {
 		if(this.spaceships.size() <= index){
@@ -534,7 +391,7 @@ public class ServerGame extends Observable implements Runnable
 	 * Multiplayer: Only one ship is left, or all asteroids are destroyed.
 	 * @return the time until the game round will end, or Double.POSITIVE_INFINITY if this is not yet known.
 	 * 
-	 * @see ServerGame#hasGameRoundEnded()
+	 * @see ServerGame#hasEnded()
 	 */
 	public double checkVictoryConditionsAndReturnTimeUntilRoundEnd() {
 	
@@ -575,7 +432,7 @@ public class ServerGame extends Observable implements Runnable
 	/**
 	 * @return true if the game should restart, false otherwise.
 	 */
-	public boolean hasGameRoundEnded() {
+	public boolean hasEnded() {
 		double time = this.checkVictoryConditionsAndReturnTimeUntilRoundEnd();
 		Logging.LOGGER.fine("Time until next level:"+time);
 		return time <= 0;

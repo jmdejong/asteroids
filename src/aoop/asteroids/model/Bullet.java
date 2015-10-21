@@ -94,11 +94,20 @@ public class Bullet extends GameObject
 			this.destroy ();
 	}
 
-	/** Clones the bullet into an exact copy. */
+	/** Clones the bullet into an exact copy. 
+	 * 
+	 * On the Server, includes the current shooter (the colour can be deduced from this) and the steps it should still live.
+	 * On the client, includes the current colour.
+	 * */
 	@Override
 	public Bullet clone ()
 	{
-		return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.stepsLeft, this.shooter);
+		if(this.shooter == null){
+			return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.colour);
+		}else{
+			return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.stepsLeft, this.shooter);
+		}
+		
 	}
 	
 	

@@ -78,7 +78,7 @@ public class Server extends Base implements Observer{
 		this.sender.sendMessageListPacket(this.game.getMessages(),this.getPlayerConnections(), this.getSpectatorConnections());
 		this.tagNonrespondingClients();
 		this.destroyAllShipsOfDisconnectedPlayers();
-		if (this.game.hasGameRoundEnded()){
+		if (this.game.hasEnded()){
 			this.restartGame();
 		}
 	}

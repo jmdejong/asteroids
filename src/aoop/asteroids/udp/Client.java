@@ -25,24 +25,57 @@ public class Client extends Base implements Observer{
 	
 	//public InetSocketAddress serverAddress;
 	
-	
+	/**
+	 * Reference to the SpaceshipController, that implements KeyListener so we know how the player want to move their spaceship.
+	 */
 	private SpaceshipController spaceshipController;
 	
+	/**
+	 * Reference to the ClientGame, which contains the last game state we recieved from the server, and after this attempts to move this game state visually forward by predicting the movement of the game objects (assuming no change in ship controlling or collisions).
+	 */
 	public ClientGame game;
 	
+	/**
+	 * The port that the Client will try to create a Socket on, by default.
+	 * If this port is taken, (For instance by another running copy of this application), consecutive ports after this one are tried.
+	 * @see Client#createSocketOnFirstUnusedPort()
+	 */
 	public static int UDPPort = 8091;
 	
-	/** if set to true, Client is in Spectator mode, and will not send any input packets.*/
+	/** if set to true, Client is in Spectator mode, and will not send any PlayerInput packets.
+	 * Instead, SpectatorPing packets are sent, to let the server know that this client is still connected and watching.
+	 * */
 	public boolean isSpectator = false;
 	
+	/**
+	 * The name the player chose for themselves. This is used for determining the high scores.
+	 */
 	private String playerName;
 	
+	/**
+	 * True if there has been a connection with the server in the past, since the creation of this Client instance.
+	 */
 	private boolean hasConnected = false;
 	
+	/**
+	 * The last time a packet from the server was received.
+	 */
 	private long lastPingTime = 0;
+	
+	/**
+	 * The highest ID of all packets received so far.
+	 * Packets with lower ID's are rejected, to enforce packet order.
+	 */
 	private long lastPacketId = 0;
+	
+	/**
+	 * Used for throttling the amount of sent PlayerJoin or SpectatorJoin packets when attempting to connect to the server.
+	 */
 	private long lastConnectionCheckTime = 0;
 	
+	/**
+	 * A reference to the ClientSender that is in charge of creating and sending the actual packets of the data we provide it with.
+	 */
 	protected ClientSender sender;
 	
 	

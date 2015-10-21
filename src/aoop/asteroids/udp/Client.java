@@ -1,7 +1,6 @@
 package aoop.asteroids.udp;
 
 import aoop.asteroids.Logging;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;

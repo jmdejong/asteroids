@@ -1,7 +1,11 @@
 package aoop.asteroids;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import aoop.asteroids.model.GameObject;
 
 public class Utils {
 	
@@ -64,5 +68,14 @@ public class Utils {
 // 		a = floorMod(a, range);
 		double m = a - range/2;
 		return Utils.floorMod(b-m, range)+m;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <GO extends GameObject> List<GO> deepCloneList(List<GO> objects){
+		List<GO> clones = new ArrayList<>();
+		for(GO o: objects) clones.add ((GO) o.clone ());
+
+		
+		return clones;
 	}
 }

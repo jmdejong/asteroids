@@ -3,6 +3,7 @@ package aoop.asteroids.model;
 import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
 import aoop.asteroids.Asteroids;
+import aoop.asteroids.Utils;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -124,9 +125,7 @@ public class ServerGame extends Observable implements Runnable
 	 */
 	public List <Spaceship> getSpaceships(){
 		
-		List <Spaceship> c = new ArrayList <> ();
-		for (Spaceship s : this.spaceships) c.add (s.clone ());
-		return c;
+		return Utils.deepCloneList(this.spaceships);
 	}
 	
 	public void addSpaceship(String name, boolean startDestroyed){
@@ -172,9 +171,7 @@ public class ServerGame extends Observable implements Runnable
 	 */
 	public List <Asteroid> getAsteroids ()
 	{
-		List <Asteroid> c = new ArrayList <> ();
-		for (Asteroid a : this.asteroids) c.add (a.clone ());
-		return c;
+		return Utils.deepCloneList(this.asteroids);
 	}
 
 	/** 
@@ -182,9 +179,7 @@ public class ServerGame extends Observable implements Runnable
 	 */
 	public List <Bullet> getBullets ()
 	{
-		List <Bullet> c = new ArrayList <> ();
-		for (Bullet b : this.bullets) c.add (b.clone ());
-		return c;
+		return Utils.deepCloneList(this.bullets);
 	}
 	
 	/**
@@ -192,9 +187,7 @@ public class ServerGame extends Observable implements Runnable
 	 * @return all currently existing Explosions.
 	 */
 	public List <Explosion> getExplosions() {
-		List <Explosion> c = new ArrayList <> ();
-		for (Explosion e: this.explosions) c.add (e.clone ());
-		return c;
+		return Utils.deepCloneList(this.explosions);
 	}
 	
 	/**
@@ -356,33 +349,6 @@ public class ServerGame extends Observable implements Runnable
 	 */
 	private void removeAllDestroyedObjects ()
 	{
-		
-		/*List <Asteroid> newAsts = new ArrayList <> ();
-		for (Asteroid a : this.asteroids)
-		{
-			if (a.isDestroyed ())
-			{
-				newAsts.addAll (a.getSuccessors ());
-			}
-			else {
-				newAsts.add (a);
-			}
-		}
-		this.asteroids = newAsts;
-
-		List <Bullet> newBuls = new ArrayList <> ();
-		for (Bullet b : this.bullets) {
-			if (!b.isDestroyed ()){
-				newBuls.add (b);
-			}
-		}
-		this.bullets = newBuls;
-		
-		for(int i=explosions.size()-1;i >= 0;i--){
-			if(explosions.get(i).isDestroyed()){
-				explosions.remove(i);
-			}
-		}*/
 		this.asteroids = removeDestroyedObjects(this.asteroids);
 		this.bullets = removeDestroyedObjects(this.bullets);
 		this.explosions = removeDestroyedObjects(this.explosions);

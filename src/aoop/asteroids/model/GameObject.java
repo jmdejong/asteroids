@@ -142,6 +142,9 @@ public abstract class GameObject
 	public List<? extends GameObject> getSuccessors(){
 		return new ArrayList<>();
 	}
+	/** Clones the GameObject.*/
+	@Override
+	public abstract GameObject clone();
 	
 	
 	/** 

@@ -2,7 +2,6 @@ package aoop.asteroids.model;
 
 import aoop.asteroids.HighScores;
 import aoop.asteroids.Logging;
-import aoop.asteroids.Utils;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;

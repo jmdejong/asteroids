@@ -34,18 +34,6 @@ public class Sound {
 	
 	private boolean bgmHasStarted = false;
 	
-	
-// 	private static Sound instance;
-	
-// 	public static Sound getInstance(){
-// 		if(instance == null){
-// 			instance = new Sound();
-// 		}
-// 		return instance;
-// 	}
-// 	
-// 	private Sound(){}
-	
 	public void playExplosionSound(Explosion explosion){
 		int index = new Random(explosion.hashCode()).nextInt(4);
 		//playSound("Explosion"+index+".wav");

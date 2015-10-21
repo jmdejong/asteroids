@@ -25,11 +25,10 @@ import aoop.asteroids.udp.Server;
  *
  *	@author Yannick Stoffers, qqwy
  */
-public class AsteroidsFrame extends JFrame
-{
+public class AsteroidsFrame extends JFrame {
 	
 	/* TODO:
-	 * - more menu options?
+	 * - more menu options(mute)?
 	 * DONE:
 	 * - reload highscores after going back to menu
 	 * 
@@ -55,32 +54,31 @@ public class AsteroidsFrame extends JFrame
 	 *	Constructs a new Frame.
 	 */
 
-	public AsteroidsFrame (){
+	public AsteroidsFrame(){
 		
 		
-		this.setTitle ("Asteroids");
+		this.setTitle("Asteroids");
 		this.setResizable(false);
 		
-		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
-		JMenuBar mb = new JMenuBar ();
+		JMenuBar mb = new JMenuBar();
 		mb.setBackground(Color.BLACK);
 		mb.setForeground(Color.GREEN);
-		JMenu m = new JMenu ("Game");
+		JMenu m = new JMenu("Game");
 		m.setBackground(Color.BLACK);
 		m.setForeground(Color.GREEN);
 		
-		mb.add (m);
-		m.add (new AbstractAction("Quit"){ 
+		mb.add(m);
+		m.add(new AbstractAction("Quit"){ 
 			private static final long serialVersionUID = 1L;
-
-		public void actionPerformed(ActionEvent arg0){
-			System.exit(0);
-		}});
+			public void actionPerformed(ActionEvent arg0){
+				System.exit(0);
+			}
+		});
 		m.add (new AbstractAction("Back to Menu"){ 
 			private static final long serialVersionUID = 1L;
-
 		public void actionPerformed(ActionEvent arg0){
 			if (AsteroidsFrame.this.server != null){
 				AsteroidsFrame.this.server.stopServer();
@@ -93,70 +91,72 @@ public class AsteroidsFrame extends JFrame
 		}});
 		this.setJMenuBar (mb);
 		
-		cards = new JPanel(cardLayout);
-		cards.setPreferredSize(new Dimension(Asteroids.worldWidth,Asteroids.worldHeight));
+		this.cards = new JPanel(cardLayout);
+		this.cards.setPreferredSize(new Dimension(Asteroids.worldWidth,Asteroids.worldHeight));
 		
 		
-		ap = new AsteroidsPanel ();
-		cards.add(ap, "game card");
+		this.ap = new AsteroidsPanel ();
+		this.cards.add(this.ap, "game card");
 		
-		mp = new MenuPanel();
+		this.mp = new MenuPanel();
 		
-		mp.setButtonAction("Singleplayer", new AbstractAction (){ 
+		this.mp.setButtonAction("Singleplayer", new AbstractAction (){ 
 			private static final long serialVersionUID = 1L;
-
-		public void actionPerformed(ActionEvent arg0){
-			try {
-				AsteroidsFrame.this.server = new Server(true);
-				startGame("localhost", false);
-				
-			} catch (SocketException e) {
-				e.printStackTrace();
+			public void actionPerformed(ActionEvent arg0){
+				try {
+					AsteroidsFrame.this.server = new Server(true);
+					startGame("localhost", false);
+					
+				} catch (SocketException e) {
+					e.printStackTrace();
+				}
 			}
-			
-		}});
+		});
 		
-		mp.setButtonAction("Host Multiplayer",new AbstractAction (){ 
+		this.mp.setButtonAction("Host Multiplayer", new AbstractAction(){ 
 			private static final long serialVersionUID = 1L;
-
-		public void actionPerformed(ActionEvent arg0){
-			try {
-				AsteroidsFrame.this.server = new Server(false);
-				startGame("localhost", false);
-			} catch (SocketException e) {
-				e.printStackTrace();
+			public void actionPerformed(ActionEvent arg0){
+				try {
+					AsteroidsFrame.this.server = new Server(false);
+					startGame("localhost", false);
+				} catch (SocketException e) {
+					e.printStackTrace();
+				}
 			}
-		}});
-		mp.setButtonAction("Join", new AbstractAction(){ 
+		});
+		this.mp.setButtonAction("Join", new AbstractAction(){ 
 			private static final long serialVersionUID = 1L;
 
-		public void actionPerformed(ActionEvent arg0){
-			Logging.LOGGER.fine(mp.getAddress());
-			startGame(mp.getAddress(), false);
-		}});
-		mp.setButtonAction("Spectate",new AbstractAction(){ 
+			public void actionPerformed(ActionEvent arg0){
+				Logging.LOGGER.fine(AsteroidsFrame.this.mp.getAddress());
+				startGame(AsteroidsFrame.this.mp.getAddress(), false);
+			}
+		});
+		this.mp.setButtonAction("Spectate",new AbstractAction(){ 
 			private static final long serialVersionUID = 1L;
 
-		public void actionPerformed(ActionEvent arg0){
-			Logging.LOGGER.fine(mp.getAddress());
-			startGame(mp.getAddress(), true);
-		}});
+			public void actionPerformed(ActionEvent arg0){
+				Logging.LOGGER.fine(AsteroidsFrame.this.mp.getAddress());
+				startGame(AsteroidsFrame.this.mp.getAddress(), true);
+			}
+		});
 		
-		mp.setButtonAction("Quit", new AbstractAction(){ 
+		this.mp.setButtonAction("Quit", new AbstractAction(){ 
 			private static final long serialVersionUID = 1L;
 
-		public void actionPerformed(ActionEvent arg0){
-			System.exit(0);
-		}});
+			public void actionPerformed(ActionEvent arg0){
+				System.exit(0);
+			}
+		});
 		
-		cards.add(mp, "menu card");
+		this.cards.add(this.mp, "menu card");
 		
-		this.add(cards);
+		add(this.cards);
 		
 		
 		showMenu();
-		this.setVisible (true);
-		this.requestFocusInWindow();
+		setVisible (true);
+		requestFocusInWindow();
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public class AsteroidsFrame extends JFrame
 	 */
 	private void showMenu(){
 		
-		cardLayout.show(cards, "menu card");
+		this.cardLayout.show(cards, "menu card");
 		this.pack();
 	}
 	
@@ -174,11 +174,11 @@ public class AsteroidsFrame extends JFrame
 	 */
 	public void startGame(String address, Boolean isSpectator){
 		
-		this.client = new Client(address, Server.UDPPort, isSpectator, mp.getPlayerName());
-		addKeyListener(client.getController());
+		this.client = new Client(address, Server.UDPPort, isSpectator, this.mp.getPlayerName());
+		addKeyListener(this.client.getController());
 		
-		ap.observeGame(client.getGame());
-		cardLayout.show(cards, "game card");
+		this.ap.observeGame(this.client.getGame());
+		this.cardLayout.show(this.cards, "game card");
 		this.requestFocusInWindow();
 	}
 	

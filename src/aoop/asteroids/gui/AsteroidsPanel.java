@@ -42,9 +42,9 @@ public class AsteroidsPanel extends JPanel
 {
 	
 	/* TODO:
-	 * - Consistently use addRotatedPoint or not use it at all
 	 * - Show whether hosting/joining/spectating and on what address?
 	 * DONE:
+	 * - Consistently use addRotatedPoint or not use it at all
 	 * - Avoid using GameObject.worldWidth or GameObject.worldHeight
 	 * - Make explosions go over edges
 	 * 
@@ -62,18 +62,18 @@ public class AsteroidsPanel extends JPanel
 	 *	@param game game model.
 	 */
 
-	public void observeGame (ClientGame game)
+	public void observeGame(ClientGame game)
 	{
 		this.game = game;
-		this.game.addObserver (new Observer ()
+		this.game.addObserver(new Observer ()
 		{
 			@Override
-			public void update (Observable o, Object arg)
+			public void update(Observable o, Object arg)
 			{
-				AsteroidsPanel.this.repaint ();
+				repaint();
 			}
 		});
-		this.setSize(game.getWidth(), game.getHeight());
+		setSize(game.getWidth(), game.getHeight());
 		Logging.LOGGER.fine("Size in the Panel: "+this.getSize().toString());
 	}
 	

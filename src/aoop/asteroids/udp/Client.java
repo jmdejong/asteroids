@@ -79,7 +79,14 @@ public class Client extends Base implements Observer{
 	 */
 	protected ClientSender sender;
 	
-	
+	/**
+	 * This constructor creates a new ClientSender with the specified host and port, as well as starting a ClientReceiver thread that listens for packets on the same socket.<br>
+	 * After this, a ClientGame is started; this is the graphical representation of the game on the client-side.
+	 * @param host the host address to connect to
+	 * @param port the port to connect to on the host address
+	 * @param isSpectator if true, the Client will run in Spectator mode. Otherwise, runs in Player mode.
+	 * @param playerName the name that the player wants to use in the game. (only used if isSpectator is false)
+	 */
 	public Client(String host, int port, boolean isSpectator, String playerName){
 		super();
 		
@@ -96,8 +103,6 @@ public class Client extends Base implements Observer{
 		
 		this.game = new ClientGame();
 		game.addObserver(this);
-		
-		
 		
 		if(!isSpectator){
 			this.spaceshipController = new SpaceshipController();
@@ -116,6 +121,10 @@ public class Client extends Base implements Observer{
 		}
 	}
 	
+	/**
+	 * Iterates in the range ({@link Client#UDPPort} - {@link Client#UDPPort}+100) until a free socket is found.
+	 * @return the first socket on a port that is not already taken.
+	 */
 	private DatagramSocket createSocketOnFirstUnusedPort(){
 		int port = Client.UDPPort;
 		while(port < Client.UDPPort + 100){
@@ -126,60 +135,81 @@ public class Client extends Base implements Observer{
 			}
 		}
 		return null;
-		
 	}
 	
+	/**
+	 * @return True if there has been a connection with the server at some point after creation of this instance.
+	 */
 	public boolean hasConnected() {
 		return hasConnected;
 	}
-
+	
+	/**
+	 * If there is a connection, set hasConnected to true.
+	 */
 	public void confirmConnectionExistance() {
 		this.hasConnected = true;
 	}
 	
+	/**
+	 * Tells all threads that have been started by this object to stop running.
+	 * @see ClientGame#abort()
+	 * @see ClientReciever#stopReciever()
+	 */
 	public void stopClient(){
 		this.game.abort();
 		this.reciever.stopReciever();
 	}
 	
-	
-	public boolean checkIfLatestPacket(JSONObject packetData, DatagramPacket packet){
+	/**
+	 * @return True if the given packet's ID (stored in the 'r' JSON field) is higher than the one stored previously.
+	 */
+	public boolean checkIfLatestPacket(JSONObject packetData){
 		long packetId = ((Long) packetData.get("r"));
 		
 		
 		return this.getLastPacketId() < packetId;
 	}
 	
-	public void updateConnectionData(JSONObject packetData, DatagramPacket packet){
+	/**
+	 * Will save the last packet ID to be the ID of the passed packetData, and the last Ping Time to be now.
+	 */
+	public void updateConnectionData(JSONObject packetData){
 		
 		long packetId = ((Long) packetData.get("r"));
 		
-		this.setLastPingTime(System.currentTimeMillis());
-		this.setLastPacketId(packetId);
+		this.lastPingTime = System.currentTimeMillis();
+		this.lastPacketId = packetId;
 	}
 	
-	
+	/**
+	 * @return true if it has been less long than {@link Client.MaxNonRespondTime} since the last time a packet was received.
+	 */
 	public boolean isConnected(){
 		return this.getLastPingTime() > System.currentTimeMillis() - Client.MaxNonRespondTime;
 	}
 	
-
+	/**
+	 * @return the ID of the last packet.
+	 */
 	private long getLastPacketId() {
 		return lastPacketId;
 	}
+	
 
-	private void setLastPacketId(long lastPacketId) {
-		this.lastPacketId = lastPacketId;
-	}
-
+	/**
+	 * @return the last time a packet was received.
+	 */
 	private long getLastPingTime() {
 		return lastPingTime;
 	}
 
-	private void setLastPingTime(long lastPingTime) {
-		this.lastPingTime = lastPingTime;
-	}
-
+	/**
+	 * Runs every time the ClientGame's state has changed.<br/>
+	 * -> Sends a PlayerJoin or SpectatorJoin packet until the Client is connected.<br>
+	 * -> If no longer connected, freezes the game if the time since the last connection was longer than the timeout.<br>
+	 * -> Otherwise, send an update (Either a PlayerUpdate packet or SpectatorPing packet, depending on {@link Client#isSpectator}
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		
@@ -206,15 +236,24 @@ public class Client extends Base implements Observer{
 		
 	}
 	
+	/**
+	 * @return a reference to the SpaceshipController object.
+	 */
 	public SpaceshipController getController(){
 		return this.spaceshipController;
 	}
 	
+	/**
+	 * @return true if the spaceship with this player's name has been destroyed.
+	 */
 	public boolean hasLost(){
 		Spaceship s = game.getSpaceship(this.playerName);
 		return s!=null && s.isDestroyed();
 	}
 	
+	/**
+	 * @return a reference to the ClientGame object.
+	 */
 	public ClientGame getGame(){
 		return this.game;
 	}

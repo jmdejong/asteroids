@@ -30,10 +30,10 @@ public class ClientReciever extends BaseReciever {
 		}
 		PacketType packet_type = PacketType.values()[rawPacketType];
 		
-		if(!this.client.checkIfLatestPacket(packetData, packet)){
+		if(!this.client.checkIfLatestPacket(packetData)){
 			return;
 		}else{
-			this.client.updateConnectionData(packetData, packet);
+			this.client.updateConnectionData(packetData);
 		}
 		
 		switch(packet_type){

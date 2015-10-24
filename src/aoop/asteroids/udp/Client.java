@@ -185,10 +185,10 @@ public class Client extends Base implements Observer{
 	}
 	
 	/**
-	 * @return true if it has been less long than {@link Client.MaxNonRespondTime} since the last time a packet was received.
+	 * @return true if it has been less long than Base.MaxNonRespondTime since the last time a packet was received.
 	 */
 	public boolean isConnected(){
-		return this.getLastPingTime() > System.currentTimeMillis() - Client.MaxNonRespondTime;
+		return this.getLastPingTime() > System.currentTimeMillis() - Base.MaxNonRespondTime;
 	}
 	
 	/**

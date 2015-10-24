@@ -1,0 +1,7 @@
+aoop.asteroids
+aoop.asteroids.gui
+aoop.asteroids.model
+aoop.asteroids.model.game
+aoop.asteroids.model.gameobjects
+aoop.asteroids.udp
+aoop.asteroids.udp.packets

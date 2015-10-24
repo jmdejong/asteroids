@@ -50,7 +50,7 @@ public class Sound {
 		return bgmHasStarted;
 	}
 	
-	public void playSound(final String filename, /*final int startOffset,*/ final boolean isBGM){
+	public void playSound(final String filename, final boolean isBGM){
 		
 		if(isBGM){
 			bgmHasStarted=true;
@@ -91,14 +91,9 @@ public class Sound {
 					AudioListener listener = new AudioListener();
 					
 					try {
-						Clip clip;// = AudioSystem.getClip();
-										
+						Clip clip;	
 						clip = (Clip) AudioSystem.getLine(info);
 						
-						
-						/*if(startOffset != 0){
-							clip.setFramePosition(startOffset);
-						}*/
 						
 						clip.addLineListener(listener);
 						clip.open(inputStream);

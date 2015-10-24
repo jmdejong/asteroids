@@ -12,6 +12,13 @@ import aoop.asteroids.model.gameobjects.Bullet;
 import aoop.asteroids.model.gameobjects.Explosion;
 import aoop.asteroids.model.gameobjects.Spaceship;
 
+/**
+ * BaseGame contains all logic that is shared by both ClientGame and ServerGame.
+ * As both contain lists of GameObjects, and both should be run on a Thread (with the {@link BaseGame#run()} function iterating many times per second), there is a lot of similar functionality between these classes.
+ * 
+ * @author qqwy
+ *
+ */
 public abstract class BaseGame extends Observable{
 
 	private double width = Asteroids.worldWidth;

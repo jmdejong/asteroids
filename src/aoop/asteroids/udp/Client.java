@@ -10,7 +10,6 @@ import java.util.Observer;
 import org.json.simple.JSONObject;
 
 import aoop.asteroids.gui.SpaceshipController;
-import aoop.asteroids.model.*;
 import aoop.asteroids.model.game.ClientGame;
 import aoop.asteroids.model.gameobjects.Spaceship;
 

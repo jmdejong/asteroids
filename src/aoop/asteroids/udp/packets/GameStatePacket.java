@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONArray;
 
-import aoop.asteroids.model.*;
 import aoop.asteroids.model.game.ClientGame;
 import aoop.asteroids.model.gameobjects.Asteroid;
 import aoop.asteroids.model.gameobjects.Bullet;

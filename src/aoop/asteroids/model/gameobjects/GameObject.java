@@ -20,13 +20,6 @@ import org.json.simple.JSONArray;
  */
 public abstract class GameObject {
 	
-	/* TODO:
-	 * DONE:
-	 * - maybe change all _X and _Y to 2d vectors (for example Point2D.double) -> Decided against it.
-	 * - move worldWidth and worldHeight somewhere else and avoid using them where possible
-	 * - make a function getMirrorLocations that returns a list of 1, 2 of 4 points
-	 * - look critically where we actually need WrappablePoint instead of Point2D.double -> nowhere
-	 */
 	
 	/**
 	 * Location of this GameObject in the two-dimensional plane.

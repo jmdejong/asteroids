@@ -15,14 +15,6 @@ import aoop.asteroids.model.gameobjects.Spaceship;
 
 public class Client extends Base implements Observer{
 	
-	/* TODO:
-	 * DONE:
-	 * - find out why message "connection with host lost" shows up at the beginning and fix
-	 * not needed:
-	 * - maybe make a new class (Player, for example") that takes care of the clients on player (spaceshipController, hasLost etc...)
-	 *   this player object should have a reference to game
-	 *   or maybe we can just move this to spaceshipController
-	 */
 	
 	
 	/**

@@ -19,18 +19,6 @@ import java.net.SocketException;
  */
 public class Asteroids {
 	
-	/* TODO: general
-	 * - add/update documentation
-	 * - make an interface for all object that we can serialize to json -> GameObject -> that's not an interface and not all we can serialize
-	 * - for all large classes, see if we can split them up across multiple domains
-	 * DONE:
-	 * - move global constants to this class
-	 * - use decorator pattern more
-	 * - move sound functions to its own (singleton?) class
-	 * - make use of this consequent (always for field, not for own methods)
-	 */
-	
-	
 	
 	
 	public static int worldWidth = 800;

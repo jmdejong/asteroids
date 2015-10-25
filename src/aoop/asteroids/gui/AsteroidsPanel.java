@@ -41,14 +41,6 @@ import java.util.Random;
  */
 public class AsteroidsPanel extends JPanel {
 	
-	/* TODO:
-	 * - Show whether hosting/joining/spectating and on what address?
-	 * DONE:
-	 * - Consistently use addRotatedPoint or not use it at all
-	 * - Avoid using GameObject.worldWidth or GameObject.worldHeight
-	 * - Make explosions go over edges
-	 * 
-	 */
 	
 	/** serialVersionUID */
 	public static final long serialVersionUID = 4L;

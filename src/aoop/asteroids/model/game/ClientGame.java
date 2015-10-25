@@ -27,18 +27,6 @@ import aoop.asteroids.model.gameobjects.Spaceship;
  */
 public final class ClientGame extends BaseGame implements Runnable {
 	
-	/* TODO:
-
-	 * Done:
-	 * - Make this class more readable
-	 * - All collections of GameObjects are now lists.
-	 * - Maybe do the sound stuff somewhere else.
-	 *   This is the model part and the sound would be the view part
-	 *   Even if this class is responsible for calling the playSound commands 
-	 *   (which I don't like but don't know how to solve), the code to play
-	 *   sounds could better have its own class
-	 * - Is this the right place for storing the spaceshipController? -> No. moved it to Client.
-	 */
 	
 	
 	/**

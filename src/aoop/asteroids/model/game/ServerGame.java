@@ -47,16 +47,7 @@ import java.util.Random;
  *
  *	@author Yannick Stoffers, Wiebe-Marten Wijnja, Michiel de Jong
  */
-public final class ServerGame extends BaseGame implements Runnable
-{
-	
-	/* TODO:
-	 * - see if we can make this class smaller
-	 * - see if we can orden the functions better
-	 * DONE:
-	 * - remove all references of server from this class
-	 *   server should be only an observer
-	 */
+public final class ServerGame extends BaseGame implements Runnable {
 	
 	public static long waitingTime = 3000;
 	
@@ -283,7 +274,8 @@ public final class ServerGame extends BaseGame implements Runnable
 	 *	@return true if game is over, false otherwise.
 	 */ 
 	private boolean areAllShipsDestroyed() {
-		if(this.spaceships.isEmpty()){//This situation happens before a player has joined.
+		if(this.spaceships.isEmpty()){
+			//This situation happens before a player has joined.
 			return false;
 		}
 		for(Spaceship s : this.spaceships){

@@ -22,7 +22,7 @@ import aoop.asteroids.udp.packets.PlayerUpdatePacket;
 
 public class Server extends Base implements Observer{
 	
-	public static int UDPPort = 8090;
+	public static int UDPPort = 8800;
 	
 
 	

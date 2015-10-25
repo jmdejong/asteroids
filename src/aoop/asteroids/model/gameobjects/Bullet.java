@@ -77,8 +77,6 @@ public class Bullet extends GameObject {
 	/**
 	 *	Method that determines the behaviour of the bullet. The behaviour of a 
 	 *	bullet is defined by adding the velocity to its location parameters. 
-	 *	The location is then restricted to values between 0 and 800 (size of 
-	 *	the window).
 	 */
 	@Override 
 	public void nextStep() {

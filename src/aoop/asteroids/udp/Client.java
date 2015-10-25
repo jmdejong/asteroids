@@ -40,7 +40,7 @@ public class Client extends Base implements Observer{
 	 * If this port is taken, (For instance by another running copy of this application), consecutive ports after this one are tried.
 	 * @see Client#createSocketOnFirstUnusedPort()
 	 */
-	public static int UDPPort = 8091;
+	public static int UDPPort = 8801;
 	
 	/** if set to true, Client is in Spectator mode, and will not send any PlayerInput packets.
 	 * Instead, SpectatorPing packets are sent, to let the server know that this client is still connected and watching.

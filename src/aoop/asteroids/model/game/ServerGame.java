@@ -273,7 +273,7 @@ public final class ServerGame extends BaseGame implements Runnable {
 	 *
 	 *	@return true if game is over, false otherwise.
 	 */ 
-	private boolean areAllShipsDestroyed() {
+	public boolean areAllShipsDestroyed() {
 		if(this.spaceships.isEmpty()){
 			//This situation happens before a player has joined.
 			return false;
@@ -387,6 +387,9 @@ public final class ServerGame extends BaseGame implements Runnable {
 								HighScores.getInstance().saveScore(w.getName(), w.getScore());
 								this.addMessage(w.getName()+" has beat their high score!");
 							}
+						}else if(this.isSinglePlayer && w.isDestroyed()){
+							this.addMessage("Game Over! Restarting from round #1.");
+							w.resetScore();
 						}
 						
 					}
@@ -394,8 +397,11 @@ public final class ServerGame extends BaseGame implements Runnable {
 				
 				if(this.areAllAsteroidsDestroyed() && this.asteroidsLimit != 0 && !this.areAllShipsDestroyed()){
 					this.addMessage("Congradulations! Level Cleared.");
+					this.addMessage("Starting next round...");
+				}else if(this.asteroidsLimit == 0){
+					this.addMessage("Starting first round...");
 				}
-				this.addMessage("Starting Next Round in "+(waitingTime/1000)+" seconds");
+				
 			}
 			double time = System.currentTimeMillis() - this.startCountdownTime;
 			return ServerGame.waitingTime - time;

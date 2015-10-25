@@ -186,7 +186,12 @@ public class Server extends Base implements Observer{
 	
 	
 	public void restartGame(){
-		++roundNumber;
+		if(this.isSinglePlayerMode() && game.areAllShipsDestroyed()){
+			//Restart game at round 1 if single player crashed their ship.
+			roundNumber = 1;
+		}else{
+			++roundNumber;
+		}
 		List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
 		this.game.deleteObserver(this);
 		this.game = new ServerGame(this.isSinglePlayerMode(), roundNumber); //DONE: Rename Lobby
@@ -200,6 +205,7 @@ public class Server extends Base implements Observer{
 		}
 		this.game.setSpaceships(spaceships, true);
 		
+		this.game.addMessage("Go!",2000);
 		Thread t = new Thread (game);
 		t.start();
 	}

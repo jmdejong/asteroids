@@ -252,6 +252,14 @@ public class Spaceship extends GameObject {
 		return this.score;
 	}
 	
+	/**
+	 * Resets the score back to 0.
+	 * Only used in singleplayer-mode.
+	 */
+	public void resetScore() {
+		this.score = 0;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();

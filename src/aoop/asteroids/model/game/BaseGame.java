@@ -98,6 +98,10 @@ public abstract class BaseGame extends Observable {
 		this.messages.add(new Message(message));
 	}
 	
+	public void addMessage(String message, int duration){
+		this.messages.add(new Message(message, duration));
+	}
+	
 	/** 
 	 * Check whether each of the currently existing messages should still be shown and
 	 * removes the messages that are no longer relevant.

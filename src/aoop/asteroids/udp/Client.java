@@ -208,7 +208,7 @@ public class Client extends Base implements Observer{
 		
 		//When no longer connected, freeze the game, and display message.
 		if(!this.isConnected() && !this.game.isFrozen()){
-			this.game.addMessage("Connection with Host has been lost.");
+			this.game.addMessage("Connection with Host has been lost.", 10000);
 			this.game.freeze();
 			return;
 		}

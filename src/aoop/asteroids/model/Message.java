@@ -17,12 +17,6 @@ import org.json.simple.JSONArray;
  */
 public class Message {
 	
-	/* TODO:
-	 * DONE:
-	 * - rename to Message?
-	 * not needed:
-	 * - find some way to annotate that GameMessage objects are immutable
-	 */
 	
 	/**
 	 * The time this message was created at, in milliseconds.

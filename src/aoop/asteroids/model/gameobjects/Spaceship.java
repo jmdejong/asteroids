@@ -19,8 +19,8 @@ import org.json.simple.JSONArray;
  *
  *	@author Wiebe-Marten Wijnja, Michiel de Jong
  */
-public class Spaceship extends GameObject
-{
+public class Spaceship extends GameObject {
+	
 	private static int timeUntilFireAgain = 10;
 
 	/** Direction the spaceship is pointed in. */

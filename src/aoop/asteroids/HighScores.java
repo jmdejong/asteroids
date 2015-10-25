@@ -9,10 +9,7 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
-/*
- * TODO: 
- * - Maybe think of a way to re-try highscores loading if application started twice in quick succession (while other instance has locked database).
- */
+
 public class HighScores {
 	
 	private static HighScores instance = null;

@@ -22,15 +22,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 /** A class with function forfor playing sounds */
 public class Sound {
 	
-	/*
-	 * This probably does not belong in the model, but I leave it here because the ClientGame uses it
-	 * 
-	 * TODO:
-	 * DONE:
-	 * - Fix sound error when loading multiple games on same computer
-	 * - find something better than singleton
-	 * 
-	 */
 	
 	
 	private boolean bgmHasStarted = false;

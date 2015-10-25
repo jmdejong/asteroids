@@ -27,12 +27,6 @@ import aoop.asteroids.udp.Server;
  */
 public class AsteroidsFrame extends JFrame {
 	
-	/* TODO:
-	 * - more menu options(mute)?
-	 * DONE:
-	 * - reload highscores after going back to menu
-	 * 
-	 */
 	/** serialVersionUID */
 	public static final long serialVersionUID = 1L;
 	

@@ -88,7 +88,11 @@ public abstract class BaseGame extends Observable{
 	 */
 	public List<Message> getMessages(){
 		removeDestroyedMessages();
-		return messages.subList(0, messages.size());
+		List<Message> clones = new ArrayList<>();
+		for(Message m: this.messages){
+			clones.add(m);
+		}
+		return clones;
 	}
 	
 	public void addMessage(String message){

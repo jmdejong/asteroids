@@ -69,25 +69,30 @@ public class Server extends Base implements Observer{
 	
 	
 	public void update(Observable o, Object arg){
-		this.sender.sendGameStatePacket(this.roundNumber,
-				this.game.getSpaceships(),
-				this.game.getBullets(),
-				this.game.getAsteroids(),
-				this.game.getExplosions(),
-				this.getPlayerConnections(),
-				this.getSpectatorConnections());
-		this.sender.sendMessageListPacket(this.game.getMessages(),this.getPlayerConnections(), this.getSpectatorConnections());
-		this.tagNonrespondingClients();
-		this.destroyAllShipsOfDisconnectedPlayers();
-		if (this.game.hasEnded()){
-			this.restartGame();
+		
+		synchronized(this.game){
+			this.sender.sendGameStatePacket(this.roundNumber,
+					this.game.getSpaceships(),
+					this.game.getBullets(),
+					this.game.getAsteroids(),
+					this.game.getExplosions(),
+					this.getPlayerConnections(),
+					this.getSpectatorConnections());
+			this.sender.sendMessageListPacket(this.game.getMessages(),this.getPlayerConnections(), this.getSpectatorConnections());
+			this.tagNonrespondingClients();
+			this.destroyAllShipsOfDisconnectedPlayers();
+			if (this.game.hasEnded()){
+				this.restartGame();
+			}
 		}
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		addConnection(spectatorConnections, packetData, packet);
 		//sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
-		this.game.addMessage("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
+		synchronized (this.game){
+			this.game.addMessage("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
+		}
 	}
 	public synchronized void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
@@ -116,24 +121,27 @@ public class Server extends Base implements Observer{
 			}
 		}
 		
-		if(nameExists){
-			this.game.addMessage("Duplicate Player `"+name+"` was added as Spectator instead.");
-			this.addSpectatorConnection(packetData, packet);
-		}else{
-			addConnection(getPlayerConnections(), packetData, packet);
-			this.game.addSpaceship(name, !isSinglePlayerMode());
-		}
-			
-		if(getPlayerConnections().size() - countDisconnectedPlayers() == 1){
-			if(isSinglePlayerMode()){
-				this.game.addMessage("Singleplayer Game Started");
+		
+		synchronized(this.game){
+			if(nameExists){
+				this.game.addMessage("Duplicate Player `"+name+"` was added as Spectator instead.");
+				this.addSpectatorConnection(packetData, packet);
 			}else{
-				this.game.addMessage("Local Client⟷Host connection made.");
-
-				this.game.addMessage("Waiting for at least one more Player");
+				addConnection(getPlayerConnections(), packetData, packet);
+				this.game.addSpaceship(name, !isSinglePlayerMode());
 			}
-		}else{
-			this.game.addMessage("New Player Connected: "+name);
+				
+			if(getPlayerConnections().size() - countDisconnectedPlayers() == 1){
+				if(isSinglePlayerMode()){
+					this.game.addMessage("Singleplayer Game Started");
+				}else{
+					this.game.addMessage("Local Client⟷Host connection made.");
+
+					this.game.addMessage("Waiting for at least one more Player");
+				}
+			}else{
+				this.game.addMessage("New Player Connected: "+name);
+			}
 		}
 		
 
@@ -158,12 +166,14 @@ public class Server extends Base implements Observer{
 		if(index == -1){
 			return;
 		}
-		Spaceship playerShip = this.game.getSpaceshipRef(index);
-		if(playerShip==null){
-			return;
+		synchronized(this.game) {
+			Spaceship playerShip = this.game.getSpaceshipRef(index);
+			if(playerShip==null){
+				return;
+			}
+			Logging.LOGGER.fine(playerShip.toString());
+			PlayerUpdatePacket.decodePacket(packet_data, playerShip);
 		}
- 		Logging.LOGGER.fine(playerShip.toString());
-		PlayerUpdatePacket.decodePacket(packet_data, playerShip);
 	}
 	
 	public ClientConnection findClientConnection(SocketAddress socketAddress){

@@ -90,25 +90,25 @@ public final class ClientGame extends BaseGame implements Runnable{
 	 */
 	protected void update(){
 		
-		
-		
-		removeDestroyedMessages();
-		
-		if(!this.isFrozen()){
-			for (Asteroid a : this.asteroids) a.nextStep ();
-			for (Bullet b : this.bullets) b.nextStep ();
-			for (Spaceship s : this.spaceships) s.nextStep();
+		synchronized (this){
 			
+			removeDestroyedMessages();
 			
-			Random r = new Random(113*this.roundNumber);
-			double xVelocity = 3 * (r.nextDouble() - .5);
-			double yVelocity = 3 * (r.nextDouble() - .5);
-			this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
+			if(!this.isFrozen()){
+				for (Asteroid a : this.asteroids) a.nextStep ();
+				for (Bullet b : this.bullets) b.nextStep ();
+				for (Spaceship s : this.spaceships) s.nextStep();
+				
+				
+				Random r = new Random(113*this.roundNumber);
+				double xVelocity = 3 * (r.nextDouble() - .5);
+				double yVelocity = 3 * (r.nextDouble() - .5);
+				this.bgPos = new Point2D.Double(this.bgPos.x+xVelocity, this.bgPos.y+yVelocity);
+			}
+			
+			this.setChanged ();
+			this.notifyObservers ();
 		}
-		
-		this.setChanged ();
-		this.notifyObservers ();
-		
 	}
 	
 	/**

@@ -96,8 +96,9 @@ public final class Utils {
 	@SuppressWarnings("unchecked")
 	public static <GO extends GameObject> List<GO> deepCloneList(List<GO> objects){
 		List<GO> clones = new ArrayList<>();
-		for(GO o: objects) clones.add ((GO) o.clone ());
-
+		for(GO o: objects){
+			clones.add((GO) o.clone ());
+		}
 		
 		return clones;
 	}

@@ -3,6 +3,18 @@ package aoop.asteroids;
 import java.io.Serializable;
 import javax.persistence.*;
 
+/**
+ * The PlayerScore object is constructed to be save-able in the Objectdb database.
+ * It is mostly a datastore with three fields:<br>
+ * <br>
+ * <ul>
+ * <li>A player name</li>
+ * <li>The player's high score</li>
+ * <li>The time (in milliseconds since the Epoch) at which this score was obtained</li>
+ * </ul>
+ * @author qqwy
+ *
+ */
 @Entity
 public class PlayerScore implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -10,8 +22,19 @@ public class PlayerScore implements Serializable{
 	@Id @GeneratedValue
     private long id;
 	
+	/**
+	 * The player's name
+	 */
 	private String name;
+	
+	/**
+	 * The player's highest score.
+	 */
 	private long score;
+	
+	/**
+	 * The timestamp (in milliseconds since the Epoch) at which the player obtained this score.
+	 */
 	private long datetime;
 	
 	public PlayerScore(String name, long score, long datetime){

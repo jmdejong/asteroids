@@ -39,16 +39,24 @@ public final class Utils {
 	
 	/**
 	 * Multiplies two imaginary numbers, and returns the 'real' part of the result.
-	 * @param a Real part of the first 
-	 * @param b
-	 * @param c
-	 * @param d
-	 * @return
+	 * @param a Real part of the first number
+	 * @param b Imaginary part of the first number
+	 * @param c Real part of the second number
+	 * @param d Imaginary part of the second number
+	 * @return the real part of (a+b*i)*(c+d*i)
 	 */
 	public static double imagMultR(double a, double b, double c, double d){
 		return a*c-b*d;
 	}
 	
+	/**
+	 * Multiplies two imaginary numbers, and returns the 'imaginary' part of the result.
+	 * @param a Real part of the first number
+	 * @param b Imaginary part of the first number
+	 * @param c Real part of the second number
+	 * @param d Imaginary part of the second number
+	 * @return the imaginary part of (a+b*i)*(c+d*i)
+	 */
 	public static double imagMultI(double a, double b, double c, double d){
 		return a*d+b*c;
 	}
@@ -82,6 +90,7 @@ public final class Utils {
 		return name;
 	}
 	
+	/** the complement colour of a given colour */
 	public static Color getComplementColour(Color c){
 		return new Color(255-c.getRed(), 255-c.getGreen(), 255-c.getBlue()).brighter().brighter();
 	}
@@ -92,6 +101,7 @@ public final class Utils {
 		return Utils.floorMod(b-m, range)+m;
 	}
 	
+	/** A copy of a list of GameObjects filled with clones of the GameObjects in the original list */
 	@SuppressWarnings("unchecked")
 	public static <GO extends GameObject> List<GO> deepCloneList(List<GO> objects){
 		List<GO> clones = new ArrayList<>();

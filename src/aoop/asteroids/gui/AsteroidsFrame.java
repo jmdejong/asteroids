@@ -40,9 +40,11 @@ public class AsteroidsFrame extends JFrame {
 	private Server server;
 	private Client client;
 	
-	/** The container vor the menu and the game view */
+	/** The container for the menu and the game view */
 	private JPanel cards;
 	private CardLayout cardLayout = new CardLayout();
+	
+	private SpaceshipController controller;
 	
 	/** The panel in which the game is painted. */
 	private AsteroidsPanel ap;
@@ -157,6 +159,9 @@ public class AsteroidsFrame extends JFrame {
 		showMenu();
 		setVisible (true);
 		requestFocusInWindow();
+		
+		this.controller = new SpaceshipController();
+		addKeyListener(this.controller);
 	}
 	
 	/**
@@ -174,8 +179,7 @@ public class AsteroidsFrame extends JFrame {
 	 */
 	public void startGame(String address, Boolean isSpectator){
 		
-		this.client = new Client(address, Server.UDPPort, isSpectator, this.mp.getPlayerName());
-		addKeyListener(this.client.getController());
+		this.client = new Client(address, Server.UDPPort, isSpectator, this.mp.getPlayerName(), this.controller);
 		
 		this.ap.observeGame(this.client.getGame());
 		this.cardLayout.show(this.cards, "game card");

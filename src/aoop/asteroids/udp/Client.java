@@ -24,7 +24,6 @@ public class Client extends Base implements Observer{
 	 *   or maybe we can just move this to spaceshipController
 	 */
 	
-	//private InetSocketAddress serverAddress;
 	
 	/**
 	 * Reference to the SpaceshipController, that implements KeyListener so we know how the player want to move their spaceship.
@@ -71,11 +70,6 @@ public class Client extends Base implements Observer{
 	private long lastPacketId = 0;
 	
 	/**
-	 * Used for throttling the amount of sent PlayerJoin or SpectatorJoin packets when attempting to connect to the server.
-	 */
-	private long lastConnectionCheckTime = 0;
-	
-	/**
 	 * A reference to the ClientSender that is in charge of creating and sending the actual packets of the data we provide it with.
 	 */
 	protected ClientSender sender;
@@ -88,7 +82,7 @@ public class Client extends Base implements Observer{
 	 * @param isSpectator if true, the Client will run in Spectator mode. Otherwise, runs in Player mode.
 	 * @param playerName the name that the player wants to use in the game. (only used if isSpectator is false)
 	 */
-	public Client(String host, int port, boolean isSpectator, String playerName){
+	public Client(String host, int port, boolean isSpectator, String playerName, SpaceshipController controller){
 		super();
 		
 		Logging.LOGGER.fine("New Client made.");
@@ -106,7 +100,7 @@ public class Client extends Base implements Observer{
 		game.addObserver(this);
 		
 		if(!isSpectator){
-			this.spaceshipController = new SpaceshipController();
+			this.spaceshipController = controller;
 		}
 		
 		Thread t = new Thread (game);
@@ -215,14 +209,13 @@ public class Client extends Base implements Observer{
 	public void update(Observable arg0, Object arg1) {
 		
 		//Re-send join packets until joining succeeds.
-		long executionTime = System.currentTimeMillis();
 		if(!this.hasConnected()){
 			this.sender.sendPlayerJoinPacket(this.playerName);
-			this.lastConnectionCheckTime = executionTime;
+			return;
 		}
 		
 		//When no longer connected, freeze the game, and display message.
-		if(!this.isConnected() && this.hasConnected && !this.game.isFrozen()){
+		if(!this.isConnected() && !this.game.isFrozen()){
 			this.game.addMessage("Connection with Host has been lost.");
 			this.game.freeze();
 			return;
@@ -235,13 +228,6 @@ public class Client extends Base implements Observer{
 			this.sender.sendSpectatorPingPacket();
 		}
 		
-	}
-	
-	/**
-	 * @return a reference to the SpaceshipController object.
-	 */
-	public SpaceshipController getController(){
-		return this.spaceshipController;
 	}
 	
 	/**

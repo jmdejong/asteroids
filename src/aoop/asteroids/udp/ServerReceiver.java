@@ -12,15 +12,31 @@ import org.json.simple.JSONValue;
 import aoop.asteroids.udp.packets.Packet;
 import aoop.asteroids.udp.packets.Packet.PacketType;
 
-public class ServerReciever extends BaseReciever{
+
+
+/**
+ * The ServerReceiver receives packets at the Server-side.
+ * It listens for PlayerJoin, SpectatorJoin, PlayerUpdate and SpectatorPing packets.
+ * 
+ * @author Wiebe-Marten Wijnja & Michiel de Jong
+ *
+ */
+public class ServerReceiver extends BaseReceiver{
 	
-	Server server;
+	/**
+	 * Reference to the Server object. This reference is used to update state depending on the information that is contained in certain packets.
+	 */
+	private Server server;
 	
-	public ServerReciever(Server server, int port, DatagramSocket socket) throws SocketException{
-		super("asteroids.udp.ServerThread",port, socket);
+	public ServerReceiver(Server server, DatagramSocket socket) throws SocketException{
+		super("asteroids.udp.ServerThread", socket);
 		this.server = server;
 	}
-
+	
+	/**
+	 * The Server listens to PlayerJoin, SpectatorJoin, PlayerUpdate and SpectatorPing packets. Other types of packets should not be received, and are thrown away.
+	 * @see BaseReceiver#parsePacket(String, DatagramPacket)
+	 */
 	@Override
 	protected void parsePacket(String packet_string, DatagramPacket packet){
 		Logging.LOGGER.fine("parsing packet.");
@@ -65,7 +81,7 @@ public class ServerReciever extends BaseReciever{
 				server.updateConnectionData(packetData, packet);
 				break;
 			default:
-				Logging.LOGGER.fine("C: packet received with type: "+packet_type);
+				Logging.LOGGER.fine("S: packet received with type: "+packet_type);
 				break;
 		}
 	}

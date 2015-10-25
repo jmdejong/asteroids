@@ -109,7 +109,7 @@ public class Client extends Base implements Observer{
 		this.game.addMessage("Connecting to Host...");
 		
 		try {
-			this.reciever = new ClientReciever(this, connectionSocket);
+			this.reciever = new ClientReceiver(this, connectionSocket);
 			this.reciever.start();
 		} catch (SocketException e) {
 			Logging.LOGGER.severe("Could not make a ClientReceiver: "+e.getMessage());
@@ -149,7 +149,7 @@ public class Client extends Base implements Observer{
 	/**
 	 * Tells all threads that have been started by this object to stop running.
 	 * @see ClientGame#abort()
-	 * @see ClientReciever#stopReciever()
+	 * @see ClientReceiver#stopReciever()
 	 */
 	public void stopClient(){
 		this.game.abort();

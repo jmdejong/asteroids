@@ -48,7 +48,7 @@ public class Server extends Base implements Observer{
 		this.sender = new ServerSender(connectionSocket);
 
 		try {
-			this.reciever = new ServerReciever(this, Server.UDPPort, connectionSocket);
+			this.reciever = new ServerReceiver(this, connectionSocket);
 			this.reciever.start();
 		} catch (SocketException e) {
 			Logging.LOGGER.severe("Unable to use server socket. This port is possibly in use already. "+e.getMessage());

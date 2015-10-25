@@ -14,14 +14,29 @@ import aoop.asteroids.udp.packets.MessageListPacket;
 import aoop.asteroids.udp.packets.Packet.PacketType;
 import aoop.asteroids.model.game.ClientGame;
 
-public class ClientReciever extends BaseReciever {
-	Client client;
+/**
+ * The ClientReceiver receives packets at the Client-side.
+ * It listens for GameState packets and MessageList packets.
+ * 
+ * @author Wiebe-Marten Wijnja & Michiel de Jong
+ *
+ */
+public class ClientReceiver extends BaseReceiver {
 	
-	public ClientReciever(Client client, DatagramSocket socket) throws SocketException{
-		super("asteroids.udp.ClientThread",Client.UDPPort, socket);
+	/**
+	 * Reference to the Client object. This reference is used to update state depending on the information that is contained in certain packets.
+	 */
+	private Client client;
+	
+	public ClientReceiver(Client client, DatagramSocket socket) throws SocketException{
+		super("asteroids.udp.ClientThread", socket);
 		this.client = client;
 	}
 
+	/**
+	 * The Client listens to GameState packets and MessageList packets. Other types of packets should not be received, and are thrown away.
+	 * @see BaseReceiver#parsePacket(String, DatagramPacket)
+	 */
 	@Override
 	protected void parsePacket(String packetString, DatagramPacket packet) {
 		JSONObject packetData = (JSONObject) JSONValue.parse(packetString);

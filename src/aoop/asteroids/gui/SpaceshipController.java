@@ -24,6 +24,9 @@ public class SpaceshipController implements KeyListener{
 		this.keyStates.put(KeyEvent.VK_UP,    false);
 		this.keyStates.put(KeyEvent.VK_LEFT,  false);
 		this.keyStates.put(KeyEvent.VK_RIGHT, false);
+		this.keyStates.put(KeyEvent.VK_W ,    false);
+		this.keyStates.put(KeyEvent.VK_A,  false);
+		this.keyStates.put(KeyEvent.VK_D, false);
 		this.keyStates.put(KeyEvent.VK_SPACE, false);
 	}
 
@@ -59,21 +62,21 @@ public class SpaceshipController implements KeyListener{
 	 * @return if the 'up' key is currently pressed, which makes the spaceship go forward.
 	 */
 	public boolean isUp() {
-		return keyStates.get(KeyEvent.VK_UP);
+		return keyStates.get(KeyEvent.VK_UP) || keyStates.get(KeyEvent.VK_W);
 	}
 	
 	/**
 	 * @return if the 'right' key is currently pressed, which makes the spaceship rotate right.
 	 */
 	public boolean isRight() {
-		return keyStates.get(KeyEvent.VK_RIGHT);
+		return keyStates.get(KeyEvent.VK_RIGHT) || keyStates.get(KeyEvent.VK_D);
 	}
 	
 	/**
 	 * @return if the 'left' key is currently pressed, which makes the spaceship rotate left.
 	 */
 	public boolean isLeft() {
-		return keyStates.get(KeyEvent.VK_LEFT);
+		return keyStates.get(KeyEvent.VK_LEFT) || keyStates.get(KeyEvent.VK_A);
 	}
 	
 	/**

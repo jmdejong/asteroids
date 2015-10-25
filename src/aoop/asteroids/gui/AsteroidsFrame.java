@@ -23,7 +23,7 @@ import aoop.asteroids.udp.Server;
  *	AsteroidsFrame is a class that extends JFrame and thus provides a game 
  *	window for the Asteroids game.
  *
- *	@author Yannick Stoffers, qqwy
+ *	@author Yannick Stoffers, Wiebe-Marten Wijnja, Michiel de Jong
  */
 public class AsteroidsFrame extends JFrame {
 	

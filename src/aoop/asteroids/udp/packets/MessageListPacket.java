@@ -10,7 +10,7 @@ import aoop.asteroids.model.Message;
 /**
  * The MessageListPacket only contains a list of messages that all Clients should see.
  * This packet is also sent multiple times(to ensure that it arrives at all Clients at least once); Clients are in charge of not re-displaying messages they saw before.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class MessageListPacket extends Packet {

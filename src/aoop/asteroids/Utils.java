@@ -9,7 +9,7 @@ import aoop.asteroids.model.gameobjects.GameObject;
 
 /**
  * This Utils class contains a couple of useful functions that are used in multiple places of the program.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public final class Utils {

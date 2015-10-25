@@ -17,7 +17,7 @@ import org.json.simple.JSONArray;
  *	setting is in outer space, the spaceship is subject to traction and will 
  *	slowly deaccelerate.
  *
- *	@author W.M. Wijnja and J.M. de Jong
+ *	@author Wiebe-Marten Wijnja, Michiel de Jong
  */
 public class Spaceship extends GameObject
 {

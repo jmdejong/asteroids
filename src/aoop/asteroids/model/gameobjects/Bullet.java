@@ -11,7 +11,7 @@ import org.json.simple.JSONArray;
  *	bullet has the addition that it only exists for a certain amount of game 
  *	steps.
  *
- *	@author Yannick Stoffers
+ *	@author Yannick Stoffers, Wiebe-Marten Wijnja, Michiel de Jong
  */
 public class Bullet extends GameObject {
 

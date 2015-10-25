@@ -7,7 +7,7 @@ import aoop.asteroids.model.gameobjects.Spaceship;
 /**
  * Sent by a Player multiple time per second. It contains keypresses of the different keys that control a spaceship.<br>
  * Each keypress is serialized as '1' or '0', as this is shorter than storing boolean 'true'/'false' values in JSON.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class PlayerUpdatePacket extends Packet {

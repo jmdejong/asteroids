@@ -5,7 +5,7 @@ import org.json.simple.JSONArray;
 /**
  * This packet is sent by the Client whenever a Spectator wants to join a game.
  * It does not contain any actual extra data. Metadata such as the Client's IP address can be found out by reading the actual DatagramPacket's header segment.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class SpectateJoinPacket extends Packet {

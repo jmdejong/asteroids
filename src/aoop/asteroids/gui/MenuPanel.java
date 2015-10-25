@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * The Menu Panel contains buttons to go to each of the game modes, and to quit the game.
  * Also, up-to-date high scores of the last hour and of all time are shown.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  */
 public class MenuPanel extends JPanel {
 	

@@ -72,7 +72,7 @@ public class Client extends Base implements Observer{
 	/**
 	 * A reference to the ClientSender that is in charge of creating and sending the actual packets of the data we provide it with.
 	 */
-	protected ClientSender sender;
+	private ClientSender sender;
 	
 	/**
 	 * This constructor creates a new ClientSender with the specified host and port, as well as starting a ClientReceiver thread that listens for packets on the same socket.<br>

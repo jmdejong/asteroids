@@ -7,7 +7,7 @@ import java.awt.geom.Point2D;
  * The Explosion class is a special kind of GameObject that spawns a Particle cloud where it is created.
  * This effect is procedurally generated using a given integer `seed`, which is passed to the clients.
  * This means that a certain Explosion will look exactly the same between clients.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class Explosion extends GameObject {

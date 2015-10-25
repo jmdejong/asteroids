@@ -15,7 +15,7 @@ import org.json.simple.JSONArray;
  *	flying into it. Note that flying into it, also destroys the spaceship, 
  *	which will end the game.
  *
- *	@author Yannick Stoffers
+ *	@author Yannick Stoffers, Wiebe-Marten Wijnja, Michiel de Jong
  */
 public class Asteroid extends GameObject {
     

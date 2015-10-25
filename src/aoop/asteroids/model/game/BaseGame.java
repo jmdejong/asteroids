@@ -17,7 +17,7 @@ import aoop.asteroids.Logging;
  * BaseGame contains all logic that is shared by both ClientGame and ServerGame.
  * As both contain lists of GameObjects, and both should be run on a Thread (with the {@link BaseGame#run()} function iterating many times per second), there is a lot of similar functionality between these classes.
  * 
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public abstract class BaseGame extends Observable {

@@ -13,10 +13,10 @@ import java.util.Collection;
 import org.json.simple.JSONArray;
 
 /**
- *	GameObject is the abstract superclass for all spatial game objects. I.e. bullets, 
- *	asteroids and spaceships. This class provides some of the basic mechanics, 
- *	such as movement and collision detection, and the destruction mechanism.
- *
+ * GameObject is the abstract superclass for all spatial game objects. I.e. bullets, 
+ * asteroids and spaceships. This class provides some of the basic mechanics, 
+ * such as movement and collision detection, and the destruction mechanism.
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  */
 public abstract class GameObject {
 	

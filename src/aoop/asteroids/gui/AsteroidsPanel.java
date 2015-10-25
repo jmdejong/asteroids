@@ -37,10 +37,9 @@ import java.util.Random;
  *	AsteroidsPanel extends JPanel and thus provides the actual graphical 
  *	representation of the game state.
  *
- *	@author qqwy
+ *	@author Wiebe-Marten Wijnja, Michiel de Jong
  */
-public class AsteroidsPanel extends JPanel
-{
+public class AsteroidsPanel extends JPanel {
 	
 	/* TODO:
 	 * - Show whether hosting/joining/spectating and on what address?

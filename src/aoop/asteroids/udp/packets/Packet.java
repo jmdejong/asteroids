@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
  * All inherited classes should define a Constructor, which takes zero or more objects and constructs a packet containing that objects's important data<br>
  * And a public static decodePacket() method, that should take a JSONArray as input, and return the important information from this packet.
  * 
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public abstract class Packet {

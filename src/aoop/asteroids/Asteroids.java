@@ -15,7 +15,7 @@ import java.net.SocketException;
  *	spaceship. The goal is to destroy as many asteroids as possible and thus 
  *	survive for as long as possible.
  *
- *	@author Yannick Stoffers
+ *	@author Yannick Stoffers, Wiebe-Marten Wijnja, Michiel de Jong
  */
 public class Asteroids {
 	

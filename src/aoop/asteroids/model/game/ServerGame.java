@@ -45,7 +45,7 @@ import java.util.Random;
  *	thread. This class extends Observable in order to notify the view element 
  *	of the program, without keeping a reference to those objects.
  *
- *	@author Yannick Stoffers and qqwy
+ *	@author Yannick Stoffers, Wiebe-Marten Wijnja, Michiel de Jong
  */
 public final class ServerGame extends BaseGame implements Runnable
 {

@@ -22,7 +22,7 @@ import aoop.asteroids.model.gameobjects.Spaceship;
  * ClientGame attempts to iterate the current game state by moving objects on their predicted paths, if no connection to the Server is currently available.<br>
  * This is repeated until a new GameUpdate packet arrives, and all internal lists of GameObjects are replaced with the up-to-date ones from the Server.
  * 
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public final class ClientGame extends BaseGame implements Runnable {

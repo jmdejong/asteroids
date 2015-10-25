@@ -13,7 +13,7 @@ import aoop.asteroids.model.gameobjects.Spaceship;
 /**
  * The GameStatePacket is sent by the Server whenever the game-state has changed.
  * Besides the current roundNumber, it contains lists of all GameObjects.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class GameStatePacket extends Packet {

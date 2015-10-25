@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * This class listens to key presses, and keeps track of them after the actual key-events have happened.
  * To reduce code-duplication, a map is used to keep track of individual key states.
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class SpaceshipController implements KeyListener{

@@ -12,7 +12,7 @@ import org.json.simple.JSONArray;
  * ->Game-related information (winning, dying, restarting)<br>
  * ->Connection-related information. (joining, losing connection)<br>
  * 
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class Message {

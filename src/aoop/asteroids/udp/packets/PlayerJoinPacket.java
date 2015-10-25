@@ -5,7 +5,7 @@ import org.json.simple.JSONArray;
 /**
  * This packet is sent by the Client whenever a Player wants to join a game.
  * It contains the Player's name. (other metadata such as the Client's IP address can be found out by reading the actual DatagramPacket's header segment).
- * @author qqwy
+ * @author Wiebe-Marten Wijnja, Michiel de Jong
  *
  */
 public class PlayerJoinPacket extends Packet {

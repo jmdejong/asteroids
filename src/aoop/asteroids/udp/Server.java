@@ -36,7 +36,7 @@ public class Server extends Base implements Observer{
 	
 	private ServerGame game;
 	
-	protected ServerSender sender;
+	private ServerSender sender;
 	
 	
 	

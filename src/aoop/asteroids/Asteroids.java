@@ -3,9 +3,6 @@ package aoop.asteroids;
 
 
 import aoop.asteroids.gui.AsteroidsFrame;
-import aoop.asteroids.udp.Server;
-
-import java.net.SocketException;
 
 
 /**

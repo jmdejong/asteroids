@@ -26,8 +26,8 @@ public class Sound {
 	 * This probably does not belong in the model, but I leave it here because the ClientGame uses it
 	 * 
 	 * TODO:
-	 * - Fix sound error when loading multiple games on same computer
 	 * DONE:
+	 * - Fix sound error when loading multiple games on same computer
 	 * - find something better than singleton
 	 * 
 	 */
@@ -102,7 +102,7 @@ public class Sound {
 							clip.start();
 							listener.waitUntilDone();
 						} catch (InterruptedException e) {
-							Logging.LOGGER.info("Playing of sound '"+filename+"' was interrupted.");
+							Logging.LOGGER.warning("Playing of sound '"+filename+"' was interrupted.");
 						} finally {
 							clip.drain();
 							clip.close();
@@ -117,7 +117,7 @@ public class Sound {
 				} catch (LineUnavailableException | IOException | UnsupportedAudioFileException | IllegalStateException e) {
 					//This happens when a file is unavailable or the sound device is busy.
 					//Just don't play any sound when that happens.
-					Logging.LOGGER.info("Sound in '"+filename+"' could not be played");
+					Logging.LOGGER.warning("Sound in '"+filename+"' could not be played");
 				}
 			}
 			

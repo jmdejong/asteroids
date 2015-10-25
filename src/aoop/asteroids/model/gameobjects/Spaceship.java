@@ -17,7 +17,7 @@ import org.json.simple.JSONArray;
  *	setting is in outer space, the spaceship is subject to traction and will 
  *	slowly deaccelerate.
  *
- *	@author Yannick Stoffers
+ *	@author W.M. Wijnja and J.M. de Jong
  */
 public class Spaceship extends GameObject
 {
@@ -56,8 +56,7 @@ public class Spaceship extends GameObject
 	private double destroyTime = Double.POSITIVE_INFINITY;
 
 	/** Constructs a new spaceship with default values. */
-	public Spaceship (String name, double xpos, double ypos)
-	{
+	public Spaceship (String name, double xpos, double ypos) {
 		this (new Point2D.Double(xpos, ypos), 0, 0, 15, 0, false, 0, false, Double.POSITIVE_INFINITY, name, 0);
 		
 		this.colour = Color.getHSBColor(new Random(name.hashCode()).nextFloat(), 1, .9f).getRGB();
@@ -77,8 +76,7 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (Point2D location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, String name, int colour)
-	{
+	private Spaceship (Point2D location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, boolean destroyed, double destroyTime, String name, int colour) {
 		super (location, velocityX, velocityY, radius);
 		this.setDirection(direction);
 		this.up             = up;
@@ -98,8 +96,7 @@ public class Spaceship extends GameObject
 	/** 
 	 *	Resets all parameters to default values, so a new game can be started. 
 	 */
-	public void reinit (double xpos,double ypos)
-	{
+	public void reinit (double xpos,double ypos) {
 		this.setLocation(new Point2D.Double(xpos,ypos));
 		this.velocityX      = 0;
 		this.velocityY      = 0;
@@ -118,8 +115,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@param b new value of the field.
 	 */
-	public void setIsFiring (boolean b)
-	{
+	public void setIsFiring (boolean b) {
 		this.isFiring = b;
 	}
 
@@ -128,8 +124,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@param b new value of the field.
 	 */
-	public void setLeft (boolean b)
-	{
+	public void setLeft (boolean b) {
 		this.left = b;
 	}
 
@@ -138,8 +133,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@param b new value of the field.
 	 */
-	public void setRight (boolean b)
-	{
+	public void setRight (boolean b) {
 		this.right = b;
 	}
 
@@ -148,8 +142,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@param b new value of the field.
 	 */
-	public void setUp (boolean b)
-	{
+	public void setUp (boolean b) {
 		this.up = b;
 	}	
 
@@ -163,17 +156,13 @@ public class Spaceship extends GameObject
 	 *	decreased to account for traction.
 	 */
 	@Override 
-	public void nextStep () 
-	{
+	public void nextStep () {
 		super.nextStep();
-// 		Logging.LOGGER.info(this.getLocation().toString());
-// 		this.stepsTilCollide = Math.max (0, this.stepsTilCollide - 1);
 		
 		// Update direction if turning.
 		if (this.left ) this.setDirection(this.getDirection() - 0.04 * Math.PI);
 		if (this.right) this.setDirection(this.getDirection() + 0.04 * Math.PI);
-		if (this.up)
-		{ // Update speed if accelerating, but constrain values.
+		if (this.up){ // Update speed if accelerating, but constrain values.
 			this.velocityX = Math.max (-10, Math.min (10, this.velocityX + Math.sin (getDirection()) * 0.4));
 			this.velocityY = Math.max (-10, Math.min (10, this.velocityY - Math.cos (getDirection()) * 0.4));
 		}
@@ -209,8 +198,7 @@ public class Spaceship extends GameObject
 	 *	@return an exact copy of the spaceship.
 	 */
 	@Override
-	public Spaceship clone ()
-	{
+	public Spaceship clone () {
 		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.getDirection(), this.up, this.score, this.isDestroyed(), this.destroyTime, this.getName(), this.getColour());
 	}
 
@@ -219,8 +207,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@return the direction.
 	 */
-	public double getDirection ()
-	{
+	public double getDirection () {
 		return this.direction;
 	}
 
@@ -229,8 +216,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@return true if up button is pressed, false otherwise.
 	 */
-	public boolean isAccelerating ()
-	{
+	public boolean isAccelerating () {
 		return this.up;
 	}
 
@@ -239,8 +225,7 @@ public class Spaceship extends GameObject
 	 *
 	 *	@return true if the spacehip is firing, false otherwise.
 	 */
-	public boolean isFiring ()
-	{
+	public boolean isFiring () {
 		return this.isFiring && this.stepsTilFire == 0;
 	}
 
@@ -248,14 +233,12 @@ public class Spaceship extends GameObject
 	 *	Sets the fire tick counter to 20. For the next 20 game ticks this 
 	 *	spaceship is not allowed to fire.
 	 */
-	public void setFired ()
-	{
+	public void setFired () {
 		this.stepsTilFire = Spaceship.timeUntilFireAgain;
 	}
 
 	/** Increments score field. */
-	public void increaseScore ()
-	{
+	public void increaseScore () {
 		this.score++;
 
 	}
@@ -265,15 +248,13 @@ public class Spaceship extends GameObject
 	 *
 	 *	@return the score.
 	 */
-	public int getScore ()
-	{
+	public int getScore () {
 		return this.score;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public JSONArray toJSON(){
 		JSONArray result = super.toJSON();
-// 		Logging.LOGGER.info(result.toString());
 		result.add(this.getDirection());
 		result.add(this.isAccelerating() ? 1 : 0);
 		result.add(this.getScore());

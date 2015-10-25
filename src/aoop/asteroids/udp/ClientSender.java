@@ -32,7 +32,7 @@ public class ClientSender extends BaseSender {
 		try {
 			this.sendPacket(playerJoinPacket.toJsonString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logging.LOGGER.severe("Could not send player join packet: "+e.getMessage());
 		}
 	}
 	
@@ -41,7 +41,7 @@ public class ClientSender extends BaseSender {
 		try {
 			this.sendPacket(playerUpdatePacket.toJsonString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logging.LOGGER.severe("Could not send player update packet: "+e.getMessage());
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class ClientSender extends BaseSender {
 		try {
 			this.sendPacket(new SpectatorPingPacket().toJsonString());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logging.LOGGER.severe("Could not send spectator ping packet: "+e.getMessage());
 		}
 	}
 	

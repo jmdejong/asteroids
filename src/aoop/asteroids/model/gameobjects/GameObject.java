@@ -18,8 +18,7 @@ import org.json.simple.JSONArray;
  *	such as movement and collision detection, and the destruction mechanism.
  *
  */
-public abstract class GameObject 
-{
+public abstract class GameObject {
 	
 	/* TODO:
 	 * DONE:
@@ -112,24 +111,21 @@ public abstract class GameObject
 	/** 
 	 *	@return the velocity in X direction.
 	 */
-	public double getVelocityX ()
-	{
+	public double getVelocityX () {
 		return this.velocityX;
 	}
 
 	/** 
 	 *	@return the velocity in Y direction.
 	 */
-	public double getVelocityY ()
-	{
+	public double getVelocityY () {
 		return this.velocityY;
 	}
 
 	/**
 	 *	@return true if the object is marked for destruction, false otherwise.
 	 */
-	public boolean isDestroyed ()
-	{
+	public boolean isDestroyed () {
 		return this.destroyed;
 	}
 	

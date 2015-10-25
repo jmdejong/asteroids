@@ -12,7 +12,7 @@ public abstract class BaseReciever extends Thread {
 	
 	public BaseReciever(String name, int port, DatagramSocket socket) throws SocketException{
 		super(name);
-		this.socket = socket;//new DatagramSocket(port);
+		this.socket = socket;
 		
 		Logging.LOGGER.fine(name+" thread started.");
 	}
@@ -32,10 +32,10 @@ public abstract class BaseReciever extends Thread {
 				parsePacket(packet_string, packet);
 				
 			} catch (SocketException e){
+				// end this thread when the socket is closed
 				break;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logging.LOGGER.severe("Reciever thread could not run: "+e.getMessage());
 			}
 		}
 

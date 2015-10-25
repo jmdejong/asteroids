@@ -13,8 +13,7 @@ import org.json.simple.JSONArray;
  *
  *	@author Yannick Stoffers
  */
-public class Bullet extends GameObject
-{
+public class Bullet extends GameObject {
 
 	/** 
 	 *	The amount of steps this bullet still is allowed to live. When this 
@@ -42,8 +41,7 @@ public class Bullet extends GameObject
 	 *	@param velocityX velocity of the bullet as projected on the X-axis.
 	 *	@param velocityY velocity of the bullet as projected on the Y-axis.
 	 */
-	public Bullet (Point2D location, double velocityX, double velocityY, Spaceship shooter)
-	{
+	public Bullet (Point2D location, double velocityX, double velocityY, Spaceship shooter) {
 		this (location, velocityX, velocityY, 40, shooter);
 	}
 
@@ -59,8 +57,7 @@ public class Bullet extends GameObject
      *
      *	@see #clone()
      */
-	private Bullet (Point2D location, double velocityX, double velocityY, int stepsLeft, Spaceship shooter)
-	{
+	private Bullet (Point2D location, double velocityX, double velocityY, int stepsLeft, Spaceship shooter) {
 		super (location, velocityX, velocityY, 0);
 		this.stepsLeft = stepsLeft;
 		this.shooter = shooter;
@@ -72,8 +69,7 @@ public class Bullet extends GameObject
 	 * Notice that stepsLeft is not specified; Therefore, the bullet will 'live forever' until it is removed on the server-side (i.e. not passed in a future GameUpdatePacket).
 	 * @see Bullet#Bullet(Point2D, double, double, int, Spaceship)
 	 */
-	private Bullet (Point2D location, double velocityX, double velocityY, int colour)
-	{
+	private Bullet (Point2D location, double velocityX, double velocityY, int colour) {
 		super (location, velocityX, velocityY, 0);
 		this.setColour(colour);
 	}
@@ -85,8 +81,7 @@ public class Bullet extends GameObject
 	 *	the window).
 	 */
 	@Override 
-	public void nextStep () 
-	{
+	public void nextStep() {
 		super.nextStep();
 		this.stepsLeft--;
 
@@ -100,8 +95,7 @@ public class Bullet extends GameObject
 	 * On the client, includes the current colour.
 	 * */
 	@Override
-	public Bullet clone ()
-	{
+	public Bullet clone() {
 		if(this.shooter == null){
 			return new Bullet (this.getLocation (), this.velocityX, this.velocityY, this.colour);
 		}else{

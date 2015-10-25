@@ -90,7 +90,7 @@ public class HighScores {
 			list = (ArrayList<PlayerScore>) query.setParameter("maxtime", datetime).setMaxResults(10).getResultList();
 			
 		}catch(PersistenceException e){
-			Logging.LOGGER.info("Database file could not be opened. Possibly in use by another copy of this program.");
+			Logging.LOGGER.warning("Database file could not be opened:"+e.getMessage());
 			
 		}finally{
 			emf.close();

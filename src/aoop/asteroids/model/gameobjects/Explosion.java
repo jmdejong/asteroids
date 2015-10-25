@@ -65,8 +65,7 @@ public class Explosion extends GameObject {
 	
 	/** Clones the bullet into an exact copy. */
 	@Override
-	public Explosion clone ()
-	{
+	public Explosion clone () {
 		return new Explosion (this.getLocation (), this.seed, this.radius, this.colour, this.creationTime);
 	}
 

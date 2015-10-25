@@ -13,6 +13,7 @@ import aoop.asteroids.model.gameobjects.Explosion;
 import aoop.asteroids.model.gameobjects.Spaceship;
 import aoop.asteroids.udp.packets.GameStatePacket;
 import aoop.asteroids.udp.packets.MessageListPacket;
+import aoop.asteroids.Logging;
 
 public class ServerSender extends BaseSender {
 	public ServerSender(DatagramSocket socket) throws SocketException{
@@ -32,12 +33,11 @@ public class ServerSender extends BaseSender {
 		try {
 			this.sendPacketToAll(new MessageListPacket(messages).toJsonString(), playerConnections, spectatorConnections);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logging.LOGGER.severe("Failed to send message packet: "+e.getMessage());
 		}
 	}
 	
-public void sendGameStatePacket
-	(
+	public void sendGameStatePacket(
 			int roundNumber,
 			List<Spaceship> spaceships,
 			List<Bullet> bullets,
@@ -45,16 +45,15 @@ public void sendGameStatePacket
 			List<Explosion> explosions,
 			Collection<ClientConnection> playerConnections, 
 			Collection<ClientConnection> spectatorConnections
-	)
+		)
 	{
 		
-		GameStatePacket gameStatePacket = new GameStatePacket(
-				roundNumber,spaceships,bullets,asteroids,explosions);
+		GameStatePacket gameStatePacket = new GameStatePacket(roundNumber,spaceships,bullets,asteroids,explosions);
 		
 		try {
 			sendPacketToAll(gameStatePacket.toJsonString(),playerConnections, spectatorConnections);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logging.LOGGER.severe("Failed to send gamestate packet: "+e.getMessage());
 		}
 	}
 	

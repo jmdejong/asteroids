@@ -115,10 +115,10 @@ public class Client extends Base implements Observer{
 		this.game.addMessage("Connecting to Host...");
 		
 		try {
-			this.reciever =  new ClientReciever(this, connectionSocket);
+			this.reciever = new ClientReciever(this, connectionSocket);
 			this.reciever.start();
 		} catch (SocketException e) {
-			e.printStackTrace();
+			Logging.LOGGER.severe("Could not make a ClientReceiver: "+e.getMessage());
 		}
 	}
 	

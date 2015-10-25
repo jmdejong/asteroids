@@ -23,11 +23,11 @@ public class Asteroids {
 	 * - add/update documentation
 	 * - make an interface for all object that we can serialize to json -> GameObject -> that's not an interface and not all we can serialize
 	 * - for all large classes, see if we can split them up across multiple domains
-	 * - make use of this consequent (always for field, not for own methods)
 	 * DONE:
 	 * - move global constants to this class
 	 * - use decorator pattern more
 	 * - move sound functions to its own (singleton?) class
+	 * - make use of this consequent (always for field, not for own methods)
 	 */
 	
 	
@@ -47,24 +47,7 @@ public class Asteroids {
 		
 		Logging.LOGGER.setLevel(Logging.loggerLevel);
 		
-		
-		if (args.length == 0){
-			new AsteroidsFrame ();
-		} else {
-			if (args[0] == "server"){
-				try {
-					new Server(false);
-				} catch (SocketException e){
-					e.printStackTrace();
-				}
-			} else if (args[0] == "client"){
-				if (args.length == 1){
-					(new AsteroidsFrame()).startGame("localhost", false);
-				} else {
-					(new AsteroidsFrame()).startGame(args[1], false);
-				}
-			}
-		}
+		new AsteroidsFrame ();
 	}
 	
 }

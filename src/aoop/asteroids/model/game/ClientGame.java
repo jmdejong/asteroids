@@ -25,7 +25,7 @@ import aoop.asteroids.model.gameobjects.Spaceship;
  * @author qqwy
  *
  */
-public final class ClientGame extends BaseGame implements Runnable{
+public final class ClientGame extends BaseGame implements Runnable {
 	
 	/* TODO:
 

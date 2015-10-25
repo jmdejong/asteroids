@@ -51,7 +51,7 @@ public class Server extends Base implements Observer{
 			this.reciever = new ServerReciever(this, Server.UDPPort, connectionSocket);
 			this.reciever.start();
 		} catch (SocketException e) {
-			Logging.LOGGER.severe("Unable to use server socket. This port is possibly in use already");
+			Logging.LOGGER.severe("Unable to use server socket. This port is possibly in use already. "+e.getMessage());
 		}
 		this.singlePlayerMode = isSinglePlayer;
 		if(this.isSinglePlayerMode()){
@@ -89,21 +89,18 @@ public class Server extends Base implements Observer{
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		addConnection(spectatorConnections, packetData, packet);
-		//sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
 		synchronized (this.game){
 			this.game.addMessage("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
 		}
 	}
 	public synchronized void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
-		//In single-player mode, reject more than one connection, and also all connections that are not from the current computer.
-		if(this.isSinglePlayerMode() && (getPlayerConnections().size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
+		//In single-player mode, reject more than one connection.
+		if(this.isSinglePlayerMode() && (getPlayerConnections().size() > 0)){
 			return;
 		}
 		
 		
-		
-		//boolean connectionExists = false;
 		InetSocketAddress address = (InetSocketAddress)packet.getSocketAddress();
 		for(ClientConnection c : this.getPlayerConnections()){
 			if(c.getSocketAddress().equals(address)){
@@ -228,23 +225,7 @@ public class Server extends Base implements Observer{
 		}
 		
 		if(getPlayerConnections().size() > 1 &&  getPlayerConnections().size() - amountOfDisconnectedClients <= 1){
-			//Return to main menu.
 			
-			
-			/*//Find the local connection
-			ClientConnection myLocalConnection = null;
-			for(ClientConnection c : getPlayerConnections()){
-				if(c.getAddress().toString() == "127.0.0.1"){
-					myLocalConnection = c;
-				}
-			}
-			
-			this.playerConnections = new ArrayList<ClientConnection>();
-			if(myLocalConnection != null){
-				this.playerConnections.add(myLocalConnection);
-			}
-			
-			this.roundNumber = 0;*/
 			List<Spaceship> spaceships = (List<Spaceship>) this.game.getSpaceships();
 			List<ClientConnection> pcs = this.getPlayerConnections();
 			for(int i=pcs.size()-1;i>=0;i--){
@@ -313,7 +294,6 @@ public class Server extends Base implements Observer{
 	public void stopServer(){
 		this.game.abort();
 		this.reciever.stopReciever();
-// 		this.sendSocket.close();
 	}
 	
 	private void destroyAllShipsOfDisconnectedPlayers(){

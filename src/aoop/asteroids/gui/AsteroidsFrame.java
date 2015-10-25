@@ -108,7 +108,7 @@ public class AsteroidsFrame extends JFrame {
 					startGame("localhost", false);
 					
 				} catch (SocketException e) {
-					e.printStackTrace();
+					Logging.LOGGER.severe("Could not start server: "+e.getMessage());
 				}
 			}
 		});
@@ -120,7 +120,7 @@ public class AsteroidsFrame extends JFrame {
 					AsteroidsFrame.this.server = new Server(false);
 					startGame("localhost", false);
 				} catch (SocketException e) {
-					e.printStackTrace();
+					Logging.LOGGER.severe("Could not start server: "+e.getMessage());
 				}
 			}
 		});

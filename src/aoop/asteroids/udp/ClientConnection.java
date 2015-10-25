@@ -2,6 +2,7 @@ package aoop.asteroids.udp;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import aoop.asteroids.Logging;
 
 public class ClientConnection {
 	private InetSocketAddress socketAddress;
@@ -61,7 +62,7 @@ public class ClientConnection {
 		long currentTime = System.currentTimeMillis();
 		if(this.getLastPingTime() < currentTime - Server.MaxNonRespondTime){
 			this.disconnected = true;
-			System.err.println("Connection is not responding:"+this.toDebugString());
+			Logging.LOGGER.warning("Connection is not responding:"+this.toDebugString());
 		}
 	}
 	

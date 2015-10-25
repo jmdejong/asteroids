@@ -17,20 +17,19 @@ import org.json.simple.JSONArray;
  *
  *	@author Yannick Stoffers
  */
-public class Asteroid extends GameObject
-{
+public class Asteroid extends GameObject {
     
 	private double rotation;
-	
-    /**
-     *	Constructs a new asteroid at the specified location, with specified 
-     *	velocities in both X and Y direction and the specified radius.
-     *
-     *	@param location the location in which to spawn an asteroid.
-     *	@param velocityX the velocity in X direction.
-     *	@param velocityY the velocity in Y direction.
-     *	@param radius radius of the asteroid.
-     */
+
+	/**
+	 *	Constructs a new asteroid at the specified location, with specified 
+	 *	velocities in both X and Y direction and the specified radius.
+	 *
+	 *	@param location the location in which to spawn an asteroid.
+	 *	@param velocityX the velocity in X direction.
+	 *	@param velocityY the velocity in Y direction.
+	 *	@param radius radius of the asteroid.
+	 */
 	public Asteroid (Point2D location, double velocityX, double velocityY, int radius, double rotation)
 	{
 		super (location, velocityX, velocityY, radius);
@@ -39,8 +38,7 @@ public class Asteroid extends GameObject
 
 	/** Updates location of the asteroid with traveled distance. */
 	@Override 
-	public void nextStep () 
-	{
+	public void nextStep() {
 		super.nextStep();
 		
 		this.rotation += Math.signum(this.rotation)* .005*(this.velocityX*this.velocityX + this.velocityY*this.velocityY);
@@ -53,8 +51,7 @@ public class Asteroid extends GameObject
 	 *	@return a collection of the successors.
 	 */
 	@Override
-	public List<? extends GameObject> getSuccessors ()
-	{
+	public List<? extends GameObject> getSuccessors () {
 		Collection <Asteroid> list = new ArrayList <> ();
 		Random r = new Random();
 		

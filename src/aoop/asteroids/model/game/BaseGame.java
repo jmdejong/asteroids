@@ -11,6 +11,7 @@ import aoop.asteroids.model.gameobjects.Asteroid;
 import aoop.asteroids.model.gameobjects.Bullet;
 import aoop.asteroids.model.gameobjects.Explosion;
 import aoop.asteroids.model.gameobjects.Spaceship;
+import aoop.asteroids.Logging;
 
 /**
  * BaseGame contains all logic that is shared by both ClientGame and ServerGame.
@@ -19,7 +20,7 @@ import aoop.asteroids.model.gameobjects.Spaceship;
  * @author qqwy
  *
  */
-public abstract class BaseGame extends Observable{
+public abstract class BaseGame extends Observable {
 
 	private double width = Asteroids.worldWidth;
 	private double height = Asteroids.worldHeight;
@@ -51,16 +52,14 @@ public abstract class BaseGame extends Observable{
 	/** 
 	 *	@return a clone of the asteroids  list, preserving encapsulation.
 	 */
-	public List <Asteroid> getAsteroids ()
-	{
+	public List <Asteroid> getAsteroids() {
 		return Utils.deepCloneList(this.asteroids);
 	}
 
 	/** 
 	 *	@return a clone of the bullets list, preserving encapsulation.
 	 */
-	public List <Bullet> getBullets ()
-	{
+	public List <Bullet> getBullets() {
 		return Utils.deepCloneList(this.bullets);
 	}
 	
@@ -141,34 +140,25 @@ public abstract class BaseGame extends Observable{
 	 *	will travel faster, bullets will travel faster and the spaceship may 
 	 *	not be as easy to control.
 	 */
-	public void run ()
-	{ // Update -> sleep -> update -> sleep -> etc...
+	public void run() { // Update -> sleep -> update -> sleep -> etc...
 		long executionTime, sleepTime;
-		do
-		{
-			if (!this.hasEnded ())
-			{
+		do {
+			if (!this.hasEnded()) {
 				executionTime = System.currentTimeMillis ();
 				this.update ();
 				executionTime -= System.currentTimeMillis ();
 				sleepTime = 40 - executionTime;
-			}
-			else {
+			} else {
 				this.setChanged();
 				this.notifyObservers();
 				return;
 			}
 
-			try
-			{
+			try{
 				Thread.sleep (sleepTime);
+			} catch (InterruptedException e) {
+				Logging.LOGGER.severe("Could not perform action: Thread.sleep(...)\nThe thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).\n"+e.getMessage());
 			}
-			catch (InterruptedException e)
-			{
-				System.err.println ("Could not perform action: Thread.sleep(...)");
-				System.err.println ("The thread that needed to sleep is the game thread, responsible for the game loop (update -> wait -> update -> etc).");
-				e.printStackTrace ();
-			}
-		}while  (!this.aborted);
+		} while (!this.aborted);
 	}
 }

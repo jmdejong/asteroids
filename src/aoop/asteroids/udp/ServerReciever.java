@@ -34,10 +34,6 @@ public class ServerReciever extends BaseReciever{
 		
 		ClientConnection c = server.findClientConnection(packet.getSocketAddress());
 		
-		//Reject all packets from connectiosn that have been considered disconnected.
-		if(c != null && c.isDisconnected()){
-			//return;
-		}
 		
 		//Reject all non-join packets from unknown connections.
 		if(c == null && !(packet_type == Packet.PacketType.SPECTATE_JOIN || packet_type == Packet.PacketType.PLAYER_JOIN)){
@@ -72,8 +68,6 @@ public class ServerReciever extends BaseReciever{
 				Logging.LOGGER.fine("C: packet received with type: "+packet_type);
 				break;
 		}
-		//System.out.println(server.getPlayerConnections());
-		//server.tagNonrespondingClients();
 	}
 	
 	

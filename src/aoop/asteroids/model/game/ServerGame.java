@@ -68,8 +68,7 @@ public final class ServerGame extends BaseGame implements Runnable
 	private long startCountdownTime = 0;
 
 	/** Initializes a new game from scratch. */
-	public ServerGame (boolean isSinglePlayer, int roundNumber)
-	{
+	public ServerGame (boolean isSinglePlayer, int roundNumber) {
 		this.initGameData (roundNumber);
 		this.isSinglePlayer = isSinglePlayer;
 	}
@@ -121,7 +120,7 @@ public final class ServerGame extends BaseGame implements Runnable
 			}
 			if(spaceships.size()==1){
 				s.setLocation(new Point2D.Double(this.getWidth()/2, this.getHeight()/2));
-			}else{
+			} else {
 				int amount = spaceships.size();
 				double rotation = ((2*Math.PI)/amount)*i+ (.5*Math.PI) ;
 				int radius = 50;
@@ -141,8 +140,7 @@ public final class ServerGame extends BaseGame implements Runnable
 	 *	game tick counter is updated and a new asteroid is spawn upon every 
 	 *	200th game tick.
 	 */
-	public void update ()
-	{
+	public void update () {
 		for (Asteroid a : this.asteroids){
 			a.nextStep ();
 		}
@@ -169,16 +167,13 @@ public final class ServerGame extends BaseGame implements Runnable
 	 *	Adds a randomly sized asteroid at least 50 pixels removed from the 
 	 *	player.
 	 */
-	private void addRandomAsteroid ()
-	{
+	private void addRandomAsteroid() {
 		Random rng = new Random();
 		int prob = rng.nextInt (3000);
 		Point2D loc;
-		do
-		{
+		do {
 			loc = new Point2D.Double (rng.nextInt ((int)this.getWidth()), rng.nextInt ((int)this.getHeight()));
-		}
-		while (pointOverlapsCenterCircle(loc));
+		} while (pointOverlapsCenterCircle(loc));
 		
 		int size;
 		if (prob < 1000){
@@ -206,37 +201,33 @@ public final class ServerGame extends BaseGame implements Runnable
 	 *	not with objects of the same type. I.e. bullets cannot collide with 
 	 *	bullets etc.
 	 */
-	private void checkCollisions ()
-	{ // Destroy all objects that collide.
-		for (Bullet b : this.bullets)
-		{ // For all bullets.
-			for (Asteroid a : this.asteroids)
-			{ // Check all bullet/asteroid combinations.
-				if (a.collidesThroughEdge(b, this.getWidth(), this.getHeight()))
-				{ // Collision -> destroy both objects.
+	private void checkCollisions (){
+		// Destroy all objects that collide.
+		for (Bullet b : this.bullets){
+			for (Asteroid a : this.asteroids){
+				// Check all bullet/asteroid combinations.
+				if (a.collidesThroughEdge(b, this.getWidth(), this.getHeight())){
+					// Collision -> destroy both objects.
 					b.destroy ();
 					a.destroy ();
 					this.explosions.add(new Explosion(a.getLocation(), 3*a.hashCode()+5*b.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
 				}
 			}
 			for(Spaceship s : this.spaceships){
-				if (!s.isDestroyed() && b.collidesThroughEdge(s, this.getWidth(), this.getHeight()))
-				{ // Collision with playerß -> destroy both objects
+				if (!s.isDestroyed() && b.collidesThroughEdge(s, this.getWidth(), this.getHeight())){
+					// Collision with playerß -> destroy both objects
 					
 					//Score point if another ship was destroyed by you. (No points for killing yourself, though).
-					if(/*b.getShooter() != null && */b.getShooter() != s){
-						//b.getShooter().increaseScore();
+					if(b.getShooter() != s){
 						messages.add(new Message(s.getName() + " was shot by " + b.getShooter().getName()));
 					}
 					
 					b.destroy ();
 					s.destroy ();
 					this.explosions.add(new Explosion(s.getLocation(), 3*s.hashCode()+5*b.hashCode(), s.getRadius(), s.getColour()));
-
 					
 				}
 			}
-
 			
 		}
 
@@ -249,7 +240,6 @@ public final class ServerGame extends BaseGame implements Runnable
 					s.destroy ();
 					this.explosions.add(new Explosion(a.getLocation(), 3*a.hashCode()+5*s.hashCode(), a.getRadius(), Color.WHITE.getRGB()));
 					this.explosions.add(new Explosion(s.getLocation(), 3*s.hashCode()+5*a.hashCode(), s.getRadius(), s.getColour()));
-
 					
 					addMessage(s.getName() + " was smashed by an Asteroid");
 				}
@@ -266,8 +256,7 @@ public final class ServerGame extends BaseGame implements Runnable
 	 *	asteroids are faster than their predecessor and travel in opposite 
 	 *	direction.
 	 */
-	private void removeAllDestroyedObjects ()
-	{
+	private void removeAllDestroyedObjects() {
 		this.asteroids = removeDestroyedObjects(this.asteroids);
 		this.bullets = removeDestroyedObjects(this.bullets);
 		this.explosions = removeDestroyedObjects(this.explosions);
@@ -293,8 +282,7 @@ public final class ServerGame extends BaseGame implements Runnable
 	 *
 	 *	@return true if game is over, false otherwise.
 	 */ 
-	protected boolean areAllShipsDestroyed ()
-	{
+	private boolean areAllShipsDestroyed() {
 		if(this.spaceships.isEmpty()){//This situation happens before a player has joined.
 			return false;
 		}
@@ -314,10 +302,6 @@ public final class ServerGame extends BaseGame implements Runnable
 	}
 	
 	protected boolean isThereOnlyOneShipLeft(){
-		if(this.spaceships.isEmpty()){//This situation happens before a player has joined.
-			// Do we need this if? the rest of the code would do the same
-			return false;
-		}
 		int amount = 0;
 		for(Spaceship s : this.spaceships){
 			if(!s.isDestroyed()){
@@ -327,10 +311,6 @@ public final class ServerGame extends BaseGame implements Runnable
 		Logging.LOGGER.fine("ships left:"+amount);
 		return amount == 1;
 	}
-	
-/*	protected boolean isGameOver(){
-		return this.isThereOnlyOneShipLeft() || this.areAllAsteroidsDestroyed();
-	}*/
 	
 	/**
 	 * Returns the list of one or multiple winners of the current game round.<br>
@@ -366,9 +346,9 @@ public final class ServerGame extends BaseGame implements Runnable
 	{
 		this.aborted = true;
 	}
-
 	
-
+	
+	
 	public Spaceship getSpaceshipRef(int index) {
 		if(this.spaceships.size() <= index){
 			return null;

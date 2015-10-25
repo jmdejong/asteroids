@@ -19,15 +19,15 @@ import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-/** A class for playing sounds */
+/** A class with function forfor playing sounds */
 public class Sound {
 	
 	/*
 	 * This probably does not belong in the model, but I leave it here because the ClientGame uses it
-	 * I made this a singleton class. I don't know if this is the best idea.
 	 * 
 	 * TODO:
 	 * - Fix sound error when loading multiple games on same computer
+	 * DONE:
 	 * - find something better than singleton
 	 * 
 	 */

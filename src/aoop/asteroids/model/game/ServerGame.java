@@ -112,11 +112,13 @@ public final class ServerGame extends BaseGame implements Runnable
 	 * -> In multiplayer, ships are set in a circle, pointing outward.<br/>
 	 * @param spaceships the list to replace this game's spaceships with.
 	 */
-	public void setSpaceships(List<Spaceship> spaceships) {
+	public void setSpaceships(List<Spaceship> spaceships, boolean reinitShips) {
 		this.spaceships = spaceships;
 		for(int i=0;i<spaceships.size();i++){
 			Spaceship s = spaceships.get(i);
-			s.reinit(this.getWidth()/2,this.getHeight()/2);
+			if(reinitShips){
+				s.reinit(this.getWidth()/2,this.getHeight()/2);
+			}
 			if(spaceships.size()==1){
 				s.setLocation(new Point2D.Double(this.getWidth()/2, this.getHeight()/2));
 			}else{

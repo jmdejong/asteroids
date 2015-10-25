@@ -183,7 +183,7 @@ public class Server extends Base implements Observer{
 				spaceships.remove(i);
 			}
 		}
-		this.game.setSpaceships(spaceships);
+		this.game.setSpaceships(spaceships, true);
 		
 		Thread t = new Thread (game);
 		t.start();
@@ -211,8 +211,7 @@ public class Server extends Base implements Observer{
 		
 		if(getPlayerConnections().size() > 1 &&  getPlayerConnections().size() - amountOfDisconnectedClients <= 1){
 			//Return to main menu.
-			this.game.addMessage("Connections with all other players lost. ");
-			this.game.addMessage("Waiting for new players... ");
+			
 			
 			/*//Find the local connection
 			ClientConnection myLocalConnection = null;
@@ -235,11 +234,18 @@ public class Server extends Base implements Observer{
 				if(c.isDisconnected()){
 					pcs.remove(i);
 					spaceships.remove(i);
+				}else{
+					spaceships.get(i).destroy();
 				}
 			}
 			this.roundNumber = 0;
+			this.game.deleteObserver(this);
 			this.game = new ServerGame(this.isSinglePlayerMode(),0);
-			this.game.setSpaceships(spaceships);
+			this.game.setSpaceships(spaceships, false);
+			this.game.addObserver(this);
+			this.game.addMessage("Connections with all other players lost. ");
+			this.game.addMessage("Waiting for new players... ");
+			Logging.LOGGER.warning(this.playerConnections.toString());
 			Thread t = new Thread (game);
 			t.start();
 			

@@ -216,7 +216,7 @@ public class Client extends Base implements Observer{
 		
 		//Re-send join packets until joining succeeds.
 		long executionTime = System.currentTimeMillis();
-		if(!this.hasConnected() && this.lastConnectionCheckTime + 1000 < executionTime){
+		if(!this.hasConnected()){
 			this.sender.sendPlayerJoinPacket(this.playerName);
 			this.lastConnectionCheckTime = executionTime;
 		}

@@ -51,7 +51,7 @@ public class Server extends Base implements Observer{
 			this.reciever = new ServerReciever(this, Server.UDPPort, connectionSocket);
 			this.reciever.start();
 		} catch (SocketException e) {
-			e.printStackTrace();
+			Logging.LOGGER.severe("Unable to use server socket. This port is possibly in use already");
 		}
 		this.singlePlayerMode = isSinglePlayer;
 		if(this.isSinglePlayerMode()){
@@ -61,7 +61,7 @@ public class Server extends Base implements Observer{
 	}
 	
 	public void startFirstGame(){
-		this.game = new ServerGame(this.isSinglePlayerMode(),roundNumber);
+		this.game = new ServerGame(isSinglePlayerMode(),roundNumber);
 		game.addObserver(this);
 		Thread t = new Thread (game);
 		t.start();
@@ -89,7 +89,7 @@ public class Server extends Base implements Observer{
 		//sendMessagePacket("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
 		this.game.addMessage("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
 	}
-	public void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
+	public synchronized void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
 		//In single-player mode, reject more than one connection, and also all connections that are not from the current computer.
 		if(this.isSinglePlayerMode() && (getPlayerConnections().size() > 0 /*|| packet.getAddress().getHostAddress() != "127.0.0.1"*/)){
@@ -97,6 +97,14 @@ public class Server extends Base implements Observer{
 		}
 		
 		
+		
+		//boolean connectionExists = false;
+		InetSocketAddress address = (InetSocketAddress)packet.getSocketAddress();
+		for(ClientConnection c : this.getPlayerConnections()){
+			if(c.getSocketAddress().equals(address)){
+				return;
+			}
+		}
 		
 		String name = PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d"));
 		

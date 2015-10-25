@@ -13,6 +13,6 @@ public class Logging {
 	 * Change the loggerLevel to have the program display more status messages.
 	 * @see java.util.logging.Level
 	 */
-	public final static Level loggerLevel = Level.FINEST;
+	public final static Level loggerLevel = Level.WARNING;
 	
 }

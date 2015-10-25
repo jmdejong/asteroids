@@ -245,7 +245,7 @@ public class Server extends Base implements Observer{
 			this.game.addObserver(this);
 			this.game.addMessage("Connections with all other players lost. ");
 			this.game.addMessage("Waiting for new players... ");
-			Logging.LOGGER.warning(this.playerConnections.toString());
+			Logging.LOGGER.fine("Restarting Game in lobby mode. Waiting for more players");
 			Thread t = new Thread (game);
 			t.start();
 			

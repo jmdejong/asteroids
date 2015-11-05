@@ -6,10 +6,12 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -26,7 +28,7 @@ public class Server extends Base implements Observer{
 	
 
 	
-	private CopyOnWriteArrayList<ClientConnection> spectatorConnections = new CopyOnWriteArrayList<ClientConnection>();
+	private CopyOnWriteArraySet<ClientConnection> spectatorConnections = new CopyOnWriteArrayList<ClientConnection>();
 	private CopyOnWriteArrayList<ClientConnection> playerConnections = new CopyOnWriteArrayList<ClientConnection>();
 	
 	
@@ -145,7 +147,7 @@ public class Server extends Base implements Observer{
 
 	}
 	
-	public ClientConnection addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
+	public ClientConnection addConnection(Collection<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
 		long packetId = ((Long) packetData.get("r"));
 		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());

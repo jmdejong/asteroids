@@ -202,7 +202,12 @@ public class Client extends Base implements Observer{
 		
 		//Re-send join packets until joining succeeds.
 		if(!this.hasConnected()){
-			this.sender.sendPlayerJoinPacket(this.playerName);
+			if(this.isSpectator){
+				this.sender.sendSpectatorJoinPacket();
+			}else{
+				this.sender.sendPlayerJoinPacket(this.playerName);
+			}
+			
 			return;
 		}
 		

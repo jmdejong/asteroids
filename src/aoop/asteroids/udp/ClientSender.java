@@ -8,6 +8,7 @@ import aoop.asteroids.Logging;
 import aoop.asteroids.gui.SpaceshipController;
 import aoop.asteroids.udp.packets.PlayerJoinPacket;
 import aoop.asteroids.udp.packets.PlayerUpdatePacket;
+import aoop.asteroids.udp.packets.SpectateJoinPacket;
 import aoop.asteroids.udp.packets.SpectatorPingPacket;
 
 public class ClientSender extends BaseSender {
@@ -42,6 +43,14 @@ public class ClientSender extends BaseSender {
 			this.sendPacket(playerUpdatePacket.toJsonString());
 		} catch (IOException e) {
 			Logging.LOGGER.severe("Could not send player update packet: "+e.getMessage());
+		}
+	}
+	
+	public void sendSpectatorJoinPacket(){
+		try {
+			this.sendPacket(new SpectateJoinPacket().toJsonString());
+		} catch (IOException e) {
+			Logging.LOGGER.severe("Could not send spectator join packet: "+e.getMessage());
 		}
 	}
 	

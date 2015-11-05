@@ -124,7 +124,8 @@ public class Server extends Base implements Observer{
 				this.game.addMessage("Duplicate Player `"+name+"` was added as Spectator instead.");
 				this.addSpectatorConnection(packetData, packet);
 			}else{
-				addConnection(getPlayerConnections(), packetData, packet);
+				ClientConnection c = addConnection(getPlayerConnections(), packetData, packet);
+				c.setName(PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d")));
 				this.game.addSpaceship(name, !isSinglePlayerMode());
 			}
 				
@@ -144,16 +145,15 @@ public class Server extends Base implements Observer{
 
 	}
 	
-	public void addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
+	public ClientConnection addConnection(List<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
 		long packetId = ((Long) packetData.get("r"));
 		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
-		c.setName(PlayerJoinPacket.decodePacket((JSONArray)packetData.get("d")));
 		c.setLastPingTime(System.currentTimeMillis());
 		c.updateLastPacketId(packetId);
 		
 		list.add(c);
-		
+		return c;
 	}
 	
 	

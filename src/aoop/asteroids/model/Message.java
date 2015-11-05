@@ -105,20 +105,23 @@ public class Message {
 	 * @return the opacity in (0.0-1.0) range
 	 */
 	public float getOpacity(){
+		
 		if(this.isDestroyed()){
 			return 0;
 		}
 		long time = System.currentTimeMillis() - creationTime;
 		
+		float opacity;
 		if(time == 0 || time == visibleTime){
-			return 0;
+			opacity = 0;
 		}else if(time < visibleTime/4){
-			return (float)easingInOut(time, 0, 1 , visibleTime/4);
+			opacity = (float)easingInOut(time, 0, 1 , visibleTime/4);
 		}else if (time > (visibleTime/4)*3){
-			return (float)easingInOut(visibleTime - time, 0, 1,visibleTime/4);
+			opacity = (float)easingInOut(visibleTime - time, 0, 1,visibleTime/4);
 		}else{
-			return 1;
+			opacity = 1;
 		}
+		return Math.max(0, Math.min(1,opacity));
 	}
 	
 	

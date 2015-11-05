@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Observer;
 import java.util.Observable;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -84,20 +85,26 @@ public class Server extends Base implements Observer{
 			this.tagNonrespondingClients();
 			this.destroyAllShipsOfDisconnectedPlayers();
 			if (this.game.hasEnded()){
-				sthis.restartGame();
+				this.restartGame();
 			}
 		}
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		
+		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
 		
-		
-		ClientConnection c = addConnection(spectatorConnections, packetData, packet);
-		
-		synchronized (this.game){
-			this.game.addMessage("New Spectator Connected"+c.toString());
+		if(spectatorConnections.contains(c)){
+			return;
+		}else{
+			c = addConnection(spectatorConnections, packetData, packet);
+			
+			
+			synchronized (this.game){
+				this.game.addMessage("New Spectator Connected"+c.toString());
+			}
 		}
+		
 	}
 	public synchronized void addPlayerConnection(JSONObject packetData, DatagramPacket packet){
 		
@@ -294,7 +301,7 @@ public class Server extends Base implements Observer{
 		return this.playerConnections;
 	}
 	
-	public List<ClientConnection> getSpectatorConnections() {
+	public Set<ClientConnection> getSpectatorConnections() {
 		return this.spectatorConnections;
 	}
 	

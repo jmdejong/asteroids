@@ -232,6 +232,7 @@ public class Server extends Base implements Observer{
 		int amountOfDisconnectedClients = 0;
 		
 		for(ClientConnection c : getSpectatorConnections()){
+			c.tagAsDisconnectedIfNotResponding();
 			if(c.isDisconnected()){
 				this.spectatorConnections.remove(c);
 				this.game.addMessage("Spectator "+c.toString()+" Left");
@@ -239,7 +240,6 @@ public class Server extends Base implements Observer{
 		}
 		
 		for(ClientConnection c : getPlayerConnections()){
-			c.tagAsDisconnectedIfNotResponding();
 			if(c.isDisconnected()){
 				amountOfDisconnectedClients+=1;
 				continue;

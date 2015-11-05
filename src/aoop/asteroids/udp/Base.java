@@ -14,7 +14,7 @@ public abstract class Base {
 	/**
 	 * If the other party takes longer than this to send a packet, consider the connection as lost.
 	 */
-	public static int MaxNonRespondTime = 5000;
+	public static int MaxNonRespondTime = 2500;
 	
 
 }

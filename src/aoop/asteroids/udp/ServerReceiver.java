@@ -48,7 +48,7 @@ public class ServerReceiver extends BaseReceiver{
 		}
 		PacketType packet_type = PacketType.values()[rawPacketType];
 		
-		ClientConnection c = server.findClientConnection(packet.getSocketAddress());
+		ClientConnection c = server.findPlayerConnection(packet.getSocketAddress());
 		
 		
 		//Reject all non-join packets from unknown connections.
@@ -70,7 +70,7 @@ public class ServerReceiver extends BaseReceiver{
 				if(!server.checkIfLatestPacket(packetData, packet)){
 					return;
 				}
-				server.updateConnectionData(packetData, packet);
+				server.updateSpectatorConnectionData(packetData, packet);
 				break;
 			case PLAYER_UPDATE:
 				Logging.LOGGER.fine("S: Player Update Packet Received");
@@ -78,7 +78,7 @@ public class ServerReceiver extends BaseReceiver{
 					return;
 				}
 				server.updatePlayerShip((JSONArray)packetData.get("d"), packet.getSocketAddress());
-				server.updateConnectionData(packetData, packet);
+				server.updatePlayerConnectionData(packetData, packet);
 				break;
 			default:
 				Logging.LOGGER.fine("S: packet received with type: "+packet_type);

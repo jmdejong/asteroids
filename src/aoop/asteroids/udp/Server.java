@@ -74,9 +74,6 @@ public class Server extends Base implements Observer{
 	public void update(Observable o, Object arg){
 		
 		
-		Logging.LOGGER.warning(this.playerConnections.toString());
-		Logging.LOGGER.warning(this.spectatorConnections.toString());
-		
 		synchronized(this.game){
 			this.sender.sendGameStatePacket(this.roundNumber,
 					this.game.getSpaceships(),

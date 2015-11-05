@@ -231,7 +231,15 @@ public class Server extends Base implements Observer{
 	public void tagNonrespondingClients(){
 		int amountOfDisconnectedClients = 0;
 		
+		for(ClientConnection c : getSpectatorConnections()){
+			if(c.isDisconnected()){
+				this.spectatorConnections.remove(c);
+				this.game.addMessage("Spectator "+c.toString()+" Left");
+			}
+		}
+		
 		for(ClientConnection c : getPlayerConnections()){
+			c.tagAsDisconnectedIfNotResponding();
 			if(c.isDisconnected()){
 				amountOfDisconnectedClients+=1;
 				continue;

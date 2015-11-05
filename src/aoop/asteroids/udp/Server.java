@@ -84,15 +84,19 @@ public class Server extends Base implements Observer{
 			this.tagNonrespondingClients();
 			this.destroyAllShipsOfDisconnectedPlayers();
 			if (this.game.hasEnded()){
-				this.restartGame();
+				sthis.restartGame();
 			}
 		}
 	}
 	
 	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
-		addConnection(spectatorConnections, packetData, packet);
+		
+		
+		
+		ClientConnection c = addConnection(spectatorConnections, packetData, packet);
+		
 		synchronized (this.game){
-			this.game.addMessage("New Spectator Connected"+spectatorConnections.get(spectatorConnections.size()-1).toString());
+			this.game.addMessage("New Spectator Connected"+c.toString());
 		}
 	}
 	public synchronized void addPlayerConnection(JSONObject packetData, DatagramPacket packet){

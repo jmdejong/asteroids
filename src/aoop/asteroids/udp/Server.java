@@ -307,10 +307,14 @@ public class Server extends Base implements Observer{
 	public void updateSpectatorConnectionData(JSONObject packetData, DatagramPacket packet){
 		
 		ClientConnection c = this.findSpectatorConnection(packet.getSocketAddress());
+		
 		updateConnectionData(c, packetData, packet);
 	}
 	
 	public void updateConnectionData(ClientConnection c, JSONObject packetData, DatagramPacket packet){
+		if(c == null){
+			return;
+		}
 		
 		long packetId = ((Long) packetData.get("r"));
 		

@@ -48,7 +48,7 @@ public class ServerReceiver extends BaseReceiver{
 		}
 		PacketType packet_type = PacketType.values()[rawPacketType];
 		
-		ClientConnection c = server.findPlayerConnection(packet.getSocketAddress());
+		ClientConnection c = server.findConnection(packet.getSocketAddress());
 		
 		
 		//Reject all non-join packets from unknown connections.
@@ -66,14 +66,14 @@ public class ServerReceiver extends BaseReceiver{
 				server.addPlayerConnection(packetData, packet);
 				break;
 			case SPECTATOR_PING:
-				Logging.LOGGER.fine("S: Spectator Ping Packet Received");
+				Logging.LOGGER.severe("S: Spectator Ping Packet Received");
 				if(!server.checkIfLatestPacket(packetData, packet)){
 					return;
 				}
 				server.updateSpectatorConnectionData(packetData, packet);
 				break;
 			case PLAYER_UPDATE:
-				Logging.LOGGER.fine("S: Player Update Packet Received");
+				Logging.LOGGER.severe("S: Player Update Packet Received");
 				if(!server.checkIfLatestPacket(packetData, packet)){
 					return;
 				}

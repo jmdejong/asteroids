@@ -73,6 +73,10 @@ public class Server extends Base implements Observer{
 	
 	public void update(Observable o, Object arg){
 		
+		
+		Logging.LOGGER.warning(this.playerConnections.toString());
+		Logging.LOGGER.warning(this.spectatorConnections.toString());
+		
 		synchronized(this.game){
 			this.sender.sendGameStatePacket(this.roundNumber,
 					this.game.getSpaceships(),
@@ -90,14 +94,14 @@ public class Server extends Base implements Observer{
 		}
 	}
 	
-	public void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
+	public synchronized void addSpectatorConnection(JSONObject packetData, DatagramPacket packet){
 		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
 		
-		if(spectatorConnections.contains(c)){
+		if(this.spectatorConnections.contains(c)){
 			return;
 		}else{
-			c = addConnection(spectatorConnections, packetData, packet);
+			c = addConnection(this.spectatorConnections, packetData, packet);
 			
 			
 			synchronized (this.game){
@@ -158,7 +162,7 @@ public class Server extends Base implements Observer{
 
 	}
 	
-	public ClientConnection addConnection(Collection<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
+	public synchronized ClientConnection addConnection(Collection<ClientConnection> list, JSONObject packetData, DatagramPacket packet){
 		long packetId = ((Long) packetData.get("r"));
 		
 		ClientConnection c = new ClientConnection((InetSocketAddress)packet.getSocketAddress());
@@ -186,21 +190,21 @@ public class Server extends Base implements Observer{
 		}
 	}
 	
-	public ClientConnection findPlayerConnection(SocketAddress socketAddress){
+	public ClientConnection findConnection(SocketAddress socketAddress){
 		int index = this.playerConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
-		if(index == -1){
-			return null;
+		if(index != -1){
+			return this.playerConnections.get(index);
+		}else{
+			index = this.spectatorConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
+			if(index != -1){
+				return this.spectatorConnections.get(index);
+			}else{
+				return null;
+			}
 		}
-		return this.playerConnections.get(index);
+		
 	}
 	
-	public ClientConnection findSpectatorConnection(SocketAddress socketAddress){
-		int index = this.spectatorConnections.indexOf(new ClientConnection((InetSocketAddress)socketAddress));
-		if(index == -1){
-			return null;
-		}
-		return this.spectatorConnections.get(index);
-	}
 	
 
 	
@@ -300,13 +304,13 @@ public class Server extends Base implements Observer{
 	public void updatePlayerConnectionData(JSONObject packetData, DatagramPacket packet){
 		
 		
-		ClientConnection c = this.findPlayerConnection(packet.getSocketAddress());
+		ClientConnection c = this.findConnection(packet.getSocketAddress());
 		updateConnectionData(c, packetData, packet);
 	}
 	
 	public void updateSpectatorConnectionData(JSONObject packetData, DatagramPacket packet){
 		
-		ClientConnection c = this.findSpectatorConnection(packet.getSocketAddress());
+		ClientConnection c = this.findConnection(packet.getSocketAddress());
 		
 		updateConnectionData(c, packetData, packet);
 	}
@@ -325,7 +329,7 @@ public class Server extends Base implements Observer{
 	public boolean checkIfLatestPacket(JSONObject packetData, DatagramPacket packet){
 		long packetId = ((Long) packetData.get("r"));
 		
-		ClientConnection c = this.findPlayerConnection(packet.getSocketAddress());
+		ClientConnection c = this.findConnection(packet.getSocketAddress());
 		return c.getLastPacketId() < packetId;
 	}
 

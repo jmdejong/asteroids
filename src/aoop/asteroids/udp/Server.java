@@ -28,7 +28,7 @@ public class Server extends Base implements Observer{
 	
 
 	
-	private CopyOnWriteArraySet<ClientConnection> spectatorConnections = new CopyOnWriteArrayList<ClientConnection>();
+	private CopyOnWriteArraySet<ClientConnection> spectatorConnections = new CopyOnWriteArraySet<ClientConnection>();
 	private CopyOnWriteArrayList<ClientConnection> playerConnections = new CopyOnWriteArrayList<ClientConnection>();
 	
 	
